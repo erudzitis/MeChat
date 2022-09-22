@@ -1,6 +1,9 @@
 // Requirements
 const express = require("express");
 
+// Connecting to db
+require("./database/connect");
+
 // Loading enviroment variables
 require("dotenv").config();
 
