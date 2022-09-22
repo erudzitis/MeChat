@@ -1,14 +1,9 @@
-const { Model } = require("objection");
-const Knex = require("knex");
+const knex = require("knex");
+const knexFile = require("./knexfile");
+const { Model } = require("ojection");
 
-// Initialize knex.
-const pgDBInstance = Knex({
-    client: "pg",
-    connection: process.env.PG_CONNECTION_STRING,
-});
+// Setup db
+const db = knex(knexFile.development);
 
 // Give the knex instance to objection.
-Model.knex(pgDBInstance);
-
-// Exporting the connection instance
-module.exports = pgDBInstance;
+Model.knex(db);
