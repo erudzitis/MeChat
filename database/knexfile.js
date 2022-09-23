@@ -1,4 +1,7 @@
-require("dotenv").config();
+// Loading env variables
+const path = require("path");
+
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
 // Stores DB configuration
 module.exports = {
