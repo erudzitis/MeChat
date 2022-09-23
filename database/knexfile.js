@@ -4,7 +4,7 @@ require("dotenv").config();
 module.exports = {
     development: {
         client: "pg",
-        connection: "",
+        connection: process.env.PG_CONNECTION_STRING_DEV,
         migrations: {
             tableName: "knex_migrations"
         }

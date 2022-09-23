@@ -1,6 +1,6 @@
 const knex = require("knex");
 const knexFile = require("./knexfile");
-const { Model } = require("ojection");
+const { Model } = require("objection");
 
 // Setup db
 const db = knex(knexFile.development);
