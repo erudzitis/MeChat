@@ -11,6 +11,25 @@ exports.up = function(knex) {
             table.string("email").notNullable().unique();
             table.timestamps(true, true);
         })
+        .createTable("room", (table) => {
+            table.increments("id").primary();
+            table.string("name").nullable();
+            table.boolean("is_group_chat").defaultTo(false);
+            table.timestamps(true, true);
+        })
+        .createTable("message", (table) => {
+            table.increments("id").primary();
+            table.integer("user_id").references("user.id");
+            table.integer("room_id").references("room.id");
+            table.string("content").notNullable();
+            table.timestamps(true, true);
+        })
+        .createTable("participants", (table) => {
+            table.increments("id").primary();
+            table.integer("user_id").references("user.id");
+            table.integer("room_id").references("room.id"); 
+            table.timestamps(true, true);           
+        })
 };
 
 /**
@@ -19,5 +38,8 @@ exports.up = function(knex) {
  */
 exports.down = function(knex) {
     return knex.schema
-        .dropTableIfExists("user");
+        .dropTableIfExists("user")
+        .dropTableIfExists("room")
+        .dropTableIfExists("message")
+        .dropTableIfExists("participants");
 };
