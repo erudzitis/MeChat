@@ -14,6 +14,7 @@
             })
             .createTable("room", (table) => {
                 table.increments("id").primary();
+                table.integer("admin_id").references("user.id").nullable();
                 table.string("name").nullable();
                 table.boolean("is_group_chat").defaultTo(false);
                 table.timestamps(true, true);
