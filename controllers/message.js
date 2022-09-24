@@ -14,7 +14,7 @@ const messageCreateController = async (req, res) => {
     }
 
     // Proceeding with message creation
-    const newMessage = messageModel.query().insert({
+    const newMessage = await messageModel.query().insert({
         user_id: userId,
         room_id: roomId,
         content: content
