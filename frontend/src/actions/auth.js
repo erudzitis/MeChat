@@ -6,7 +6,7 @@ const registerAction = (formData) => async (dispatch) => {
 
     registerAPICall(formData)
         .then(({ data }) => {
-            dispatch({ type: "REGISTER_SUCCESS", payload: data.data });
+            dispatch({ type: "REGISTER_SUCCESS", payload: data.token });
         })
         .catch((error) => {
             dispatch({ type: "REGISTER_ERROR", payload: error?.response?.data?.message });
@@ -18,7 +18,7 @@ const loginAction = (formData) => async (dispatch) => {
 
     loginAPICall(formData)
         .then(({ data }) => {
-            dispatch({ type: "LOGIN_SUCCESS", payload: data.data });
+            dispatch({ type: "LOGIN_SUCCESS", payload: data.token });
         })
         .catch((error) => {
             dispatch({ type: "LOGIN_ERROR", payload: error?.response?.data?.message });
