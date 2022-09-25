@@ -13,10 +13,10 @@ const registerAction = (formData) => async (dispatch) => {
         })
 }
 
-const loginAPICall = (formData) => async (dispatch) => {
+const loginAction = (formData) => async (dispatch) => {
     dispatch({ type: "LOGIN_REQUEST" });
 
-    registerAPICall(formData)
+    loginAPICall(formData)
         .then(({ data }) => {
             dispatch({ type: "LOGIN_SUCCESS", payload: data.data });
         })
@@ -27,5 +27,5 @@ const loginAPICall = (formData) => async (dispatch) => {
 
 export default {
     registerAction,
-    loginAPICall
+    loginAction
 }

@@ -4,12 +4,12 @@ const authReducer = (state = {}, action) => {
             // Updating authorization token
             localStorage.setItem("chatApplicationToken", action.payload);
 
-            return state;
+            return { ...state };
         case "LOGIN_SUCCESS":
             // Updating authorization token
             localStorage.setItem("chatApplicationToken", action.payload);
 
-            return state;
+            return { ...state };
     }
 }
 
