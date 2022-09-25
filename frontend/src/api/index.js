@@ -31,7 +31,12 @@ const loginAPICall = (formData) => {
     return chatApplicationAPI.post("/auth/login", formData);
 }
 
+const createRoomAPICall = (formData) => {
+    return chatApplicationAPI.post("/room/create", formData);
+}
+
 export {
     registerAPICall, 
-    loginAPICall
+    loginAPICall,
+    createRoomAPICall
 }
