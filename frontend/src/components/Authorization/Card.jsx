@@ -3,16 +3,20 @@ import React, { useState, Children } from "react";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { useForm, Controller } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Card = ({ children, type, fn }) => {
     const { control, handleSubmit, formState: { errors } } = useForm();
     const [rememberMe, setRememberMe] = useState(true);
+
+    const formState = useSelector(state => state.helper[type]);
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     // Function that proceeds with communication with the api
     const handleAuthorization = (data) => {
-        dispatch(fn(data));
+        dispatch(fn(data, navigate));
     }
 
     const getFormErrorMessage = (name) => {
@@ -39,6 +43,7 @@ const Card = ({ children, type, fn }) => {
                                             render={({ field }) => (
                                                 <child.type
                                                     {...child.props}
+                                                    invalid={errors[child.props.id]}
                                                     inputRef={field.ref}
                                                     value={field.value}
                                                     onChange={field.onChange}
@@ -50,6 +55,8 @@ const Card = ({ children, type, fn }) => {
                                 )
                             })
                         }
+
+                        {formState?.error && <small className="p-error -mt-4">{formState?.error}</small>}
                     </div>
 
                     <div className="mt-4">
@@ -59,12 +66,12 @@ const Card = ({ children, type, fn }) => {
                                 <label htmlFor="rememberme">Remember me</label>
                             </div>
 
-                            <a href={type === "Registration" ? "/login" : "/register"} className="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">
-                                {type === "Registration" ? "Already registered?" : "Don't have an account?"}
+                            <a href={type === "REGISTER" ? "/login" : "/register"} className="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">
+                                {type === "REGISTER" ? "Already registered?" : "Don't have an account?"}
                             </a>
                         </div>
 
-                        <Button label={type === "Registration" ? "Register" : "Login"} className="w-full" type="submit" />
+                        <Button label={type === "REGISTER" ? "Register" : "Login"} className="w-full" loading={formState?.loading} type="submit" />
                     </div>
                 </form>
             </div>

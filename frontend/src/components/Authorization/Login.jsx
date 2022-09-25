@@ -11,9 +11,9 @@ import { loginAction } from "../../actions/auth";
 
 const Login = () => {
     return (
-        <Card type="Login" fn={loginAction}>
+        <Card type="LOGIN" fn={loginAction}>
             <InputFloatLabel id="username" label="Username" size="sm" />
-            <PasswordFloatLabel id="Password" label="Password" size="sm" />
+            <PasswordFloatLabel id="password" label="Password" size="sm" />
         </Card>
     )
 }
