@@ -2,17 +2,17 @@
 import React from "react";
 import { InputText } from "primereact/inputtext";
 
-const InputFloatLabel = ({ id, label, size, value, onChange, inputRef }) => {
+const InputFloatLabel = ({ id, label, size, value, onChange, inputRef, invalid }) => {
     // Option to not render with wrapping floating label
     if (!label) {
         return (
-            <InputText id={id} type="text" className={`w-full p-inputtext-${size}`} inputRef={inputRef} value={value} onChange={onChange} />
+            <InputText id={id} type="text" className={`w-full p-inputtext-${size} ${invalid && "p-invalid"}`} inputRef={inputRef} value={value} onChange={onChange} />
         )
     }
 
     return (
         <span className="p-float-label">
-            <InputText id={id} type="text" className={`w-full p-inputtext-${size}`} inputRef={inputRef} value={value} onChange={onChange} />
+            <InputText id={id} type="text" className={`w-full p-inputtext-${size} ${invalid && "p-invalid"}`} inputRef={inputRef} value={value} onChange={onChange} />
             <label htmlFor={id}>{label}</label>
         </span>
     )

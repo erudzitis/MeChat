@@ -11,7 +11,7 @@ import { registerAction } from "../../actions/auth";
 
 const Registration = () => {
     return (
-        <Card type="Registration" fn={registerAction}>
+        <Card type="REGISTER" fn={registerAction}>
             <InputFloatLabel id="email" label="Email" size="sm" />
             <InputFloatLabel id="username" label="Username" size="sm" />
             <PasswordFloatLabel id="password" label="Password" size="sm" />
