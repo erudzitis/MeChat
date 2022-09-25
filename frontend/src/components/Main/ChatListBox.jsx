@@ -2,10 +2,10 @@
 import React from "react";
 import { Avatar } from "primereact/avatar";
 
-const ChatListBox = ({ image, username, chatPreview }) => {
+const ChatListBox = ({ image, username, chatPreview, borderBottom }) => {
     return (
         <>
-            <div className="flex flex-row flex-shrink-0 h-5rem bg-blue-700 cursor-pointer transition-all transition-duration-500 hover:bg-blue-800">
+            <div className="flex flex-row flex-shrink-0 p-5 h-5rem bg-blue-700 cursor-pointer transition-all transition-duration-500 hover:bg-blue-800">
                 {/* Left main wrapper (user avatar) */}
                 <div className="flex align-items-center justify-content-center h-full w-5rem">
                     <Avatar icon="pi pi-user" size="large" shape="circle" />
@@ -17,7 +17,7 @@ const ChatListBox = ({ image, username, chatPreview }) => {
                 </div>
             </div>
             {/* Bottom Border */}
-            <div className="border-blue-600 border-bottom-1" />
+            {borderBottom && <div className="border-blue-600 border-bottom-1" />}
         </>
 
     )
