@@ -7,7 +7,7 @@ import InputFloatLabel from "../Main/InputFloatLabel";
 import PasswordFloatLabel from "../Main/PasswordFloatLabel";
 
 // Actions
-import registerAction from "..../actions/auth";
+import { registerAction } from "../../actions/auth";
 
 const Registration = () => {
     return (
