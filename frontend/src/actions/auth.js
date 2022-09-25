@@ -25,7 +25,7 @@ const loginAction = (formData) => async (dispatch) => {
         })
 }
 
-export default {
+export {
     registerAction,
     loginAction
 }
