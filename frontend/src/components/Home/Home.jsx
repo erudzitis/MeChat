@@ -18,16 +18,14 @@ const Home = () => {
     return (
         <div className="flex flex-row align-items-center justify-content-center bg-blue-600 overflow-hidden" style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}>
             {/* Left main wrapper */}
-            <div className="flex flex-column h-full w-3 bg-blue-700">
+            <div className="flex flex-column h-full w-3 bg-blue-700 fadein animation-duration-500">
                 {/* Upper section (search bar) */}
                 <div className="flex align-items-center justify-content-center border-blue-600 border-bottom-2 h-5rem">
                     <SearchInput id="search-user" size="sm" placeholder="Search" />
                 </div>
                 {/* Middle section (chat list) */}
-                <div className="flex flex-1 flex-column border-blue-600 border-bottom-2">
-                    <ChatListBox />
-                    {/* Bottom Border */}
-                    <div className="border-blue-600 border-bottom-1" />
+                <div className="flex flex-1 flex-column border-blue-600 border-bottom-2 overflow-y-auto">
+                    <ChatListBox username={"Dave"} chatPreview={"Looking forward to meeting you tommorow..."} />
                 </div>
                 {/* Lower section (control bar) */}
                 <div className="flex align-items-center justify-content-between h-5rem">
