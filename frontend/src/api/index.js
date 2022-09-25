@@ -15,8 +15,8 @@ chatApplicationAPI.interceptors.request.use((request) => {
     const token = localStorage.getItem("chatApplicationToken");
 
     // Checking whethr token is found on users browsers local storage
-    if (token !== null && token !== "undefined") {
-        request.headers.authorization = `Bearer ${chatApplicationToken}`;
+    if (token !== null && token !== undefined) {
+        request.headers.authorization = `Bearer ${token}`;
     }
 
     return request;
@@ -31,7 +31,7 @@ const loginAPICall = (formData) => {
     return chatApplicationAPI.post("/auth/login", formData);
 }
 
-export default {
+export {
     registerAPICall, 
     loginAPICall
 }
