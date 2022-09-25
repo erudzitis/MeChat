@@ -13,13 +13,13 @@ import App from "./App";
 import "./index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-const store = configureStore({ reducer: rootReducer, middleware: [thunk] });
+//const store = configureStore({ reducer: rootReducer, middleware: [thunk] });
 
 root.render(
-  <Provider store={store}>
+  //<Provider store={store}>
     <React.StrictMode>
       <App />
     </React.StrictMode>
-  </Provider>
+  //</Provider>
 );
 
