@@ -1,11 +1,11 @@
 // Requirements
 import React, { useState } from "react";
 import { Chips } from "primereact/chips";
+import { Button } from "primereact/button";
 
 // Components
 import SearchInput from "../Main/SearchInput";
 import ChatListBox from "../Main/ChatListBox";
-import InputFloatLabel from "../Main/InputFloatLabel";
 
 const CreateRoomSecondary = ({ setStep }) => {
     const [chipValues, setChipValues] = useState([]);
@@ -34,6 +34,8 @@ const CreateRoomSecondary = ({ setStep }) => {
                 <ChatListBox username={"Zigismunds"} chatPreview={"Hey, I am using chat application!"} borderBottom />
                 <ChatListBox username={"Zigvards"} chatPreview={":)"} borderBottom />
             </div>
+
+            <Button icon="pi pi-arrow-right" className="p-button-rounded p-button-info" aria-label="User" onClick={() => setStep(3)} />
         </div>
     )
 }
