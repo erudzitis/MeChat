@@ -1,6 +1,7 @@
 // Requirements
 const contactsModel = require("../database/models/contacts");
 const participantsModel = require("../database/models/participants");
+const roomModel = require("../database/models/room");
 const { StatusCodes } = require("http-status-codes");
 const customError = require("../errors/customError");
 
@@ -10,8 +11,8 @@ const retrieveContacts = async (req, res) => {
 
     // Querying all contacts
     const allContacts = await contactsModel.query()
-        .where("user_id_1", "like", userId)
-        .orWhere("user_id_2", "like", userId);
+        .where("user_id_1", userId)
+        .orWhere("user_id_2", userId);
 
     res.status(StatusCodes.OK).json({
         success: true,
@@ -47,7 +48,7 @@ const retrieveRooms = async (req, res) => {
     
     // Querying all participated rooms
     const allParticipations = await participantsModel.query()
-        .where("user_id", "like", userId)
+        .where("user_id", userId)
         .select("room_id");
 
     const allRoomIndexes = allParticipations.map(participation => {
@@ -55,7 +56,7 @@ const retrieveRooms = async (req, res) => {
     })
 
     // Querying all roms
-    const allRooms = await participantsModel.query()
+    const allRooms = await roomModel.query()
         .whereIn("id", allRoomIndexes)
 
     res.status(StatusCodes.OK).json({
