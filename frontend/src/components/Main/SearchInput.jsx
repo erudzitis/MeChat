@@ -2,11 +2,17 @@
 import React from "react";
 import { InputText } from "primereact/inputtext";
 
-const SearchInput = ({ id, placeholder, size }) => {
+const SearchInput = ({ id, placeholder, size, value, onChange }) => {
     return (
         <span className="p-input-icon-left">
             <i className="pi pi-search" />
-            <InputText id={id} type="text" className={`w-full p-inputtext-${size}`} placeholder={placeholder} />
+            <InputText 
+                id={id} 
+                type="text" 
+                className={`w-full p-inputtext-${size}`} 
+                placeholder={placeholder} 
+                onChange={onChange}
+            />
         </span>
     )
 }
