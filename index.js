@@ -11,6 +11,7 @@ const cors = require("cors");
 const authenticationRoutes = require("./routes/authentication");
 const roomRoutes = require("./routes/room");
 const messageRoutes = require("./routes/message");
+const userRoutes = require("./routes/user");
 
 const errorHandlerMiddleware = require("./middleware/errorHandler");
 const authorizationMiddleware = require("./middleware/authorization");
@@ -30,6 +31,7 @@ app.use(express.json({ limit: "50mb" }));
 app.use("/api/v1/auth", authenticationRoutes);
 app.use("/api/v1/room", authorizationMiddleware, roomRoutes);
 app.use("/api/v1/message", authorizationMiddleware, messageRoutes);
+app.use("/api/v1/user", authorizationMiddleware, userRoutes);
 
 // Error handling middleware
 app.use(errorHandlerMiddleware);
