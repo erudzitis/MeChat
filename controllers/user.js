@@ -2,6 +2,7 @@
 const contactsModel = require("../database/models/contacts");
 const participantsModel = require("../database/models/participants");
 const roomModel = require("../database/models/room");
+const userModel = require("../database/models/user");
 const { StatusCodes } = require("http-status-codes");
 const customError = require("../errors/customError");
 
@@ -14,9 +15,19 @@ const retrieveContacts = async (req, res) => {
         .where("user_id_1", userId)
         .orWhere("user_id_2", userId);
 
+    // Retrieving all contacts id's list
+    const allContactsIds = allContacts.map(contact => {
+        return contact.user_id_1 == userId ? contact.user_id_2 : contact.user_id_1;
+    })
+
+    // Retrieving users from contacts
+    const allContactsUsers = await userModel.query()
+        .whereIn("id", allContactsIds)
+        .select("id", "username");
+
     res.status(StatusCodes.OK).json({
         success: true,
-        data: allContacts
+        data: allContactsUsers
     });
 }
 
