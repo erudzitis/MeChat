@@ -9,7 +9,7 @@ const { StatusCodes } = require("http-status-codes");
 const roomCreateController = async (req, res) => {
     // TODO: append userId after successful authorization to the request
     const { userId } = req;
-    const { name, isGroupChat } = req.body;
+    const { name, description, groupUsers, isGroupChat } = req.body;
 
     // Checking for missing requirements
     if (!name) {
@@ -19,9 +19,30 @@ const roomCreateController = async (req, res) => {
     // Proceeding with room creation
     const newRoom = await roomModel.query().insert({
         name: name,
+        description: description,
         admin_id: isGroupChat ? userId : null,
         is_group_chat: isGroupChat
     });
+
+    // Adding request user as participant to the group
+    await participantsModel.query().insert({
+        user_id: userId,
+        room_id: newRoom.id
+    });
+
+    // Adding array of group users to our group
+    if (groupUsers && groupUsers?.length) {
+        // Creating users object list
+        const groupUsersData = groupUsers.map(gUser => {
+            return {
+                user_id: gUser,
+                room_id: newRoom.id 
+            }
+        })
+
+        // Creating participants instances
+        await participantsModel.query().insert( groupUsersData );
+    }
 
     res.status(StatusCodes.OK).json({
         success: true,

@@ -1,5 +1,5 @@
 // Requirements
-import React, { useState } from "react";
+import React from "react";
 import { Chips } from "primereact/chips";
 import { Button } from "primereact/button";
 
@@ -7,8 +7,7 @@ import { Button } from "primereact/button";
 import SearchInput from "../Main/SearchInput";
 import ChatListBox from "../Main/ChatListBox";
 
-const CreateRoomSecondary = ({ setStep }) => {
-    const [chipValues, setChipValues] = useState([]);
+const CreateRoomSecondary = ({ setStep, formData, setFormData }) => {
 
     return (
         <div className="flex flex-column align-items-center justify-content-center gap-5 mt-2">
@@ -16,16 +15,14 @@ const CreateRoomSecondary = ({ setStep }) => {
             <Chips
                 placeholder="Selected users..."
                 size="sm"
-                value={chipValues}
-                onChange={(e) => setChipValues(e.value) }
-                onAdd={(value) => console.log("Added value: ", value)}
-                onRemove={(value) => console.log("Removed value: ", value)}
+                value={formData.selectedUsers}
+                onChange={(e) => setFormData({ ...formData, selectedUsers: e.value }) }
             />
 
             <div className="flex flex-column">
                 <ChatListBox username={"Adelle"} chatPreview={"Hey, I am using chat application!"} borderBottom
                     onClick={() => {
-                        chipValues.indexOf("Adelle") == -1 && setChipValues([...chipValues, "Adelle"])
+                        formData.selectedUsers.indexOf("Adelle") === -1 && setFormData({ ...formData, selectedUsers: [...formData.selectedUsers, "Adelle"] })
                     }}
                 />
                 <ChatListBox username={"Ardis"} chatPreview={"Available"} borderBottom />
@@ -33,9 +30,10 @@ const CreateRoomSecondary = ({ setStep }) => {
                 <ChatListBox username={"Viliams"} chatPreview={""} borderBottom />
                 <ChatListBox username={"Zigismunds"} chatPreview={"Hey, I am using chat application!"} borderBottom />
                 <ChatListBox username={"Zigvards"} chatPreview={":)"} borderBottom />
+                <ChatListBox username={"Zanda"} chatPreview={"Hello!"} borderBottom />
             </div>
 
-            <Button icon="pi pi-arrow-right" className="p-button-rounded p-button-info" aria-label="User" onClick={() => setStep(3)} />
+            {formData.selectedUsers.length && <Button icon="pi pi-arrow-right" className="p-button-rounded p-button-info absolute bottom-0 mb-1 fadein animation-duration-250" aria-label="User" onClick={() => setStep(2)} />}
         </div>
     )
 }
