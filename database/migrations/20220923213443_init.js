@@ -16,6 +16,7 @@ exports.up = function(knex) {
                 table.increments("id").primary();
                 table.integer("admin_id").references("user.id").nullable();
                 table.string("name").nullable();
+                table.string("description").nullable();
                 table.boolean("is_group_chat").defaultTo(false);
                 table.timestamps(true, true);
             })
@@ -31,6 +32,12 @@ exports.up = function(knex) {
                 table.integer("user_id").references("user.id");
                 table.integer("room_id").references("room.id"); 
                 table.timestamps(true, true);           
+            })
+            .createTable("contacts", (table) => {
+                table.increments("id").primary();
+                table.integer("user_id_1").references("user.id");
+                table.integer("user_id_2").references("user.id");
+                table.timestamps(true, true);
             })
 };
 
