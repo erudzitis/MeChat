@@ -10,6 +10,7 @@ const SearchInput = ({ id, placeholder, size, value, onChange }) => {
                 id={id} 
                 type="text" 
                 className={`w-full p-inputtext-${size}`} 
+                value={value}
                 placeholder={placeholder} 
                 onChange={onChange}
             />

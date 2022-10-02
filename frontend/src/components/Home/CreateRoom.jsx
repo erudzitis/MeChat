@@ -6,7 +6,7 @@ import CreateRoomPrimary from "./CreateRoomPrimary";
 import CreateRoomSecondary from "./CreateRoomSecondary";
 import CreateRoomFinalize from "./CreateRoomFinalize";
 
-const CreateRoom = () => {
+const CreateRoom = ({ setSidebarValue }) => {
     const [componentStep, setComponentStep] = useState(0);
     const [componentFormData, setComponentFormData] = useState({
         selectedUsers: [],
@@ -18,7 +18,7 @@ const CreateRoom = () => {
     const componentList = [
         <CreateRoomPrimary setStep={setComponentStep} />,
         <CreateRoomSecondary setStep={setComponentStep} formData={componentFormData} setFormData={setComponentFormData} />,
-        <CreateRoomFinalize formData={componentFormData} setFormData={setComponentFormData} />
+        <CreateRoomFinalize formData={componentFormData} setFormData={setComponentFormData} setSidebarValue={setSidebarValue} />
     ]    
 
     return (

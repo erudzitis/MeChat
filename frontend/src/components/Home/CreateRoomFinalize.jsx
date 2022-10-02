@@ -1,14 +1,30 @@
 // Requirements
 import React from "react";
 import { Button } from "primereact/button";
+import { useDispatch } from "react-redux";
 
 // Components
 import InputFloatLabel from "../Main/InputFloatLabel";
 import FileUploadCustom from "../Main/FileUploadCustom";
 
-const CreateRoomFinalize = ({ formData, setFormData }) => {
+// Actions 
+import { createRoomAction } from "../../actions/chat";
+
+const CreateRoomFinalize = ({ formData, setFormData, setSidebarValue }) => {
+    const dispatch = useDispatch();
+
     const handleRoomCreation = () => {
-        console.log(formData);
+        const query = {
+            name: formData.groupName,
+            description: formData.groupDescription,
+            groupUsers: [],
+            isGroupChat: false
+        }
+
+        // Dispatching request
+        dispatch(createRoomAction(query));
+        // Closing down the sidebar
+        setSidebarValue(false);
     }
 
     return (
