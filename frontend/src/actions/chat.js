@@ -50,20 +50,29 @@ const createMessageAction = (formData) => async (dispatch) => {
 }
 
 const retrieveRoomDataAction = (formData) => async (dispatch) => {
-    dispatch({ type: "RETRIEVE_ROOM_REQUEST" });
+    dispatch({ type: "RETRIEVE_ROOM_DATA_REQUEST" });
 
-    createMessageAPICall(formData)
+    retrieveRoomDataAPICall(formData)
         .then(({ data }) => {
-            dispatch({ type: "RETRIEVE_ROOM_SUCCESS", payload: data.data });
+            dispatch({ type: "RETRIEVE_ROOM_DATA_SUCCESS", payload: {
+                roomId: formData.roomId,
+                messages: data.data
+            }});
         })
         .catch((error) => {
-            dispatch({ type: "RETRIEVE_ROOM_ERROR", payload: error?.response?.data?.message });
+            dispatch({ type: "RETRIEVE_ROOM_DATA_ERROR", payload: error?.response?.data?.message });
         })
+}
+
+const clearRoomDataAction = () => async (dispatch) => {
+    dispatch({ type: "CLEAR_ROOM_DATA_SUCCESS" });
 }
 
 export {
     createRoomAction,
     retrieveContactsAction,
     retrieveRoomsAction,
-    createMessageAction
+    createMessageAction,
+    retrieveRoomDataAction,
+    clearRoomDataAction
 }

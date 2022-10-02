@@ -14,7 +14,7 @@ import CreateRoom from "./CreateRoom";
 import ChatSection from "./ChatSection";
 
 // Actions
-import { retrieveContactsAction, retrieveRoomsAction } from "../../actions/chat";
+import { retrieveContactsAction, retrieveRoomsAction, retrieveRoomDataAction, clearRoomDataAction } from "../../actions/chat";
 
 const Home = () => {
     const dispatch = useDispatch();
@@ -31,7 +31,14 @@ const Home = () => {
         }
 
         return [];
-    }, [searchFeed, rooms])
+    }, [searchFeed, rooms]);
+
+    // Handling room data retrieval
+    const handleRetrieveRoomData = (roomId) => {
+        // Clearing any saved room data in state
+        dispatch(clearRoomDataAction());
+        dispatch(retrieveRoomDataAction({ roomId: roomId }));
+    }
 
     // items for speed dial
     const items = [
@@ -68,7 +75,13 @@ const Home = () => {
                         {(RETRIEVE_ROOMS?.loading) && <ProgressSpinner style={{ width: "50px", height: "50px", marginTop: "10px" }} strokeWidth="4" />}
                         {roomsFiltered && roomsFiltered.map(feedElement => {
                             return (
-                                <ChatListBox key={`ChatListBox-${feedElement.id}-${feedElement.name}`} username={feedElement.name} chatPreview={feedElement.description} borderBottom />
+                                <ChatListBox
+                                    key={`ChatListBox-${feedElement.id}-${feedElement.name}`}
+                                    username={feedElement.name}
+                                    chatPreview={feedElement.description}
+                                    onClick={() => handleRetrieveRoomData(feedElement.id)}
+                                    borderBottom 
+                                />
                             )
                         })}
 
