@@ -17,8 +17,8 @@ const CreateRoomFinalize = ({ formData, setFormData, setSidebarValue }) => {
         const query = {
             name: formData.groupName,
             description: formData.groupDescription,
-            groupUsers: [],
-            isGroupChat: false
+            groupUsers: formData.selectedUsersIndexes,
+            isGroupChat: true
         }
 
         // Dispatching request
