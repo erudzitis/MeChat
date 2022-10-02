@@ -20,7 +20,7 @@ const messageCreateController = async (req, res) => {
         content: content
     });
 
-    res.statu(StatusCodes.OK).json({
+    res.status(StatusCodes.OK).json({
         success: true,
         data: newMessage
     });
