@@ -43,9 +43,20 @@ const createContact = async (req, res) => {
 
     // Creating contact instance
     const newContact = await contactsModel.query().insert({
-        user_id_1:  userId,
+        user_id_1: userId,
         user_id_2: contactUserId
     });
+
+    // Room is automatically created between two users
+    const newRoom = await roomModel.query().insert({
+        admin_id: null,
+        name: null,
+        description: null,
+    });
+
+    // Adding both participants to the room
+    await participantsModel.query().insert({ user_id: userId, room_id: newRoom.id });
+    await participantsModel.query().insert({ user_id: contactUserId, room_id: newRoom.id });
 
     res.status(StatusCodes.OK).json({
         success: true,

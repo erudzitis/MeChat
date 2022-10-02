@@ -11,6 +11,7 @@ import SearchInput from "../Main/SearchInput";
 import AvatarButton from "../Main/AvatarButton";
 import ChatListBox from "../Main/ChatListBox";
 import CreateRoom from "./CreateRoom";
+import ChatSection from "./ChatSection";
 
 // Actions
 import { retrieveContactsAction, retrieveRoomsAction } from "../../actions/chat";
@@ -19,30 +20,18 @@ const Home = () => {
     const dispatch = useDispatch();
     const [showCreateRoomDialog, setShowCreateRoomDialog] = useState(false);
     const [searchFeed, setSearchFeed] = useState("");
-    const { contacts, rooms } = useSelector(state => state.chat);
-    const { RETRIEVE_CONTACTS, RETRIEVE_ROOMS, CREATE_ROOM } = useSelector(state => state.helper);
+    const { rooms } = useSelector(state => state.chat);
+    const { RETRIEVE_ROOMS } = useSelector(state => state.helper);
 
     // Combining contacts and rooms for generic 'feed'
     // Filtering contacts and rooms
-    const contactsAndRoomsFiltered = useMemo(() => {
-        if (contacts && rooms) {
-            // Mapping over contacts to convert them to different template 
-            const contactsTransformed = contacts.map(contact => {
-                return { id: contact.id, name: contact.username, description: "" };
-            });
-
-            const userFeed = [ ...contactsTransformed, ...rooms ];
-
-            // Filtering results based on search
-            if (searchFeed) {
-                return userFeed.filter(uf => uf.name.indexOf(searchFeed) >= 0);
-            }
-
-            return userFeed;
+    const roomsFiltered = useMemo(() => {
+        if (rooms) {
+            return searchFeed !== "" ? rooms.filter(uf => uf.name.indexOf(searchFeed) >= 0) : rooms;
         }
 
         return [];
-    }, [RETRIEVE_CONTACTS, RETRIEVE_ROOMS, CREATE_ROOM, searchFeed])
+    }, [searchFeed, rooms])
 
     // items for speed dial
     const items = [
@@ -76,8 +65,8 @@ const Home = () => {
                     </div>
                     {/* Middle section (chat list) */}
                     <div className="flex flex-1 flex-column border-blue-600 border-bottom-2 overflow-y-auto">
-                        {(RETRIEVE_CONTACTS?.loading || RETRIEVE_ROOMS?.loading) && <ProgressSpinner style={{ width: "50px", height: "50px", marginTop: "10px" }} strokeWidth="4" />}
-                        {contactsAndRoomsFiltered && contactsAndRoomsFiltered.map(feedElement => {
+                        {(RETRIEVE_ROOMS?.loading) && <ProgressSpinner style={{ width: "50px", height: "50px", marginTop: "10px" }} strokeWidth="4" />}
+                        {roomsFiltered && roomsFiltered.map(feedElement => {
                             return (
                                 <ChatListBox key={`ChatListBox-${feedElement.id}-${feedElement.name}`} username={feedElement.name} chatPreview={feedElement.description} borderBottom />
                             )
@@ -96,7 +85,7 @@ const Home = () => {
                 </div>
                 {/* Right main wrapper */}
                 <div className="flex flex-1 h-full">
-
+                    <ChatSection />
                 </div>
             </div>
         </>

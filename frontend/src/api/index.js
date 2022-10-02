@@ -43,10 +43,20 @@ const retrieveRoomsAPICall = () => {
     return chatApplicationAPI.get("/user/rooms");
 }
 
+const createMessageAPICall = (formData) => {
+    return chatApplicationAPI.post("/message/create", formData);
+}
+
+const retrieveRoomDataAPICall = (roomId) => {
+    return chatApplicationAPI.get(`/room/${roomId}`);
+}
+
 export {
     registerAPICall, 
     loginAPICall,
     createRoomAPICall,
     retrieveContactsAPICall,
-    retrieveRoomsAPICall
+    retrieveRoomsAPICall,
+    createMessageAPICall,
+    retrieveRoomDataAPICall
 }

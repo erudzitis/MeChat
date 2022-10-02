@@ -2,6 +2,7 @@
 const roomModel = require("../database/models/room");
 const userModel = require("../database/models/user");
 const participantsModel = require("../database/models/participants");
+const messageModel = require("../database/models/message");
 const customError = require("../errors/customError");
 const { StatusCodes } = require("http-status-codes");
 
@@ -97,7 +98,39 @@ const roomAddUserController = async (req, res) => {
     });
 }
 
+// [GET] Route for retrieving room data
+const getRoomDataController = async (req, res) => {
+    const { userId } = req;
+    const { roomId } = req.body
+
+    // Checking for missing requirements
+    if (!roomId) {
+        throw new customError("Post body parameters missing!", StatusCodes.BAD_REQUEST);
+    }
+
+    // Checking whether request user has access to the desired room
+    const isParticipant = await participantsModel.query().findOne({
+        user_id: userId,
+        room_id: roomId
+    });
+
+    // User is not participant of the group, therefore has not permissions to access it
+    if (!isParticipant) {
+        throw new customError("You don't have permissions to view this room!", StatusCodes.UNAUTHORIZED);
+    }
+
+    // Fetching latest messages
+    const roomMessages = await messageModel.query()
+        .where("room_id", roomId);
+
+    res.status(StatusCodes.OK).json({
+        success: true,
+        data: roomMessages
+    });
+}
+
 module.exports = {
     roomCreateController,
-    roomAddUserController
+    roomAddUserController,
+    getRoomDataController
 }
