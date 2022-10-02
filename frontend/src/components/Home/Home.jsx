@@ -20,7 +20,7 @@ const Home = () => {
     const [showCreateRoomDialog, setShowCreateRoomDialog] = useState(false);
     const [searchFeed, setSearchFeed] = useState("");
     const { contacts, rooms } = useSelector(state => state.chat);
-    const { RETRIEVE_CONTACTS, RETRIEVE_ROOMS } = useSelector(state => state.helper);
+    const { RETRIEVE_CONTACTS, RETRIEVE_ROOMS, CREATE_ROOM } = useSelector(state => state.helper);
 
     // Combining contacts and rooms for generic 'feed'
     // Filtering contacts and rooms
@@ -42,7 +42,7 @@ const Home = () => {
         }
 
         return [];
-    }, [RETRIEVE_CONTACTS, RETRIEVE_ROOMS, searchFeed])
+    }, [RETRIEVE_CONTACTS, RETRIEVE_ROOMS, CREATE_ROOM, searchFeed])
 
     // items for speed dial
     const items = [
@@ -64,7 +64,7 @@ const Home = () => {
     return (
         <>
             <Sidebar visible={showCreateRoomDialog} className="bg-blue-700" style={{ width: "25%" }} position="left" onHide={() => setShowCreateRoomDialog(false)}>
-                <CreateRoom />
+                <CreateRoom setSidebarValue={setShowCreateRoomDialog} />
             </Sidebar>
 
             <div className="flex flex-row align-items-center justify-content-center bg-blue-600 overflow-hidden" style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}>
@@ -79,7 +79,7 @@ const Home = () => {
                         {(RETRIEVE_CONTACTS?.loading || RETRIEVE_ROOMS?.loading) && <ProgressSpinner style={{ width: "50px", height: "50px", marginTop: "10px" }} strokeWidth="4" />}
                         {contactsAndRoomsFiltered && contactsAndRoomsFiltered.map(feedElement => {
                             return (
-                                <ChatListBox key={`ChatListBox-${feedElement.id}`} username={feedElement.name} chatPreview={feedElement.description} borderBottom />
+                                <ChatListBox key={`ChatListBox-${feedElement.id}-${feedElement.name}`} username={feedElement.name} chatPreview={feedElement.description} borderBottom />
                             )
                         })}
 

@@ -1,11 +1,11 @@
 const chatReducer = (state = {}, action) => {
     switch (action.type) {
         case "CREATE_ROOM_SUCCESS":
-            return state;
+            return { ...state, rooms: [ ...state.rooms, action.payload ] };
         case "RETRIEVE_CONTACTS_SUCCESS":
             return { ...state, contacts: action.payload };
         case "RETRIEVE_ROOMS_SUCCESS":
-            return { ...state, rooms: action.payload };            
+            return { ...state, rooms: action.payload };
         default:
             return state;
     }
