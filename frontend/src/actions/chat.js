@@ -1,5 +1,5 @@
 // local imports
-import { createRoomAPICall, retrieveContactsAPICall, retrieveRoomsAPICall } from "../api";
+import { createRoomAPICall, retrieveContactsAPICall, retrieveRoomsAPICall, createMessageAPICall, retrieveRoomDataAPICall } from "../api";
 
 const createRoomAction = (formData) => async (dispatch) => {
     dispatch({ type: "CREATE_ROOM_REQUEST" });
@@ -37,8 +37,33 @@ const retrieveRoomsAction = () => async (dispatch) => {
         })
 }
 
+const createMessageAction = (formData) => async (dispatch) => {
+    dispatch({ type: "CREATE_MESSAGE_REQUEST" });
+
+    createMessageAPICall(formData)
+        .then(({ data }) => {
+            dispatch({ type: "CREATE_MESSAGE_SUCCESS", payload: data.data });
+        })
+        .catch((error) => {
+            dispatch({ type: "CREATE_MESSAGE_ERROR", payload: error?.response?.data?.message });
+        })
+}
+
+const retrieveRoomDataAction = (formData) => async (dispatch) => {
+    dispatch({ type: "RETRIEVE_ROOM_REQUEST" });
+
+    createMessageAPICall(formData)
+        .then(({ data }) => {
+            dispatch({ type: "RETRIEVE_ROOM_SUCCESS", payload: data.data });
+        })
+        .catch((error) => {
+            dispatch({ type: "RETRIEVE_ROOM_ERROR", payload: error?.response?.data?.message });
+        })
+}
+
 export {
     createRoomAction,
     retrieveContactsAction,
-    retrieveRoomsAction
+    retrieveRoomsAction,
+    createMessageAction
 }
