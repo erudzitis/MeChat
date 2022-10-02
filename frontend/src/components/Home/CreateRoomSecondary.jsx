@@ -21,9 +21,9 @@ const CreateRoomSecondary = ({ setStep, formData, setFormData }) => {
     // Function to add/remove users from the chip by click
     const handleChatListBoxAddValue = (eventValue) => {
         // on add event, single string of added chip value is passed, otherwise we retrieve a remaining list
-        const isAddEvent = typeof (eventValue) === "string";
+        const isClickEvent = typeof (eventValue) === "string";
 
-        if (isAddEvent) {
+        if (isClickEvent) {
             const username = eventValue;
 
             // Checking whether valid contact username was entered in the field
@@ -41,6 +41,7 @@ const CreateRoomSecondary = ({ setStep, formData, setFormData }) => {
                 ? setFormData({ ...formData, selectedUsers: formData.selectedUsers.filter(su => su !== username), selectedUsersIndexes: formData.selectedUsersIndexes.filter(su => su !== contactInstance.id) })
                 : setFormData({ ...formData, selectedUsers: [...formData.selectedUsers, username], selectedUsersIndexes: [...formData.selectedUsersIndexes, contactInstance.id] });
         } else {
+            // Pure chip event
             const remainingChipValues = eventValue.value;
 
             // No values remain
@@ -49,13 +50,20 @@ const CreateRoomSecondary = ({ setStep, formData, setFormData }) => {
                 return;
             }
 
-            // There are remaining values, we need to figure out which one was removed...
-            const removedChipValue = formData.selectedUsers.filter(su => !remainingChipValues.includes(su))[0];
+            // if remaining values > selectedUsers, it means there was an add event, otherwise remove event
+            const isAddEvent = remainingChipValues.length > formData.selectedUsers;
+
+            // There are remaining values, we need to figure out which one was removed or added...
+            const targetValue = isAddEvent ? remainingChipValues.filter(v => !formData.selectedUsers.includes(v))[0] : formData.selectedUsers.filter(su => !remainingChipValues.includes(su))[0];
 
             // Retrieving contact instance
-            const contactInstance = contacts.find(contact => contact.username === removedChipValue);
+            const contactInstance = contacts.find(contact => contact.username === targetValue);
 
-            setFormData({ ...formData, selectedUsers: formData.selectedUsers.filter(su => su !== removedChipValue), selectedUsersIndexes: formData.selectedUsersIndexes.filter(su => su !== contactInstance.id) })
+            setFormData({ 
+                ...formData,
+                selectedUsers: isAddEvent ? remainingChipValues : formData.selectedUsers.filter(su => su !== targetValue), 
+                selectedUsersIndexes: isAddEvent ? [...formData.selectedUsersIndexes, contactInstance.id] : formData.selectedUsersIndexes.filter(su => su !== contactInstance.id) 
+            })
         }
 
     }
