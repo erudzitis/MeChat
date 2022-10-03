@@ -1,7 +1,7 @@
 // Requirements
 import React, { useMemo } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector } from "react-redux"
 
 // Components
 import Registration from "./components/Authorization/Registration";
