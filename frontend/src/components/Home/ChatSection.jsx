@@ -1,9 +1,11 @@
 // Requirements
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
+import { ToggleButton } from "primereact/togglebutton";
 import { useSelector, useDispatch } from "react-redux";
 import jwtDecode from "jwt-decode";
+import EmojiPicker from "emoji-picker-react";
 
 // Components
 import AvatarButton from "../Main/AvatarButton";
@@ -16,17 +18,48 @@ const ChatSection = () => {
     const dispatch = useDispatch();
     const { roomData } = useSelector(state => state.chat);
     const [inputMessage, setInputMessage] = useState("");
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+    const chatMessagesEndReference = useRef(null);
 
     // TODO: write a component wrapper that deals with jwt authorization/decoding
     const decodedUser = jwtDecode(localStorage.getItem("chatApplicationToken"));
 
+    // Handles emoji click action
+    const handleEmojiClick = (event) => {
+        setInputMessage(inputMessage + event.emoji);
+    }
+
+    // Handles scrolling the latest messages into view, using invisible div below all the messages as reference
+    const handleScrollToLatestMessage = () => {
+        chatMessagesEndReference.current?.scrollIntoView({ behavior: "smooth" })
+    }
+
+    // Handles sending message to the backend and updating local state
     const handleChatMessage = () => {
+        if (inputMessage.length === 0) return;
+
         const query = {
             roomId: roomData?.roomId,
             content: inputMessage
         }
 
         dispatch(createMessageAction(query));
+        setInputMessage("");
+    }
+
+    // Scrolling to the latest message
+    useEffect(() => {
+        handleScrollToLatestMessage();
+    }, [roomData])
+
+    // There's no room data, we display default message to the user
+    if (!roomData) {
+        return (
+            <div className="flex flex-column align-items-center justify-content-center text-center w-full">
+                <h1 className="p-0 m-0 text-white">Select a contact a group to start messaging!</h1>
+            </div>
+        )
     }
 
     return (
@@ -49,12 +82,21 @@ const ChatSection = () => {
                         />
                     )
                 })}
+                <div ref={chatMessagesEndReference} />
             </div>
 
             {/* Bottom wrapper */}
-            <div className="flex flex-row align-items-center justify-content-center gap-1 h-5rem p-2">
+            <div className="relative flex flex-row align-items-center justify-content-center gap-2 h-5rem p-2">
+                {showEmojiPicker &&
+                    <div className="absolute bottom-50 fadein animation-duration-500">
+                        <EmojiPicker onEmojiClick={handleEmojiClick} lazyLoadEmojis />
+                        <div className="h-3rem" />
+                    </div>
+                }
+
+                <ToggleButton onIcon="pi pi-minus" onLabel="" offIcon="pi pi-plus" offLabel="" checked={showEmojiPicker} onChange={(e) => setShowEmojiPicker(e.value)} />
                 <InputText type="text" className="p-inputtext-md w-full" value={inputMessage} onChange={(e) => setInputMessage(e.target.value)} />
-                <Button onClick={handleChatMessage} label="Send" icon="pi pi-send" iconPos="right" />
+                <Button onClick={handleChatMessage} icon="pi pi-send" iconPos="right" />
             </div>
         </div>
     )
