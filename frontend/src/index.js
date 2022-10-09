@@ -9,9 +9,6 @@ import thunk from "redux-thunk";
 // Components
 import App from "./App";
 
-// CSS
-import "./index.css";
-
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const store = configureStore({ reducer: rootReducer, middleware: [thunk] });
 

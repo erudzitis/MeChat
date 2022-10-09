@@ -27,7 +27,7 @@ const Card = ({ children, type, fn }) => {
         <div className="flex align-items-center justify-content-center bg-blue-200" style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}>
             <div className="fadein animation-duration-500 surface-card p-4 shadow-2 border-round w-full lg:w-6">
                 <div className="text-center mb-5">
-                    <img src={`${process.env.PUBLIC_URL}/images/primaryIcon.png`} height={50} />
+                    <img src={`${process.env.PUBLIC_URL}/images/primaryIcon.png`} alt="chat-application" height={50} />
                 </div>
 
                 <form onSubmit={handleSubmit(handleAuthorization)}>

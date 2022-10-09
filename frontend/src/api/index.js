@@ -35,6 +35,10 @@ const createRoomAPICall = (formData) => {
     return chatApplicationAPI.post("/room/create", formData);
 }
 
+const establishContactAPICall = (formData) => {
+    return chatApplicationAPI.post("user/create_contact", formData);
+}
+
 const retrieveContactsAPICall = () => {
     return chatApplicationAPI.get("/user/contacts");
 }
@@ -56,6 +60,7 @@ export {
     loginAPICall,
     createRoomAPICall,
     retrieveContactsAPICall,
+    establishContactAPICall,
     retrieveRoomsAPICall,
     createMessageAPICall,
     retrieveRoomDataAPICall

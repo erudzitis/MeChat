@@ -17,6 +17,7 @@ import { createMessageAction } from "../../actions/chat";
 const ChatSection = () => {
     const dispatch = useDispatch();
     const { roomData } = useSelector(state => state.chat);
+    const { RETRIEVE_ROOM_DATA } = useSelector(state => state.helper);
     const [inputMessage, setInputMessage] = useState("");
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
@@ -58,10 +59,10 @@ const ChatSection = () => {
     }, [roomData])
 
     // There's no room data, we display default message to the user
-    if (!roomData) {
+    if (!RETRIEVE_ROOM_DATA) {
         return (
             <div className="flex flex-column align-items-center justify-content-center text-center w-full">
-                {/* <h4 className="p-0 m-0 text-white">Select a contact a group to start messaging!</h4> */}
+                <h4 className="p-0 m-0 text-white">Select a contact a group to start messaging!</h4>
             </div>
         )
     }

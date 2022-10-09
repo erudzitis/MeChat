@@ -4,3 +4,10 @@ html, body {
   font-family: 'Roboto', sans-serif !important;
   scroll-behavior: smooth !important;
 }
+
+.p-dialog .p-dialog-content {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
