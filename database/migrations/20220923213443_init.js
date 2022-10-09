@@ -37,6 +37,7 @@ exports.up = function(knex) {
                 table.increments("id").primary();
                 table.integer("user_id_1").references("user.id");
                 table.integer("user_id_2").references("user.id");
+                table.integer("room_id").references("room.id"); 
                 table.timestamps(true, true);
             })
 };

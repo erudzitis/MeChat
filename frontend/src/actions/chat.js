@@ -56,7 +56,8 @@ const retrieveRoomDataAction = (formData) => async (dispatch) => {
         .then(({ data }) => {
             dispatch({ type: "RETRIEVE_ROOM_DATA_SUCCESS", payload: {
                 roomId: formData.roomId,
-                messages: data.data
+                messages: data.data.messages,
+                participants: data.data.participants
             }});
         })
         .catch((error) => {
