@@ -27,7 +27,17 @@ const loginAction = (formData, navigate) => async (dispatch) => {
         })
 }
 
+const logoutAction = () => async (dispatch) => {
+    dispatch({ type: "LOGOUT_SUCCESS" });
+}
+
+const userDataAction = (data) => async (dispatch) => {
+    dispatch({ type: "USER_DATA", payload: data });
+}
+
 export {
     registerAction,
-    loginAction
+    loginAction,
+    logoutAction,
+    userDataAction
 }

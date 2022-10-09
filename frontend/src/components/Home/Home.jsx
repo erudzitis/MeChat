@@ -1,10 +1,12 @@
 // Requirements
 import React, { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import { SpeedDial } from "primereact/speeddial";
 import { Sidebar } from "primereact/sidebar";
-import { ProgressSpinner } from 'primereact/progressspinner';
+import { ProgressSpinner } from "primereact/progressspinner";
+import { ToggleButton } from "primereact/togglebutton";
+import { Button } from "primereact/button";
+import jwtDecode from "jwt-decode";
 
 // Components
 import SearchInput from "../Main/SearchInput";
@@ -16,6 +18,7 @@ import AddContact from "./AddContact";
 
 // Actions
 import { retrieveContactsAction, retrieveRoomsAction, retrieveRoomDataAction, clearRoomDataAction } from "../../actions/chat";
+import { logoutAction } from "../../actions/auth";
 
 const Home = () => {
     const dispatch = useDispatch();
@@ -23,6 +26,7 @@ const Home = () => {
     const [showAddContact, setShowAddContact] = useState(false);
     const [searchFeed, setSearchFeed] = useState("");
     const { rooms, contacts } = useSelector(state => state.chat);
+    const { userData } = useSelector(state => state.auth);
     const { RETRIEVE_ROOMS } = useSelector(state => state.helper);
 
     // Combining contacts and rooms for generic 'feed'
@@ -32,8 +36,8 @@ const Home = () => {
         if (rooms === undefined || contacts === undefined) return [];
 
         // Combining rooms and contacts into feed. Doing some modifications
-        const feed = [...rooms, ...contacts?.map(c => { 
-            return {id: c.room_id, name: c.username, description: ""} 
+        const feed = [...rooms, ...contacts?.map(c => {
+            return { id: c.room_id, name: c.username, description: "" }
         })]
 
         // Implementing non case-sensitive search
@@ -50,6 +54,11 @@ const Home = () => {
         dispatch(retrieveRoomDataAction({ roomId: roomId }));
     }
 
+    // Handling logout
+    const handleLogout = () => {
+        dispatch(logoutAction());
+    }
+
     // items for speed dial
     const items = [
         {
@@ -57,14 +66,14 @@ const Home = () => {
             icon: "pi pi-user-plus",
             command: () => {
                 setShowAddContact(true);
-            },           
+            },
         },
         {
             label: "Create Room",
-            icon: "pi pi-comments", 
+            icon: "pi pi-comments",
             command: () => {
                 setShowCreateRoomDialog(true);
-            },             
+            },
         }
     ];
 
@@ -86,8 +95,10 @@ const Home = () => {
                 {/* Left main wrapper */}
                 <div className="flex flex-column h-full w-3 bg-blue-700 fadein animation-duration-500">
                     {/* Upper section (search bar) */}
-                    <div className="flex align-items-center justify-content-center border-blue-600 border-bottom-2 h-5rem">
+                    <div className="flex align-items-center justify-content-center border-blue-600 border-bottom-2 h-5rem gap-2">
                         <SearchInput id="search-user" size="sm" placeholder="Search" value={searchFeed} onChange={(e) => setSearchFeed(e.target.value)} />
+                        <ToggleButton onIcon="pi pi-filter-fill" offIcon="pi pi-filter-slash" onLabel="" offLabel="" />
+                        <Button icon="pi pi-sign-out" onClick={handleLogout} />
                     </div>
                     {/* Middle section (chat list) */}
                     <div className="flex flex-1 flex-column border-blue-600 border-bottom-2 overflow-y-auto">
@@ -99,7 +110,7 @@ const Home = () => {
                                     username={feedElement.name}
                                     chatPreview={feedElement.description}
                                     onClick={() => handleRetrieveRoomData(feedElement.id)}
-                                    borderBottom 
+                                    borderBottom
                                 />
                             )
                         })}
@@ -109,6 +120,9 @@ const Home = () => {
                     <div className="flex align-items-center justify-content-between h-5rem">
                         <div className="flex align-items-center justify-content-center h-full w-3">
                             <AvatarButton image={`${process.env.PUBLIC_URL}/images/defaultAvatar.png`} shape="circle" size="xlarge" />
+                        </div>
+                        <div>
+                            <h3 className="text-white">{userData.username}</h3>
                         </div>
                         <div className="flex flex-1 align-items-center justify-content-end h-full">
                             <SpeedDial className="mr-2" model={items} direction="left" />
