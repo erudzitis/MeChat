@@ -32,11 +32,21 @@ const retrieveContacts = async (req, res) => {
 // [POST] Used for establishing contacts between users
 const createContact = async (req, res) => {
     const { userId } = req;
-    const { contactUserId } = req.body;
+    const { contactEmail } = req.body;
 
     // Missing parameters
-    if (!contactUserId) {
+    if (!contactEmail) {
         throw new customError("Post body parameters missing!", StatusCodes.BAD_REQUEST);
+    }
+
+    // Checking whether a user with provided email exists
+    const contactUser = await userModel.query().findOne({
+        email: contactEmail
+    }); 
+
+    // No user found
+    if (!contactUser) {
+        throw new customError("No user found!", StatusCodes.NOT_FOUND);
     }
 
     // Room is automatically created between two users
@@ -49,17 +59,17 @@ const createContact = async (req, res) => {
     // Creating contact instance
     const newContact = await contactsModel.query().insert({
         user_id_1: userId,
-        user_id_2: contactUserId,
+        user_id_2: contactUser.id,
         room_id: newRoom.id
     });
 
     // Adding both participants to the room
     await participantsModel.query().insert({ user_id: userId, room_id: newRoom.id });
-    await participantsModel.query().insert({ user_id: contactUserId, room_id: newRoom.id });
+    await participantsModel.query().insert({ user_id: contactUser.id, room_id: newRoom.id });
 
     res.status(StatusCodes.OK).json({
         success: true,
-        data: newContact
+        data: { id: contactUser.id, username: contactUser.username, room_id: newRoom.id }
     });
 }
 

@@ -12,6 +12,7 @@ import AvatarButton from "../Main/AvatarButton";
 import ChatListBox from "../Main/ChatListBox";
 import CreateRoom from "./CreateRoom";
 import ChatSection from "./ChatSection";
+import AddContact from "./AddContact";
 
 // Actions
 import { retrieveContactsAction, retrieveRoomsAction, retrieveRoomDataAction, clearRoomDataAction } from "../../actions/chat";
@@ -19,6 +20,7 @@ import { retrieveContactsAction, retrieveRoomsAction, retrieveRoomDataAction, cl
 const Home = () => {
     const dispatch = useDispatch();
     const [showCreateRoomDialog, setShowCreateRoomDialog] = useState(false);
+    const [showAddContact, setShowAddContact] = useState(false);
     const [searchFeed, setSearchFeed] = useState("");
     const { rooms, contacts } = useSelector(state => state.chat);
     const { RETRIEVE_ROOMS } = useSelector(state => state.helper);
@@ -34,7 +36,10 @@ const Home = () => {
             return {id: c.room_id, name: c.username, description: ""} 
         })]
 
-        return searchFeed !== "" ? feed.filter(uf => uf.name.indexOf(searchFeed) >= 0) : feed;
+        // Implementing non case-sensitive search
+        const searchFeedLowercase = searchFeed.toLowerCase();
+
+        return searchFeed !== "" ? feed.filter(uf => uf.name.toLowerCase().indexOf(searchFeedLowercase) >= 0) : feed;
 
     }, [searchFeed, rooms, contacts]);
 
@@ -51,8 +56,15 @@ const Home = () => {
             label: "Add Friend",
             icon: "pi pi-user-plus",
             command: () => {
+                setShowAddContact(true);
+            },           
+        },
+        {
+            label: "Create Room",
+            icon: "pi pi-comments", 
+            command: () => {
                 setShowCreateRoomDialog(true);
-            }
+            },             
         }
     ];
 
@@ -67,6 +79,8 @@ const Home = () => {
             <Sidebar visible={showCreateRoomDialog} className="bg-blue-700" style={{ width: "25%" }} position="left" onHide={() => setShowCreateRoomDialog(false)}>
                 <CreateRoom setSidebarValue={setShowCreateRoomDialog} />
             </Sidebar>
+
+            <AddContact visible={showAddContact} setVisible={setShowAddContact} id="add-contact" />
 
             <div className="flex flex-row align-items-center justify-content-center bg-blue-600 overflow-hidden" style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}>
                 {/* Left main wrapper */}
