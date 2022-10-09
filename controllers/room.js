@@ -119,13 +119,22 @@ const getRoomDataController = async (req, res) => {
         throw new customError("You don't have permissions to view this room!", StatusCodes.UNAUTHORIZED);
     }
 
+    // Fetching all other room participants
+    const allParticipants = await participantsModel.query()
+        .join("user", "user.id", "participants.user_id")
+        .select("user.username", "user.id")
+        .where("room_id", roomId);
+
     // Fetching latest messages
     const roomMessages = await messageModel.query()
         .where("room_id", roomId);
 
     res.status(StatusCodes.OK).json({
         success: true,
-        data: roomMessages
+        data: {
+            messages: roomMessages,
+            participants: allParticipants
+        }
     });
 }
 

@@ -20,10 +20,14 @@ const ChatSection = () => {
     const [inputMessage, setInputMessage] = useState("");
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
+    // Reference for last element in chat list
     const chatMessagesEndReference = useRef(null);
 
     // TODO: write a component wrapper that deals with jwt authorization/decoding
     const decodedUser = jwtDecode(localStorage.getItem("chatApplicationToken"));
+
+    // Creating room name
+    const chatRoomName = roomData?.participants.find(p => p.id !== decodedUser.id)?.username;
 
     // Handles emoji click action
     const handleEmojiClick = (event) => {
@@ -57,17 +61,17 @@ const ChatSection = () => {
     if (!roomData) {
         return (
             <div className="flex flex-column align-items-center justify-content-center text-center w-full">
-                <h1 className="p-0 m-0 text-white">Select a contact a group to start messaging!</h1>
+                {/* <h4 className="p-0 m-0 text-white">Select a contact a group to start messaging!</h4> */}
             </div>
         )
     }
 
     return (
-        <div className="flex flex-1 flex-column">
+        <div className="flex flex-1 flex-column fadein animation-duration-500">
             {/* Top wrapper */}
             <div className="flex align-items-center h-5rem">
                 <AvatarButton image={`${process.env.PUBLIC_URL}/images/defaultAvatar.png`} shape="circle" size="xlarge" />
-                <h4 className="p-0 m-0 ml-2 text-white">Chat with user</h4>
+                <h4 className="p-0 m-0 ml-2 text-white">{chatRoomName}</h4>
             </div>
 
             {/* Middle wrapper */}
@@ -82,6 +86,7 @@ const ChatSection = () => {
                         />
                     )
                 })}
+
                 <div ref={chatMessagesEndReference} />
             </div>
 

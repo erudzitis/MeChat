@@ -20,18 +20,23 @@ const Home = () => {
     const dispatch = useDispatch();
     const [showCreateRoomDialog, setShowCreateRoomDialog] = useState(false);
     const [searchFeed, setSearchFeed] = useState("");
-    const { rooms } = useSelector(state => state.chat);
+    const { rooms, contacts } = useSelector(state => state.chat);
     const { RETRIEVE_ROOMS } = useSelector(state => state.helper);
 
     // Combining contacts and rooms for generic 'feed'
     // Filtering contacts and rooms
     const roomsFiltered = useMemo(() => {
-        if (rooms) {
-            return searchFeed !== "" ? rooms.filter(uf => uf.name.indexOf(searchFeed) >= 0) : rooms;
-        }
+        // Returning empty feed until data has been recieved
+        if (rooms === undefined || contacts === undefined) return [];
 
-        return [];
-    }, [searchFeed, rooms]);
+        // Combining rooms and contacts into feed. Doing some modifications
+        const feed = [...rooms, ...contacts?.map(c => { 
+            return {id: c.room_id, name: c.username, description: ""} 
+        })]
+
+        return searchFeed !== "" ? feed.filter(uf => uf.name.indexOf(searchFeed) >= 0) : feed;
+
+    }, [searchFeed, rooms, contacts]);
 
     // Handling room data retrieval
     const handleRetrieveRoomData = (roomId) => {

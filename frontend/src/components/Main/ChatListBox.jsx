@@ -8,7 +8,7 @@ const ChatListBox = ({ image, username, onClick, chatPreview, borderBottom }) =>
             <div className="w-full flex flex-row flex-shrink-0 p-5 h-5rem bg-blue-700 cursor-pointer transition-all transition-duration-500 hover:bg-blue-800" onClick={onClick}>
                 {/* Left main wrapper (user avatar) */}
                 <div className="flex align-items-center justify-content-center h-full w-5rem">
-                    <Avatar icon="pi pi-user" size="large" shape="circle" />
+                    <Avatar image={`${process.env.PUBLIC_URL}/images/defaultAvatar.png`} size="large" shape="circle" />
                 </div>
                 {/* Right main wrapper (user username, last chat time, last chat preview) */}
                 <div className="flex flex-1 flex-column justify-content-center h-full">
