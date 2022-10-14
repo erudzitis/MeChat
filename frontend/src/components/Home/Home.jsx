@@ -15,6 +15,8 @@ import ChatListBox from "../Main/ChatListBox";
 import CreateRoom from "./CreateRoom";
 import ChatSection from "./ChatSection";
 import AddContact from "./AddContact";
+import Center from "../Custom/Center";
+import Stack from "../Custom/Stack";
 
 // Actions
 import { retrieveContactsAction, retrieveRoomsAction, retrieveRoomDataAction, clearRoomDataAction } from "../../actions/chat";
@@ -25,7 +27,7 @@ const Home = () => {
     const [showCreateRoomDialog, setShowCreateRoomDialog] = useState(false);
     const [showAddContact, setShowAddContact] = useState(false);
     const [searchFeed, setSearchFeed] = useState("");
-    const { rooms, contacts } = useSelector(state => state.chat);
+    const { rooms, contacts, roomData } = useSelector(state => state.chat);
     const { userData } = useSelector(state => state.auth);
     const { RETRIEVE_ROOMS } = useSelector(state => state.helper);
 
@@ -91,31 +93,33 @@ const Home = () => {
 
             <AddContact visible={showAddContact} setVisible={setShowAddContact} id="add-contact" />
 
-            <div className="flex flex-row align-items-center justify-content-center bg-blue-600 overflow-hidden" style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}>
+            <Center className="h-screen overflow-hidden" direction="row" expand>
                 {/* Left main wrapper */}
-                <div className="flex flex-column h-full w-3 bg-blue-700 fadein animation-duration-500">
+                <Stack className="h-full w-3 surface-ground fadein animation-duration-500" direction="column">
                     {/* Upper section (search bar) */}
-                    <div className="flex align-items-center justify-content-center border-blue-600 border-bottom-2 h-5rem gap-2">
-                        <SearchInput id="search-user" size="sm" placeholder="Search" value={searchFeed} onChange={(e) => setSearchFeed(e.target.value)} />
+                    <div className="flex align-items-center justify-content-center surface-border border-bottom-1 h-5rem gap-2">
+                        {/* <SearchInput id="search-user" size="sm" placeholder="Search" value={searchFeed} onChange={(e) => setSearchFeed(e.target.value)} />
                         <ToggleButton onIcon="pi pi-filter-fill" offIcon="pi pi-filter-slash" onLabel="" offLabel="" />
-                        <Button icon="pi pi-sign-out" onClick={handleLogout} />
+                        <Button icon="pi pi-sign-out" onClick={handleLogout} /> */}
                     </div>
                     {/* Middle section (chat list) */}
-                    <div className="flex flex-1 flex-column border-blue-600 border-bottom-2 overflow-y-auto">
+                    <Stack className="flex-1 overflow-y-auto p-2" direction="column">
                         {(RETRIEVE_ROOMS?.loading) && <ProgressSpinner style={{ width: "50px", height: "50px", marginTop: "10px" }} strokeWidth="4" />}
-                        {roomsFiltered && roomsFiltered.map(feedElement => {
-                            return (
-                                <ChatListBox
-                                    key={`ChatListBox-${feedElement.id}-${feedElement.name}`}
-                                    username={feedElement.name}
-                                    chatPreview={feedElement.description}
-                                    onClick={() => handleRetrieveRoomData(feedElement.id)}
-                                    borderBottom
-                                />
-                            )
-                        })}
+                        <Stack spacing={2}>
+                            {roomsFiltered && roomsFiltered.map(feedElement => {
+                                return (
+                                    <ChatListBox
+                                        key={`ChatListBox-${feedElement.id}-${feedElement.name}`}
+                                        username={feedElement.name}
+                                        chatPreview={feedElement.description}
+                                        onClick={() => handleRetrieveRoomData(feedElement.id)}
+                                        isActive={roomData?.roomId === feedElement.id}
+                                    />
+                                )
+                            })}
+                        </Stack>
 
-                    </div>
+                    </Stack>
                     {/* Lower section (control bar) */}
                     <div className="flex align-items-center justify-content-between h-5rem">
                         <div className="flex align-items-center justify-content-center h-full w-3">
@@ -128,12 +132,12 @@ const Home = () => {
                             <SpeedDial className="mr-2" model={items} direction="left" />
                         </div>
                     </div>
-                </div>
+                </Stack>
                 {/* Right main wrapper */}
                 <div className="flex flex-1 h-full">
                     <ChatSection />
                 </div>
-            </div>
+            </Center>
         </>
     )
 }

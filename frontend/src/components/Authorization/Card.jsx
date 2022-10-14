@@ -26,7 +26,7 @@ const Card = ({ children, type, fn }) => {
     }
 
     return (
-        <Center className="surface-card" style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}>
+        <Center className="surface-card" expand>
             <div className="fadein animation-duration-500">
                 <div className="text-center mb-5">
                     <img src={`${process.env.PUBLIC_URL}/images/primaryIcon.png`} alt="chat-application" height={50} />

@@ -19,6 +19,9 @@ const authReducer = (state = {}, action) => {
 
             return state;
         case "LOGOUT_SUCCESS":
+            // Removing authorization token
+            localStorage.removeItem("chatApplicationToken");
+
             return { ...state, userData: null };
         case "USER_DATA":
             return { ...state, userData: action.payload };
