@@ -10,6 +10,8 @@ import EmojiPicker from "emoji-picker-react";
 // Components
 import AvatarButton from "../Main/AvatarButton";
 import ChatMessage from "../Main/ChatMessage";
+import Center from "../Custom/Center";
+import Stack from "../Custom/Stack";
 
 // Actions
 import { createMessageAction } from "../../actions/chat";
@@ -61,14 +63,17 @@ const ChatSection = () => {
     // There's no room data, we display default message to the user
     if (!RETRIEVE_ROOM_DATA) {
         return (
-            <div className="flex flex-column align-items-center justify-content-center text-center w-full">
-                <h4 className="p-0 m-0 text-white">Select a contact a group to start messaging!</h4>
-            </div>
+            <Center className="w-full surface-card">
+                <Stack spacing={4}>
+                    <h4 className="p-0 m-0 text-white font-normal">Select a contact or a group to start messaging!</h4>
+                    <Button label="Create conversation" />
+                </Stack>
+            </Center>
         )
     }
 
     return (
-        <div className="flex flex-1 flex-column fadein animation-duration-500">
+        <div className="flex flex-1 surface-card flex-column fadein animation-duration-500">
             {/* Top wrapper */}
             <div className="flex align-items-center h-5rem">
                 <AvatarButton image={`${process.env.PUBLIC_URL}/images/defaultAvatar.png`} shape="circle" size="xlarge" />
@@ -102,7 +107,7 @@ const ChatSection = () => {
 
                 <ToggleButton onIcon="pi pi-minus" onLabel="" offIcon="pi pi-plus" offLabel="" checked={showEmojiPicker} onChange={(e) => setShowEmojiPicker(e.value)} />
                 <InputText type="text" className="p-inputtext-md w-full" value={inputMessage} onChange={(e) => setInputMessage(e.target.value)} />
-                <Button onClick={handleChatMessage} icon="pi pi-send" iconPos="right" />
+                <Button onClick={handleChatMessage} icon="pi pi-send" iconPos="right" disabled={!inputMessage} />
             </div>
         </div>
     )
