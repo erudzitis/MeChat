@@ -16,7 +16,7 @@ import { userDataAction } from "./actions/auth";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
 // CSS styles
-import "primereact/resources/themes/lara-light-indigo/theme.css";
+import "primereact/resources/themes/md-dark-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import "/node_modules/primeflex/primeflex.css";

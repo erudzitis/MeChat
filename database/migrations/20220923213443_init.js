@@ -31,6 +31,7 @@ exports.up = function(knex) {
                 table.increments("id").primary();
                 table.integer("user_id").references("user.id");
                 table.integer("room_id").references("room.id"); 
+                //table.boolean("has_seen_latest_message").defaultTo(false);
                 table.timestamps(true, true);           
             })
             .createTable("contacts", (table) => {
