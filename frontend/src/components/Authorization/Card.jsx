@@ -6,6 +6,12 @@ import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
+// Components
+import Error from "../Custom/Error";
+import Stack from "../Custom/Stack";
+import Center from "../Custom/Center";
+import Link from "../Custom/Link";
+
 const Card = ({ children, type, fn }) => {
     const { control, handleSubmit, formState: { errors } } = useForm();
     const [rememberMe, setRememberMe] = useState(true);
@@ -19,19 +25,15 @@ const Card = ({ children, type, fn }) => {
         dispatch(fn(data, navigate));
     }
 
-    const getFormErrorMessage = (name) => {
-        return errors[name] && <small className="p-error -mt-4">{errors[name].message}</small>
-    };
-
     return (
-        <div className="flex align-items-center justify-content-center bg-blue-200" style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}>
-            <div className="fadein animation-duration-500 surface-card p-4 shadow-2 border-round w-full lg:w-6">
+        <Center className="surface-card" style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}>
+            <div className="fadein animation-duration-500">
                 <div className="text-center mb-5">
                     <img src={`${process.env.PUBLIC_URL}/images/primaryIcon.png`} alt="chat-application" height={50} />
                 </div>
 
                 <form onSubmit={handleSubmit(handleAuthorization)}>
-                    <div className="flex gap-5 flex-column">
+                    <Stack spacing={5}>
                         {
                             Children.map(children, (child) => {
                                 return (
@@ -50,14 +52,15 @@ const Card = ({ children, type, fn }) => {
                                                 />
                                             )}
                                         />
-                                        {getFormErrorMessage(child.props.id)}
+
+                                        <Error errors={errors} target={child.props.id} />
                                     </>
                                 )
                             })
                         }
 
-                        {formState?.error && <small className="p-error -mt-4">{formState?.error}</small>}
-                    </div>
+                        <Error errors={formState?.error} />
+                    </Stack>
 
                     <div className="mt-4">
                         <div className="flex align-items-center justify-content-between mb-4">
@@ -66,16 +69,14 @@ const Card = ({ children, type, fn }) => {
                                 <label htmlFor="rememberme">Remember me</label>
                             </div>
 
-                            <a href={type === "REGISTER" ? "/login" : "/register"} className="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">
-                                {type === "REGISTER" ? "Already registered?" : "Don't have an account?"}
-                            </a>
+                            <Link href={type === "REGISTER" ? "/login" : "/register"} label={type === "REGISTER" ? "Already registered?" : "Don't have an account?"} />
                         </div>
 
                         <Button label={type === "REGISTER" ? "Register" : "Login"} className="w-full" loading={formState?.loading} type="submit" />
                     </div>
                 </form>
             </div>
-        </div>
+        </Center>
 
     )
 }
