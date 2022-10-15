@@ -101,7 +101,7 @@ const roomAddUserController = async (req, res) => {
 // [GET] Route for retrieving room data
 const getRoomDataController = async (req, res) => {
     const { userId } = req;
-    const { roomId } = req.body
+    const { roomId } = req.params;
 
     // Checking for missing requirements
     if (!roomId) {

@@ -6,6 +6,6 @@ const { roomCreateController, getRoomDataController } = require("../controllers/
 
 // [POST]
 router.post("/create", roomCreateController);
-router.post("/info", getRoomDataController);
+router.get("/info/:roomId", getRoomDataController);
 
 module.exports = router;

@@ -1,29 +1,25 @@
 // Requirements
-import React, { useState, useEffect, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { SpeedDial } from "primereact/speeddial";
-import { Sidebar } from "primereact/sidebar";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { ToggleButton } from "primereact/togglebutton";
-import { Button } from "primereact/button";
-import jwtDecode from "jwt-decode";
+import { Sidebar } from "primereact/sidebar";
+import React, { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 // Components
-import SearchInput from "../Main/SearchInput";
-import AvatarButton from "../Main/AvatarButton";
-import ChatListBox from "./Chat/ChatListBox";
-import CreateRoom from "./CreateRoom";
-import ChatSection from "./Chat/ChatSection";
-import AddContact from "./AddContact";
 import Center from "../Custom/Center";
 import Stack from "../Custom/Stack";
+import AddContact from "./AddContact";
+import ChatListBox from "./Chat/ChatListBox";
+import ChatSection from "./Chat/ChatSection";
+import CreateRoom from "./CreateRoom";
 
 // Actions
-import { retrieveContactsAction, retrieveRoomsAction, retrieveRoomDataAction, clearRoomDataAction } from "../../actions/chat";
 import { logoutAction } from "../../actions/auth";
+import { clearRoomDataAction, retrieveContactsAction, retrieveRoomDataAction, retrieveRoomsAction } from "../../actions/chat";
 
 const Home = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [showCreateRoomDialog, setShowCreateRoomDialog] = useState(false);
     const [showAddContact, setShowAddContact] = useState(false);
     const [searchFeed, setSearchFeed] = useState("");
@@ -49,12 +45,13 @@ const Home = () => {
 
     }, [searchFeed, rooms, contacts]);
 
-    // Handling room data retrieval
-    const handleRetrieveRoomData = (roomId) => {
-        // Clearing any saved room data in state
-        dispatch(clearRoomDataAction());
-        dispatch(retrieveRoomDataAction({ roomId: roomId }));
+    const updateURLParams = (roomId) => {
+        // Updating query parameters
+        navigate({
+            search: `?roomId=${roomId}`
+        })
     }
+
 
     // Handling logout
     const handleLogout = () => {
@@ -112,7 +109,7 @@ const Home = () => {
                                         key={`ChatListBox-${feedElement.id}-${feedElement.name}`}
                                         username={feedElement.name}
                                         chatPreview={feedElement.description}
-                                        onClick={() => handleRetrieveRoomData(feedElement.id)}
+                                        onClick={() => updateURLParams(feedElement.id)}
                                         isActive={roomData?.roomId === feedElement.id}
                                     />
                                 )

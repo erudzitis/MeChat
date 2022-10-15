@@ -6,13 +6,11 @@ const ProtectedRoute = ({ children }) => {
     const { userData } = useSelector(state => state.auth);
     const location = useLocation();
 
-    if (!userData) {
-        // Otherwise we prompt him to login page
-        return <Navigate to="/login" state={{ from: location }} />
-    }
-
-    // If user is authenticated, we authorize him to access the route
-    return children;
+    return (userData || localStorage.getItem("chatApplicationToken")) ? (
+        children
+    ) : (
+        <Navigate to="/login" replace state={{ from: location }} />
+    )
 }
 
 export default ProtectedRoute;

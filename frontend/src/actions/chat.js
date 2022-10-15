@@ -25,12 +25,16 @@ const retrieveContactsAction = () => async (dispatch) => {
         })
 }
 
-const establishContactAction = (formData) => async (dispatch) => {
+const establishContactAction = (formData, navigate) => async (dispatch) => {
     dispatch({ type: "ESTABLISH_CONTACT_REQUEST" });
 
     establishContactAPICall(formData)
         .then(({ data }) => {
             dispatch({ type: "ESTABLISH_CONTACT_SUCCESS", payload: data.data });
+            // Navigating to the contact chat room
+            navigate({
+                search: `?roomId=${data.data.room_id}`
+            });
         })
         .catch((error) => {
             dispatch({ type: "ESTABLISH_CONTACT_ERROR", payload: error?.response?.data?.message });
@@ -73,13 +77,13 @@ const createMessageAction = (formData) => async (dispatch) => {
         })
 }
 
-const retrieveRoomDataAction = (formData) => async (dispatch) => {
+const retrieveRoomDataAction = (roomId) => async (dispatch) => {
     dispatch({ type: "RETRIEVE_ROOM_DATA_REQUEST" });
 
-    retrieveRoomDataAPICall(formData)
+    retrieveRoomDataAPICall(roomId)
         .then(({ data }) => {
             dispatch({ type: "RETRIEVE_ROOM_DATA_SUCCESS", payload: {
-                roomId: formData.roomId,
+                roomId: roomId,
                 messages: data.data.messages,
                 participants: data.data.participants
             }});
