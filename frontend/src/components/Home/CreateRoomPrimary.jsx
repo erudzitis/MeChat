@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 // Components
 import SearchInput from "../Main/SearchInput";
-import ChatListBox from "../Main/ChatListBox";
+import ChatListBox from "./Chat/ChatListBox";
 
 const CreateRoomPrimary = ({ setStep }) => {
     const [searchContactsField, setSearchContactsField] = useState("");
