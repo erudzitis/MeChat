@@ -19,7 +19,7 @@ const retrieveContacts = async (req, res) => {
                 .on("user.id", "contacts.user_id_1")
                 .orOn("user.id", "contacts.user_id_2")
         })
-        .select("user.id", "user.username", "contacts.room_id")
+        .select("user.id", "user.username", "user.email", "contacts.room_id")
         .having("user.id", "!=", userId)
         .groupBy("user.id", "user.username", "contacts.room_id");
 
@@ -69,7 +69,7 @@ const createContact = async (req, res) => {
 
     res.status(StatusCodes.OK).json({
         success: true,
-        data: { id: contactUser.id, username: contactUser.username, room_id: newRoom.id }
+        data: { id: contactUser.id, username: contactUser.username, email: contactUser.email, room_id: newRoom.id }
     });
 }
 

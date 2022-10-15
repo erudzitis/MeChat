@@ -11,6 +11,7 @@ import ChatBody from "./ChatBody";
 import ChatFooter from "./ChatFooter";
 import ChatHeader from "./ChatHeader";
 import ContactModal from "./ContactModal";
+import GroupModal from "./GroupModal";
 
 // Actions
 import { clearRoomDataAction, createMessageAction, retrieveRoomDataAction } from "../../../actions/chat";
@@ -26,6 +27,7 @@ const ChatSection = () => {
     const [inputMessage, setInputMessage] = useState("");
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [showContactModal, setShowContactModal] = useState(false);
+    const [showGroupModal, setShowGroupModal] = useState(false);
 
     // Retrieving room id from url search parameters
     const roomId = searchParams.get("roomId");
@@ -63,6 +65,7 @@ const ChatSection = () => {
     useEffect(() => {
         // Closing modals
         setShowContactModal(false);
+        setShowGroupModal(false);
         // if there's no room open, we don't fetch data
         if (!roomId) return;
 
@@ -82,10 +85,11 @@ const ChatSection = () => {
         return (
             <Center className="w-full surface-card gap-3">
                 <ContactModal show={showContactModal} setShow={setShowContactModal} />
+                <GroupModal show={showGroupModal} setShow={setShowGroupModal} />
 
                 <h4 className="p-0 m-0 text-white font-normal">Select a contact or a group to start messaging!</h4>
                 <Button label="Create contact" icon="pi pi-user-plus" iconPos="right" onClick={() => setShowContactModal(true)} />
-                <Button label="Create group" icon="pi pi-users" iconPos="right" />
+                <Button label="Create group" icon="pi pi-users" iconPos="right" onClick={() => setShowGroupModal(true)} />
             </Center>
         )
     }
