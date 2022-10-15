@@ -11,9 +11,9 @@ import jwtDecode from "jwt-decode";
 // Components
 import SearchInput from "../Main/SearchInput";
 import AvatarButton from "../Main/AvatarButton";
-import ChatListBox from "../Main/ChatListBox";
+import ChatListBox from "./Chat/ChatListBox";
 import CreateRoom from "./CreateRoom";
-import ChatSection from "./ChatSection";
+import ChatSection from "./Chat/ChatSection";
 import AddContact from "./AddContact";
 import Center from "../Custom/Center";
 import Stack from "../Custom/Stack";
@@ -122,15 +122,15 @@ const Home = () => {
                     </Stack>
                     {/* Lower section (control bar) */}
                     <div className="flex align-items-center justify-content-between h-5rem">
-                        <div className="flex align-items-center justify-content-center h-full w-3">
-                            <AvatarButton image={`${process.env.PUBLIC_URL}/images/defaultAvatar.png`} shape="circle" size="xlarge" />
+                        {/* <div className="flex align-items-center justify-content-center h-full w-3">
+                            <AvatarButton shape="circle" size="xlarge" />
                         </div>
                         <div>
                             <h3 className="text-white">{userData.username}</h3>
                         </div>
                         <div className="flex flex-1 align-items-center justify-content-end h-full">
                             <SpeedDial className="mr-2" model={items} direction="left" />
-                        </div>
+                        </div> */}
                     </div>
                 </Stack>
                 {/* Right main wrapper */}
