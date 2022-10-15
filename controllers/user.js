@@ -57,7 +57,7 @@ const createContact = async (req, res) => {
     });    
 
     // Creating contact instance
-    const newContact = await contactsModel.query().insert({
+    await contactsModel.query().insert({
         user_id_1: userId,
         user_id_2: contactUser.id,
         room_id: newRoom.id
@@ -70,6 +70,32 @@ const createContact = async (req, res) => {
     res.status(StatusCodes.OK).json({
         success: true,
         data: { id: contactUser.id, username: contactUser.username, room_id: newRoom.id }
+    });
+}
+
+const removeContact = async (req, res) => {
+    const { userId } = req;
+    const { contactId } = req.body;
+
+    // Retrieving existing contact 
+    const contact = await contactsModel.query()
+        .where("user_id_1", userId).andWhere("user_id_2", contactId)
+        .orWhere("user_id_1", contactId).andWhere("user_id_2", userId);
+        
+    // Contact not found
+    if (!contact) {
+        throw new customError("Contact not found!", StatusCodes.NOT_FOUND);
+    }
+
+    // Since contact returns a list, we extract the first found room id
+    const roomId = contact[0].room_id;
+
+    // Removing room. We don't need to specifically delete the contact, since it will be automatically cascaded once the room is deleted
+    await roomModel.query().deleteById(roomId);
+
+    res.status(StatusCodes.OK).json({
+        success: true,
+        data: { removedContactId: contactId, removedRoomId: roomId }
     });
 }
 
@@ -100,5 +126,6 @@ const retrieveRooms = async (req, res) => {
 module.exports = {
     retrieveContacts,
     createContact,
+    removeContact,
     retrieveRooms
 }

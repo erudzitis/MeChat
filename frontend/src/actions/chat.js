@@ -1,5 +1,5 @@
 // local imports
-import { createRoomAPICall, retrieveContactsAPICall, establishContactAPICall, retrieveRoomsAPICall, createMessageAPICall, retrieveRoomDataAPICall } from "../api";
+import { createRoomAPICall, retrieveContactsAPICall, establishContactAPICall, removeContactAPICall, retrieveRoomsAPICall, createMessageAPICall, retrieveRoomDataAPICall } from "../api";
 
 const createRoomAction = (formData) => async (dispatch) => {
     dispatch({ type: "CREATE_ROOM_REQUEST" });
@@ -36,6 +36,18 @@ const establishContactAction = (formData) => async (dispatch) => {
             dispatch({ type: "ESTABLISH_CONTACT_ERROR", payload: error?.response?.data?.message });
         })
 }
+
+const removeContactAction = (formData) => async (dispatch) => {
+    dispatch({ type: "REMOVE_CONTACT_REQUEST" });
+
+    removeContactAPICall(formData)
+        .then(({ data }) => {
+            dispatch({ type: "REMOVE_CONTACT_SUCCESS", payload: data.data });
+        })
+        .catch((error) => {
+            dispatch({ type: "REMOVE_CONTACT_ERROR", payload: error?.response?.data?.message });
+        })
+}    
 
 const retrieveRoomsAction = () => async (dispatch) => {
     dispatch({ type: "RETRIEVE_ROOMS_REQUEST" });
@@ -88,5 +100,6 @@ export {
     createMessageAction,
     retrieveRoomDataAction,
     clearRoomDataAction,
-    establishContactAction
+    establishContactAction,
+    removeContactAction
 }

@@ -129,6 +129,8 @@ const getRoomDataController = async (req, res) => {
     const roomMessages = await messageModel.query()
         .where("room_id", roomId);
 
+    // TODO: Updating last seen message state
+
     res.status(StatusCodes.OK).json({
         success: true,
         data: {
