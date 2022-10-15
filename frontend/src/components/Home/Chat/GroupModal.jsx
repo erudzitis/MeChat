@@ -43,23 +43,27 @@ const GroupModal = ({ show, setShow }) => {
 
                 <InputFloatLabel id="create-group-search-user" label="Contact username" size="sm" value={contactUsername} onChange={(e) => setContactUsername(e.target.value)} />
 
-                {contacts && contacts.map(contact => {
-                    return (
-                        <Flex className="cursor-pointer transition-all transition-duration-500 hover:surface-card p-2 border-round" align="center" justify="between">
-                            <h4 className="m-0 p-0 font-normal">{contact.username}</h4>
-                            <Button label="Select" className="p-button-sm" onClick={() => handleSelectedContacts(contact)} />
-                        </Flex>
-                    )
-                })}
+                <Stack spacing={1}>
+                    {contacts && contacts.map(contact => {
+                        return (
+                            <Flex className="cursor-pointer transition-all transition-duration-500 hover:surface-card p-2 border-round" align="center" justify="between">
+                                <h4 className="m-0 p-0 font-normal">{contact.username}</h4>
+                                <Button label="Select" className="p-button-sm" onClick={() => handleSelectedContacts(contact)} />
+                            </Flex>
+                        )
+                    })}
+                </Stack>
 
-                {/* {selectedContacts.map(selectedContact => {
-                    return (
-                        <Flex className="surface-card w-max p-2 border-round gap-2" align="center" justify="center">
-                            <h4 className="m-0 p-0 font-normal">{selectedContact.username}</h4>
-                            <i className="pi pi-ban mt-1 cursor-pointer" style={{ "fontSize": "10px" }} onClick={() => handleSelectedContacts(selectedContact)}></i>
-                        </Flex>
-                    )
-                })} */}
+                <Stack direction="row" spacing={2}>
+                    {selectedContacts.map(selectedContact => {
+                        return (
+                            <Flex className="surface-card w-max p-2 border-round gap-2 fadein animation-duration-250" align="center" justify="center">
+                                <h4 className="m-0 p-0 font-normal">{selectedContact.username}</h4>
+                                <i className="pi pi-ban mt-1 cursor-pointer" style={{ "fontSize": "10px" }} onClick={() => handleSelectedContacts(selectedContact)}></i>
+                            </Flex>
+                        )
+                    })}
+                </Stack>
 
                 {selectedContacts.length && <Button label="Create now!" />}
             </Stack>
