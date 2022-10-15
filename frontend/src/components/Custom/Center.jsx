@@ -6,7 +6,7 @@ const Center = (props) => {
     const appliedStyle = { ...style, ...expandStyle};
 
     return (
-        <div className={`${position} flex flex-${direction} align-items-center justify-content-center ${className}`} style={appliedStyle} >
+        <div className={`${!expand ? position : ""} flex flex-${direction} align-items-center justify-content-center ${className}`} style={appliedStyle} >
             {children}
         </div>
     )

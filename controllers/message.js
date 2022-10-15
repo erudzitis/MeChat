@@ -22,7 +22,10 @@ const messageCreateController = async (req, res) => {
 
     res.status(StatusCodes.OK).json({
         success: true,
-        data: newMessage
+        data: {
+            ...newMessage,
+            created_at: new Date() // timestamps are not being returned after insertion ...
+        } 
     });
 };
 
