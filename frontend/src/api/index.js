@@ -55,8 +55,8 @@ const createMessageAPICall = (formData) => {
     return chatApplicationAPI.post("/message/create", formData);
 }
 
-const retrieveRoomDataAPICall = (formData) => {
-    return chatApplicationAPI.post("/room/info", formData);
+const retrieveRoomDataAPICall = (roomId) => {
+    return chatApplicationAPI.get(`/room/info/${roomId}`);
 }
 
 export {

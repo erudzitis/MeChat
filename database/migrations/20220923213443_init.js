@@ -13,7 +13,7 @@ exports.up = function(knex) {
                 table.timestamps(true, true);
             })
             .createTable("room", (table) => {
-                table.increments("id").primary();
+                table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
                 table.integer("admin_id").references("user.id").nullable();
                 table.string("name").nullable();
                 table.string("description").nullable();
@@ -23,21 +23,21 @@ exports.up = function(knex) {
             .createTable("message", (table) => {
                 table.increments("id").primary();
                 table.integer("user_id").references("user.id").onDelete("CASCADE");
-                table.integer("room_id").references("room.id").onDelete("CASCADE");
+                table.uuid("room_id").references("room.id").onDelete("CASCADE");
                 table.text("content").notNullable();
                 table.timestamps(true, true);
             })
             .createTable("participants", (table) => {
                 table.increments("id").primary();
                 table.integer("user_id").references("user.id").onDelete("CASCADE");
-                table.integer("room_id").references("room.id").onDelete("CASCADE"); 
+                table.uuid("room_id").references("room.id").onDelete("CASCADE"); 
                 table.timestamps(true, true);           
             })
             .createTable("contacts", (table) => {
                 table.increments("id").primary();
                 table.integer("user_id_1").references("user.id").onDelete("CASCADE");
                 table.integer("user_id_2").references("user.id").onDelete("CASCADE");
-                table.integer("room_id").references("room.id").onDelete("CASCADE"); 
+                table.uuid("room_id").references("room.id").onDelete("CASCADE"); 
                 table.timestamps(true, true);
             })
 };
@@ -47,9 +47,11 @@ exports.up = function(knex) {
  * @returns { Promise<void> }
  */
 exports.down = function(knex) {
-    return knex.schema
-        .dropTableIfExists("user")
-        .dropTableIfExists("room")
-        .dropTableIfExists("message")
-        .dropTableIfExists("participants");
+    // Need to use raw queries, because CASCADE can't be called otherwise...
+    return knex
+        .raw("DROP TABLE user CASCADE")
+        .raw("DROP TABLE room CASCADE")
+        .raw("DROP TABLE message CASCADE")
+        .raw("DROP TABLE participants CASCADE")
+        .raw("DROP TABLE contacts CASCADE");
 };

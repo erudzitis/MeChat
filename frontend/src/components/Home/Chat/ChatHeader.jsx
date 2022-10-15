@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { Button } from "primereact/button";
 import { Menu } from "primereact/menu";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 // Components
 import Flex from "../../Custom/Flex";
@@ -14,6 +15,7 @@ import { removeContactAction } from "../../../actions/chat";
 const ChatHeader = ({ name, image }) => {
     const popupMenu = useRef(null);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const { roomData } = useSelector(state => state.chat);
     const { userData } = useSelector(state => state.auth);
@@ -29,6 +31,11 @@ const ChatHeader = ({ name, image }) => {
         }
 
         dispatch(removeContactAction(query));
+
+        // Removing url parameters
+        navigate({
+            search: ""
+        })
     }
 
     const popupMenuItems = [
