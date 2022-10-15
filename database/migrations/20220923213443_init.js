@@ -22,23 +22,22 @@ exports.up = function(knex) {
             })
             .createTable("message", (table) => {
                 table.increments("id").primary();
-                table.integer("user_id").references("user.id");
-                table.integer("room_id").references("room.id");
-                table.string("content").notNullable();
+                table.integer("user_id").references("user.id").onDelete("CASCADE");
+                table.integer("room_id").references("room.id").onDelete("CASCADE");
+                table.text("content").notNullable();
                 table.timestamps(true, true);
             })
             .createTable("participants", (table) => {
                 table.increments("id").primary();
-                table.integer("user_id").references("user.id");
-                table.integer("room_id").references("room.id"); 
-                //table.boolean("has_seen_latest_message").defaultTo(false);
+                table.integer("user_id").references("user.id").onDelete("CASCADE");
+                table.integer("room_id").references("room.id").onDelete("CASCADE"); 
                 table.timestamps(true, true);           
             })
             .createTable("contacts", (table) => {
                 table.increments("id").primary();
-                table.integer("user_id_1").references("user.id");
-                table.integer("user_id_2").references("user.id");
-                table.integer("room_id").references("room.id"); 
+                table.integer("user_id_1").references("user.id").onDelete("CASCADE");
+                table.integer("user_id_2").references("user.id").onDelete("CASCADE");
+                table.integer("room_id").references("room.id").onDelete("CASCADE"); 
                 table.timestamps(true, true);
             })
 };

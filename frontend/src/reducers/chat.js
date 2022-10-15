@@ -8,6 +8,12 @@ const chatReducer = (state = {}, action) => {
             return { ...state, contacts: action.payload };
         case "ESTABLISH_CONTACT_SUCCESS":
             return { ...state, contacts: [...state.contacts, action.payload] };
+        case "REMOVE_CONTACT_SUCCESS":
+            return { ...state, 
+                contacts: state.contacts.filter(contact => contact.id !== action.payload.removedContactId), 
+                rooms: state.rooms.filter(room => room.id !== action.payload.removedRoomId),
+                roomData: null
+            };
         case "RETRIEVE_ROOMS_SUCCESS":
             return { ...state, rooms: action.payload };
         case "RETRIEVE_ROOM_DATA_SUCCESS":

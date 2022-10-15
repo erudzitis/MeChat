@@ -5,3 +5,25 @@ html, body {
   scroll-behavior: smooth !important;
   font-size: 13px;
 }
+
+/* ===== Scrollbar CSS ===== */
+  /* Firefox */
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: #2c2a2c #ffffff;
+  }
+
+  /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: var(--surface-card);
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--surface-ground);
+    border-radius: 3px;
+    border: 0px none #ffffff;
+  }

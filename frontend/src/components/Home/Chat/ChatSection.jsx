@@ -59,7 +59,7 @@ const ChatSection = () => {
     }, [roomData])
 
     // There's no room data, we display default message to the user
-    if (!RETRIEVE_ROOM_DATA) {
+    if (!RETRIEVE_ROOM_DATA || !roomData) {
         return (
             <Center className="w-full surface-card">
                 <Stack spacing={4}>
