@@ -34,20 +34,42 @@ const roomCreateController = async (req, res) => {
     // Adding array of group users to our group
     if (groupUsers && groupUsers?.length) {
         // Creating users object list
-        const groupUsersData = groupUsers.map(gUser => {
+        const groupUsersData = groupUsers.map(groupUserId => {
             return {
-                user_id: gUser,
-                room_id: newRoom.id 
+                user_id: groupUserId,
+                room_id: newRoom.id
             }
         })
 
         // Creating participants instances
-        await participantsModel.query().insert( groupUsersData );
+        await participantsModel.query().insert(groupUsersData);
     }
 
     res.status(StatusCodes.OK).json({
         success: true,
         data: newRoom
+    });
+}
+
+// [POST] Route for leaving chat rooms
+const roomLeaveController = async (req, res) => {
+    const { userId } = req;
+    const { roomId } = req.body;
+
+    // Checking for missing requirements
+    if (!roomId) {
+        throw new customError("Post body parameters missing!", StatusCodes.BAD_REQUEST);
+    }
+
+    // Deleting participation
+    await participantsModel.query()
+        .delete()
+        .where("user_id", userId)
+        .andWhere("room_id", roomId);
+
+    res.status(StatusCodes.OK).json({
+        success: true,
+        data: { leftRoomId: roomId }
     });
 }
 
@@ -127,21 +149,22 @@ const getRoomDataController = async (req, res) => {
 
     // Fetching latest messages
     const roomMessages = await messageModel.query()
+        .join("user", "user.id", "message.user_id")
+        .select("message.user_id", "user.username", "message.content", "message.created_at")
         .where("room_id", roomId);
-
-    // TODO: Updating last seen message state
 
     res.status(StatusCodes.OK).json({
         success: true,
         data: {
             messages: roomMessages,
-            participants: allParticipants
+            participants: allParticipants,
         }
     });
 }
 
 module.exports = {
     roomCreateController,
+    roomLeaveController,
     roomAddUserController,
     getRoomDataController
 }
