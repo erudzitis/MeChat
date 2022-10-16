@@ -20,7 +20,7 @@ const ChatSection = () => {
     const dispatch = useDispatch();
     const [searchParams] = useSearchParams();
 
-    const { roomData } = useSelector(state => state.chat);
+    const { roomData, rooms } = useSelector(state => state.chat);
     const { userData } = useSelector(state => state.auth);
     const { RETRIEVE_ROOM_DATA } = useSelector(state => state.helper);
 
@@ -35,8 +35,13 @@ const ChatSection = () => {
     // Reference for last element in chat list
     const chatMessagesEndReference = useRef(null);
 
+    // Room can either be a 1-1 converstation or group chat
+    const isGroupChat = roomData?.participants.length > 2;
+    // If it's a group chat, we can retrieve group data from already fetched rooms in state
+    const groupData = isGroupChat ? rooms?.find(room => room.id === roomId) : null;
+
     // Creating room name
-    const chatRoomName = roomData?.participants.find(p => p.id !== userData.id)?.username;
+    const chatRoomName = groupData ? groupData.name : roomData?.participants.find(p => p.id !== userData.id)?.username;
 
     // Handles emoji click action
     const handleEmojiClick = (event) => {
@@ -97,7 +102,7 @@ const ChatSection = () => {
     return (
         <Stack className="flex-1 surface-card fadein animation-duration-500">
             {/* Top wrapper */}
-            <ChatHeader name={chatRoomName} />
+            <ChatHeader name={chatRoomName} isGroupChat={isGroupChat} />
 
             {/* Middle wrapper */}
             <Stack className="flex-1 flex-shrink-0 overflow-y-auto p-4" spacing={4}>
