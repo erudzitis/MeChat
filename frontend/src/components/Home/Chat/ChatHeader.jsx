@@ -96,7 +96,7 @@ const ChatHeader = ({ name, image, isGroupChat, isAdmin }) => {
                     <AvatarButton image={image} shape="circle" size="xlarge" />
                     <Stack spacing={1}>
                         <h3 className="p-0 m-0 ml-2 text-white">{name}</h3>
-                        <h4 className="p-0 m-0 ml-2 text-300 font-normal">{headerRoomInfo}</h4>
+                        <h4 className="p-0 m-0 ml-2 text-300 font-normal cursor-pointer">{headerRoomInfo}</h4>
                     </Stack>
                 </Flex>
                 <Flex className="p-3">
