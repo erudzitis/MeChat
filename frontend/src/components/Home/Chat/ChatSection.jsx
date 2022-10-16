@@ -73,11 +73,11 @@ const ChatSection = () => {
         // Closing modals
         setShowContactModal(false);
         setShowGroupModal(false);
+        // Clearing any saved room data in state
+        dispatch(clearRoomDataAction());
         // if there's no room open, we don't fetch data
         if (!roomId) return;
 
-        // Clearing any saved room data in state
-        dispatch(clearRoomDataAction());
         // Retrieving room data
         dispatch(retrieveRoomDataAction(roomId));
     }, [roomId]);
@@ -102,7 +102,7 @@ const ChatSection = () => {
     }
 
     return (
-        <Stack className="flex-1 surface-card fadein animation-duration-500">
+        <Stack className="flex-1 surface-card fadein animation-duration-350">
             {/* Top wrapper */}
             <ChatHeader name={chatRoomName} isGroupChat={isGroupChat} isAdmin={isAdmin} />
 
