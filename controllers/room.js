@@ -77,16 +77,16 @@ const roomLeaveController = async (req, res) => {
 const roomAddUserController = async (req, res) => {
     const { userId } = req;
     // Users will be added based on their username
-    const { userUsername, roomId } = req.body;
+    const { targetId, roomId } = req.body;
 
     // Checking for missing requirements
-    if (!userUsername | !roomId) {
+    if (!targetId || !roomId) {
         throw new customError("Post body parameters missing!", StatusCodes.BAD_REQUEST);
     }
 
     // Checking whether provided user exists
     const providedUser = await userModel.query().findOne({
-        username: userUsername
+        id: targetId
     });
 
     // User was not found
@@ -104,7 +104,7 @@ const roomAddUserController = async (req, res) => {
 
     // Checking whether user has permissions to add other users to the group. Respectively in group chats, only admins should be able to add users,
     // however, in 1-1 chats, both people can establish the chat group
-    if (providedRoom.is_group_chat && !providedRoom.admin_id !== userId) {
+    if (providedRoom.is_group_chat && providedRoom.admin_id !== userId) {
         throw new customError("You don't have admin permissions to add users to the group!", StatusCodes.UNAUTHORIZED);
     }
 
