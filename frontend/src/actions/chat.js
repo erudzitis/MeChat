@@ -1,5 +1,5 @@
 // local imports
-import { createRoomAPICall, leaveRoomAPICall, retrieveContactsAPICall, establishContactAPICall, removeContactAPICall, retrieveRoomsAPICall, createMessageAPICall, retrieveRoomDataAPICall } from "../api";
+import { createRoomAPICall, leaveRoomAPICall, retrieveContactsAPICall, establishContactAPICall, removeContactAPICall, retrieveRoomsAPICall, createMessageAPICall, retrieveRoomDataAPICall, addRoomUserAPICall } from "../api";
 
 const createRoomAction = (formData, navigate) => async (dispatch) => {
     dispatch({ type: "CREATE_ROOM_REQUEST" });
@@ -123,6 +123,18 @@ const clearRoomDataAction = () => async (dispatch) => {
     dispatch({ type: "CLEAR_ROOM_DATA_SUCCESS" });
 }
 
+const addRoomUserAction = (formData) => async (dispatch) => {
+    dispatch({ type: "ADD_ROOM_USER_REQUEST" });
+
+    addRoomUserAPICall(formData)
+        .then(({ data }) => {
+            dispatch({ type: "ADD_ROOM_USER_SUCCESS", payload: data.data });
+        })
+        .catch((error) => {
+            dispatch({ type: "ADD_ROOM_USER_ERROR", payload: error?.response?.data?.message });
+        })
+}
+
 export {
     createRoomAction,
     leaveRoomAction,
@@ -132,5 +144,6 @@ export {
     retrieveRoomDataAction,
     clearRoomDataAction,
     establishContactAction,
-    removeContactAction
+    removeContactAction,
+    addRoomUserAction
 }

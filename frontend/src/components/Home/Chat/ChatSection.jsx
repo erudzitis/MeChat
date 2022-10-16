@@ -35,10 +35,12 @@ const ChatSection = () => {
     // Reference for last element in chat list
     const chatMessagesEndReference = useRef(null);
 
-    // Room can either be a 1-1 converstation or group chat
-    const isGroupChat = roomData?.participants.length > 2;
     // If it's a group chat, we can retrieve group data from already fetched rooms in state
-    const groupData = isGroupChat ? rooms?.find(room => room.id === roomId) : null;
+    const groupData = rooms?.find(room => room.id === roomId);
+    // Room can either be a 1-1 converstation or group chat
+    const isGroupChat = groupData?.is_group_chat;
+    // Room admins have escalated privilages
+    const isAdmin = groupData?.admin_id === userData?.id;
 
     // Creating room name
     const chatRoomName = groupData ? groupData.name : roomData?.participants.find(p => p.id !== userData.id)?.username;
@@ -102,7 +104,7 @@ const ChatSection = () => {
     return (
         <Stack className="flex-1 surface-card fadein animation-duration-500">
             {/* Top wrapper */}
-            <ChatHeader name={chatRoomName} isGroupChat={isGroupChat} />
+            <ChatHeader name={chatRoomName} isGroupChat={isGroupChat} isAdmin={isAdmin} />
 
             {/* Middle wrapper */}
             <Stack className="flex-1 flex-shrink-0 overflow-y-auto p-4" spacing={4}>

@@ -20,6 +20,8 @@ const chatReducer = (state = {}, action) => {
             return { ...state, rooms: action.payload };
         case "RETRIEVE_ROOM_DATA_SUCCESS":
             return { ...state, roomData: action.payload };
+        case "ADD_ROOM_USER_SUCCESS":
+            return { ...state, roomData: { ...state.roomData, participants: [...state.roomData.participants, { id: action.payload.user_id }] } };
         case "CLEAR_ROOM_DATA_SUCCESS":
             return { ...state, roomData: null };
         default:
