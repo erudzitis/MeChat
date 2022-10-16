@@ -10,8 +10,8 @@ import Stack from "../../Custom/Stack";
 import ChatBody from "./ChatBody";
 import ChatFooter from "./ChatFooter";
 import ChatHeader from "./ChatHeader";
-import ContactModal from "./ContactModal";
-import GroupModal from "./GroupModal";
+import ContactModal from "./Modals/ContactModal";
+import GroupModal from "./Modals/GroupModal";
 
 // Actions
 import { clearRoomDataAction, createMessageAction, retrieveRoomDataAction } from "../../../actions/chat";

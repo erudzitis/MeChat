@@ -1,6 +1,5 @@
 // Requirements
 import { ProgressSpinner } from "primereact/progressspinner";
-import { Sidebar } from "primereact/sidebar";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -8,14 +7,12 @@ import { useNavigate } from "react-router-dom";
 // Components
 import Center from "../Custom/Center";
 import Stack from "../Custom/Stack";
-import AddContact from "./AddContact";
 import ChatListBox from "./Chat/ChatListBox";
 import ChatSection from "./Chat/ChatSection";
-import CreateRoom from "./CreateRoom";
 
 // Actions
 import { logoutAction } from "../../actions/auth";
-import { clearRoomDataAction, retrieveContactsAction, retrieveRoomDataAction, retrieveRoomsAction } from "../../actions/chat";
+import { retrieveContactsAction, retrieveRoomsAction } from "../../actions/chat";
 
 const Home = () => {
     const dispatch = useDispatch();
@@ -84,12 +81,6 @@ const Home = () => {
 
     return (
         <>
-            <Sidebar visible={showCreateRoomDialog} className="bg-blue-700" style={{ width: "25%" }} position="left" onHide={() => setShowCreateRoomDialog(false)}>
-                <CreateRoom setSidebarValue={setShowCreateRoomDialog} />
-            </Sidebar>
-
-            <AddContact visible={showAddContact} setVisible={setShowAddContact} id="add-contact" />
-
             <Center className="h-screen overflow-hidden" direction="row" expand>
                 {/* Left main wrapper */}
                 <Stack className="h-full w-3 surface-ground fadein animation-duration-500" direction="column">

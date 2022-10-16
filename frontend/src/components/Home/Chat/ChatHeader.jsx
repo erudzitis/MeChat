@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 // Components
+import Stack from "../../Custom/Stack";
 import Flex from "../../Custom/Flex";
 import AvatarButton from "../../Main/AvatarButton";
 
@@ -19,6 +20,9 @@ const ChatHeader = ({ name, image, isGroupChat, isAdmin }) => {
 
     const { roomData, contacts } = useSelector(state => state.chat);
     const { userData } = useSelector(state => state.auth);
+
+    // Retrieving header room info
+    const headerRoomInfo = (isGroupChat && roomData) ? (roomData.participants.map(participant => participant.id === userData?.id ? "You" : participant.username)).join(", ") : "Click here for more info";
 
     // Calculating possible participant candidates
     const participantCandidates = (contacts && roomData) ? contacts.filter(contact => !roomData.participants.some(participant => participant.id === contact.id)) : [];
@@ -56,32 +60,32 @@ const ChatHeader = ({ name, image, isGroupChat, isAdmin }) => {
     }
 
 
-    const popupMenuItems = isGroupChat ? 
-    [
-        {
-            label: "Leave",
-            icon: "pi pi-times",
-            command: () => leaveGroup()
-        },
-        isAdmin && {
-            label: "Add user",
-            icon: "pi pi-user",
-            items: participantCandidates.map(contact => {
-                return {
-                    label: contact.username,
-                    command: () => addUser(contact.id)
-                }
-            })
-        }
-    ] 
-    : 
-    [
-        {
-            label: "Remove",
-            icon: "pi pi-times",
-            command: () => removeContact()
-        }        
-    ];
+    const popupMenuItems = isGroupChat ?
+        [
+            {
+                label: "Leave",
+                icon: "pi pi-times",
+                command: () => leaveGroup()
+            },
+            isAdmin && {
+                label: "Add user",
+                icon: "pi pi-user",
+                items: participantCandidates.map(contact => {
+                    return {
+                        label: contact.username,
+                        command: () => addUser(contact.id)
+                    }
+                })
+            }
+        ]
+        :
+        [
+            {
+                label: "Remove",
+                icon: "pi pi-times",
+                command: () => removeContact()
+            }
+        ];
 
     return (
         <>
@@ -90,7 +94,10 @@ const ChatHeader = ({ name, image, isGroupChat, isAdmin }) => {
             <Flex className="h-5rem" align="center">
                 <Flex className="flex-1 p-2" align="center">
                     <AvatarButton image={image} shape="circle" size="xlarge" />
-                    <h3 className="p-0 m-0 ml-2 text-white">{name}</h3>
+                    <Stack spacing={1}>
+                        <h3 className="p-0 m-0 ml-2 text-white">{name}</h3>
+                        <h4 className="p-0 m-0 ml-2 text-300 font-normal">{headerRoomInfo}</h4>
+                    </Stack>
                 </Flex>
                 <Flex className="p-3">
                     <Button icon="pi pi-list" className="p-button-rounded p-button-text" onClick={(e) => popupMenu.current.toggle(e)} />
