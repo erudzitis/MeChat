@@ -8,12 +8,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 // Components
-import InputFloatLabel from "../../Main/InputFloatLabel";
-import Stack from "../../Custom/Stack";
-import Flex from "../../Custom/Flex";
+import InputFloatLabel from "../../../Main/InputFloatLabel";
+import Stack from "../../../Custom/Stack";
+import Flex from "../../../Custom/Flex";
 
 // Actions
-import { createRoomAction } from "../../../actions/chat";
+import { createRoomAction } from "../../../../actions/chat";
 
 const GroupModal = ({ show, setShow }) => {
     const navigate = useNavigate();

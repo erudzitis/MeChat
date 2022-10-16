@@ -6,12 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 // Components
-import InputFloatLabel from "../../Main/InputFloatLabel";
-import Stack from "../../Custom/Stack";
-import Error from "../../Custom/Error";
+import InputFloatLabel from "../../../Main/InputFloatLabel";
+import Stack from "../../../Custom/Stack";
+import Error from "../../../Custom/Error";
 
 // Actions
-import { establishContactAction } from "../../../actions/chat";
+import { establishContactAction } from "../../../../actions/chat";
 
 const ContactModal = ({ show, setShow }) => {
     const dispatch = useDispatch();
