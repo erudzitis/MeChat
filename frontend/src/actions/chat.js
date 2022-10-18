@@ -102,8 +102,11 @@ const createMessageAction = (formData) => async (dispatch) => {
 }
 
 const recievedMessageHandleAction = (data) => async (dispatch) => {
-    console.log(data)
     dispatch({ type: "CREATE_MESSAGE_SUCCESS", payload: data });
+}
+
+const recievedOnlineUsersHandleAction = (data) => async (dispatch) => {
+    dispatch({ type: "RETRIEVE_ONLINE_USERS_SUCCESS", payload: data.onlineUsers });
 }
 
 const retrieveRoomDataAction = (roomId) => async (dispatch) => {
@@ -151,5 +154,6 @@ export {
     establishContactAction,
     removeContactAction,
     addRoomUserAction,
-    recievedMessageHandleAction
+    recievedMessageHandleAction,
+    recievedOnlineUsersHandleAction
 }

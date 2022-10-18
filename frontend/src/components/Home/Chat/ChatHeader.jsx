@@ -18,11 +18,12 @@ const ChatHeader = ({ name, image, isGroupChat, isAdmin }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { roomData, contacts } = useSelector(state => state.chat);
+    const { roomData, contacts, onlineUsers } = useSelector(state => state.chat);
     const { userData } = useSelector(state => state.auth);
 
     // Retrieving header room info
-    const headerRoomInfo = (isGroupChat && roomData) ? (roomData.participants.map(participant => participant.id === userData?.id ? "You" : participant.username)).join(", ") : "Click here for more info";
+    const headerRoomInfo = (isGroupChat && roomData) ? (roomData.participants.map(participant => participant.id === userData?.id ? "You" : participant.username)).join(", ") 
+        : (onlineUsers.indexOf(2) >= 0) ? "Online"  : "Offline";
 
     // Calculating possible participant candidates
     const participantCandidates = (contacts && roomData) ? contacts.filter(contact => !roomData.participants.some(participant => participant.id === contact.id)) : [];

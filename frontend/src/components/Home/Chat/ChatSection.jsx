@@ -14,7 +14,7 @@ import ContactModal from "./Modals/ContactModal";
 import GroupModal from "./Modals/GroupModal";
 
 // Actions
-import { clearRoomDataAction, createMessageAction, retrieveRoomDataAction, recievedMessageHandleAction } from "../../../actions/chat";
+import { clearRoomDataAction, createMessageAction, retrieveRoomDataAction, recievedMessageHandleAction, recievedOnlineUsersHandleAction } from "../../../actions/chat";
 
 // socket.io
 import io from "socket.io-client";
@@ -113,9 +113,22 @@ const ChatSection = () => {
             dispatch(recievedMessageHandleAction(data));
         })
 
+        // Retrieving online users count
+        socket.on("online_users", data => {
+            dispatch(recievedOnlineUsersHandleAction(data));
+        })
+
         // Remove socket event listener on component unmlunt
         return () => socket.off("recieve_room_message");
     }, []);
+
+    // 
+    useEffect(() => {
+        if (!userData) return;
+
+        // Emitting initial connection event
+        socket.emit("client_connect", { userId: userData.id });
+    }, [userData])
 
     // There's no room data, we display default message to the user
     if (!roomId) {

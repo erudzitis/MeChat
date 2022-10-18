@@ -50,6 +50,8 @@ const socket = io(server, {
 });
 
 // Websocket routing
+const onlineUsers = {};
+
 socket.on("connection", client => {
     console.log(`client has connected: ${client.id}`);
 
@@ -71,6 +73,29 @@ socket.on("connection", client => {
             created_at: new Date(),
             room_id: roomId,
             user_id: userId
+        })
+    })
+
+    client.on("client_connect", data => {
+        const { userId } = data;
+
+        // Initializing user into online users array
+        onlineUsers[client.id] = userId;
+
+        // Informing all sockets
+        socket.emit("online_users", {
+            onlineUsers: Object.values(onlineUsers)
+        })
+    })
+
+    // Keeping track of users disconnecting
+    client.on("disconnect", () => {
+        // Removing user from online users array
+        delete onlineUsers[client.id];
+
+        // Informing all sockets
+        socket.emit("online_users", {
+            onlineUsers: Object.values(onlineUsers)
         })
     })
 })
