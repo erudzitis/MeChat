@@ -1,5 +1,5 @@
 // Requirements
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { Button } from "primereact/button";
 import { SlideMenu } from "primereact/slidemenu";
 import { useSelector, useDispatch } from "react-redux";
@@ -13,6 +13,9 @@ import AvatarButton from "../../Main/AvatarButton";
 // Actions
 import { addRoomUserAction, leaveRoomAction, removeContactAction } from "../../../actions/chat";
 
+// Utils
+import { participantString } from "../../../utils";
+
 const ChatHeader = ({ name, image, isGroupChat, isAdmin }) => {
     const popupMenu = useRef(null);
     const dispatch = useDispatch();
@@ -22,8 +25,27 @@ const ChatHeader = ({ name, image, isGroupChat, isAdmin }) => {
     const { userData } = useSelector(state => state.auth);
 
     // Retrieving header room info
-    const headerRoomInfo = (isGroupChat && roomData) ? (roomData.participants.map(participant => participant.id === userData?.id ? "You" : participant.username)).join(", ") 
-        : (onlineUsers.indexOf(2) >= 0) ? "Online"  : "Offline";
+    const headerRoomInfo = useMemo(() => {
+        // All data hasn't loaded in
+        if (!roomData || !onlineUsers) return "Click here for more info";
+
+        // If it's a group chat, we want to return list of all participants
+        if (isGroupChat) {
+            return participantString(roomData.participants, userData?.id);
+        }
+
+        // Otherwise it's 1-1 conversation, we want to return user online state
+        // Computing our chat recipient
+        const recipient = roomData.participants.filter(participant => participant.id !== userData?.id)[0];
+        // If user is typing, we return this state
+        if (roomData.typingUsers && roomData?.typingUsers.indexOf(recipient.id) >= 0) {
+            return "Is typing..."
+        }
+
+        const isRecipientOnline = onlineUsers.indexOf(recipient.id) >= 0;
+
+        return isRecipientOnline ? "Online" : "Offline";
+    }, [roomData, onlineUsers]);
 
     // Calculating possible participant candidates
     const participantCandidates = (contacts && roomData) ? contacts.filter(contact => !roomData.participants.some(participant => participant.id === contact.id)) : [];

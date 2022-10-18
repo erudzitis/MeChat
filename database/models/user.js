@@ -8,7 +8,7 @@ class User extends Model {
     }
 
     generateJWT() {
-        return jwt.sign({ id: this.id, username: this.username }, process.env.JWT_SECRET);
+        return jwt.sign({ id: this.id, username: this.username, email: this.email }, process.env.JWT_SECRET);
     }
 }
 
