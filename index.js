@@ -7,6 +7,7 @@ require("dotenv").config();
 // Requirements
 const express = require("express");
 const cors = require("cors");
+const io = require("socket.io");
 
 const authenticationRoutes = require("./routes/authentication");
 const roomRoutes = require("./routes/room");
@@ -37,6 +38,39 @@ app.use("/api/v1/user", authorizationMiddleware, userRoutes);
 app.use(errorHandlerMiddleware);
 
 // Init
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Application is listening on port ${PORT}...`);
+})
+
+// Initializing socket connection
+const socket = io(server, {
+    cors: {
+        origin: "*"
+    }
+});
+
+// Websocket routing
+socket.on("connection", client => {
+    console.log(`client has connected: ${client.id}`);
+
+    client.on("room_connect", data => {
+        const { roomId } = data;
+
+        // Connecting socket to the room
+        client.join(roomId);
+    })
+
+
+    client.on("room_message", data => {
+        const { content, username, roomId, userId } = data;
+
+        // Emitting message data to all other sockets listening in the same room
+        client.to(roomId).emit("recieve_room_message", {
+            content,
+            username,
+            created_at: new Date(),
+            room_id: roomId,
+            user_id: userId
+        })
+    })
 })
