@@ -2,7 +2,7 @@
 import { Button } from "primereact/button";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useSearchParams } from "react-router-dom";
+import { useFetcher, useSearchParams } from "react-router-dom";
 
 // Components
 import Center from "../../Custom/Center";
@@ -14,7 +14,11 @@ import ContactModal from "./Modals/ContactModal";
 import GroupModal from "./Modals/GroupModal";
 
 // Actions
-import { clearRoomDataAction, createMessageAction, retrieveRoomDataAction } from "../../../actions/chat";
+import { clearRoomDataAction, createMessageAction, retrieveRoomDataAction, recievedMessageHandleAction } from "../../../actions/chat";
+
+// socket.io
+import io from "socket.io-client";
+const socket = io("http://localhost:8000");
 
 const ChatSection = () => {
     const dispatch = useDispatch();
@@ -22,7 +26,6 @@ const ChatSection = () => {
 
     const { roomData, rooms } = useSelector(state => state.chat);
     const { userData } = useSelector(state => state.auth);
-    const { RETRIEVE_ROOM_DATA } = useSelector(state => state.helper);
 
     const [inputMessage, setInputMessage] = useState("");
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -64,7 +67,16 @@ const ChatSection = () => {
             content: inputMessage
         }
 
+        // Posting message query to backend
         dispatch(createMessageAction(query));
+        // Posting message to the room
+        socket.emit("room_message", {
+            content: inputMessage,
+            username: userData.username,
+            roomId: roomData.roomId,
+            userId: userData.id
+        })
+        // Clearing input
         setInputMessage("");
     }
 
@@ -78,6 +90,9 @@ const ChatSection = () => {
         // if there's no room open, we don't fetch data
         if (!roomId) return;
 
+        // Informing server that we have joined a different room
+        socket.emit("room_connect", { roomId: roomId });
+
         // Retrieving room data
         dispatch(retrieveRoomDataAction(roomId));
     }, [roomId]);
@@ -85,7 +100,22 @@ const ChatSection = () => {
     // Scrolling to the latest message
     useEffect(() => {
         handleScrollToLatestMessage();
-    }, [roomData])
+    }, [roomData]);
+
+    // Handling socket connection
+    useEffect(() => {
+        socket.on("connect", () => {
+            console.log(`Websocket connection established, id: ${socket.id}`);
+        });
+
+        // Having recieved message for the specific room, we dispatch it and populate the room messages
+        socket.on("recieve_room_message", data => {
+            dispatch(recievedMessageHandleAction(data));
+        })
+
+        // Remove socket event listener on component unmlunt
+        return () => socket.off("recieve_room_message");
+    }, []);
 
     // There's no room data, we display default message to the user
     if (!roomId) {

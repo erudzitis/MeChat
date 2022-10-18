@@ -7,7 +7,7 @@ const ChatBody = ({ messages, userId }) => {
             {messages.map(message => {
                 return (
                     <ChatMessage
-                        key={message.user_id}
+                        key={`${message.user_id}${message.created_at}`}
                         content={message.content}
                         timestamp={message.created_at}
                         myMessage={userId === message.user_id}

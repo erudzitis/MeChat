@@ -101,6 +101,11 @@ const createMessageAction = (formData) => async (dispatch) => {
         })
 }
 
+const recievedMessageHandleAction = (data) => async (dispatch) => {
+    console.log(data)
+    dispatch({ type: "CREATE_MESSAGE_SUCCESS", payload: data });
+}
+
 const retrieveRoomDataAction = (roomId) => async (dispatch) => {
     dispatch({ type: "RETRIEVE_ROOM_DATA_REQUEST" });
 
@@ -145,5 +150,6 @@ export {
     clearRoomDataAction,
     establishContactAction,
     removeContactAction,
-    addRoomUserAction
+    addRoomUserAction,
+    recievedMessageHandleAction
 }
