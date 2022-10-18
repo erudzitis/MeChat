@@ -17,6 +17,7 @@ const ContactModal = ({ show, setShow }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { ESTABLISH_CONTACT } = useSelector(state => state.helper);
+    const { userData } = useSelector(state => state.auth);
     const [inputValue, setInputValue] = useState("");
 
     const handleCreateContact = () => {

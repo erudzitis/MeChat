@@ -7,7 +7,7 @@ import EmojiPicker from "emoji-picker-react";
 // Components
 import Center from "../../Custom/Center";
 
-const ChatFooter = ({ handleChat, handleEmoji, showEmoji, setShowEmoji, message, setMessage }) => {
+const ChatFooter = ({ handleChat, handleEmoji, showEmoji, setShowEmoji, message, setMessage, setIsTyping }) => {
     return (
         <Center className="gap-2 h-5rem p-2" direction="row">
             {showEmoji &&
@@ -18,7 +18,14 @@ const ChatFooter = ({ handleChat, handleEmoji, showEmoji, setShowEmoji, message,
             }
 
             <ToggleButton onIcon="pi pi-minus" onLabel="" offIcon="pi pi-plus" offLabel="" checked={showEmoji} onChange={(e) => setShowEmoji(e.value)} />
-            <InputText type="text" className="p-inputtext-md w-full" value={message} onChange={(e) => setMessage(e.target.value)} />
+            <InputText
+                type="text"
+                className="p-inputtext-md w-full" v
+                alue={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onFocus={() => setIsTyping(true)}
+                onBlur={() => setIsTyping(false)}
+            />
             <Button onClick={handleChat} icon="pi pi-send" iconPos="right" disabled={!message} />
         </Center>
     )

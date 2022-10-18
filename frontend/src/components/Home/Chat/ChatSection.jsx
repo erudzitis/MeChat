@@ -14,11 +14,18 @@ import ContactModal from "./Modals/ContactModal";
 import GroupModal from "./Modals/GroupModal";
 
 // Actions
-import { clearRoomDataAction, createMessageAction, retrieveRoomDataAction, recievedMessageHandleAction, recievedOnlineUsersHandleAction } from "../../../actions/chat";
+import { 
+    clearRoomDataAction, 
+    createMessageAction, 
+    retrieveRoomDataAction, 
+    receivedMessageHandleAction, 
+    receivedOnlineUsersHandleAction, 
+    receivedTypingUserHandleAction,
+    receivedNotTypingUserHandleAction
+} from "../../../actions/chat";
 
-// socket.io
-import io from "socket.io-client";
-const socket = io("http://localhost:8000");
+// socket.io utils
+import { websocketUtils, websocketConstants } from "../../../services/websockets/utils";
 
 const ChatSection = () => {
     const dispatch = useDispatch();
@@ -31,6 +38,7 @@ const ChatSection = () => {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [showContactModal, setShowContactModal] = useState(false);
     const [showGroupModal, setShowGroupModal] = useState(false);
+    const [isTyping, setIsTyping] = useState(false);
 
     // Retrieving room id from url search parameters
     const roomId = searchParams.get("roomId");
@@ -70,7 +78,7 @@ const ChatSection = () => {
         // Posting message query to backend
         dispatch(createMessageAction(query));
         // Posting message to the room
-        socket.emit("room_message", {
+        websocketUtils.emit(websocketConstants.ROOM_MESSAGE, {
             content: inputMessage,
             username: userData.username,
             roomId: roomData.roomId,
@@ -91,7 +99,7 @@ const ChatSection = () => {
         if (!roomId) return;
 
         // Informing server that we have joined a different room
-        socket.emit("room_connect", { roomId: roomId });
+        websocketUtils.emit("room_connect", { roomId: roomId });
 
         // Retrieving room data
         dispatch(retrieveRoomDataAction(roomId));
@@ -104,22 +112,39 @@ const ChatSection = () => {
 
     // Handling socket connection
     useEffect(() => {
-        socket.on("connect", () => {
-            console.log(`Websocket connection established, id: ${socket.id}`);
+        websocketUtils.registerEvent(websocketConstants.CONNECT, () => {
+            console.log(`Websocket connection established, id: ${websocketUtils.getSocketId()}`);
         });
 
         // Having recieved message for the specific room, we dispatch it and populate the room messages
-        socket.on("recieve_room_message", data => {
-            dispatch(recievedMessageHandleAction(data));
+        websocketUtils.registerEvent(websocketConstants.RECEIVE_ROOM_MESSAGE, data => {
+            dispatch(receivedMessageHandleAction(data));
         })
 
         // Retrieving online users count
-        socket.on("online_users", data => {
-            dispatch(recievedOnlineUsersHandleAction(data));
+        websocketUtils.registerEvent(websocketConstants.RECEIVE_ONLINE_USERS, data => {
+            dispatch(receivedOnlineUsersHandleAction(data));
         })
 
-        // Remove socket event listener on component unmlunt
-        return () => socket.off("recieve_room_message");
+        // Retrieving users that are typing
+        websocketUtils.registerEvent(websocketConstants.RECEIVE_USER_TYPING, data => {
+            dispatch(receivedTypingUserHandleAction(data));
+        })
+
+        // Retrieving users that are not typing
+        websocketUtils.registerEvent(websocketConstants.RECEIVE_USER_NOT_TYPING, data => {
+            dispatch(receivedNotTypingUserHandleAction(data));
+        })
+
+        // Remove socket event listener on component unmount
+        return () => {
+            websocketUtils.unregisterEvents(
+                websocketConstants.RECEIVE_ROOM_MESSAGE, 
+                websocketConstants.RECEIVE_ONLINE_USERS, 
+                websocketConstants.RECEIVE_USER_TYPING,
+                websocketConstants.RECEIVE_USER_NOT_TYPING
+            );
+        }
     }, []);
 
     // 
@@ -127,8 +152,20 @@ const ChatSection = () => {
         if (!userData) return;
 
         // Emitting initial connection event
-        socket.emit("client_connect", { userId: userData.id });
+        websocketUtils.clientConnect(userData.id);
     }, [userData])
+
+    // Handling user typing state
+    useEffect(() => {
+        if (!roomData) return;
+
+        websocketUtils.emit(isTyping ? websocketConstants.USER_TYPING : websocketConstants.USER_NOT_TYPING, {
+            roomId: roomData?.roomId,
+            userId: userData?.id
+        })
+
+        console.log(isTyping);
+    }, [isTyping]);
 
     // There's no room data, we display default message to the user
     if (!roomId) {
@@ -164,6 +201,7 @@ const ChatSection = () => {
                 setShowEmoji={setShowEmojiPicker}
                 message={inputMessage}
                 setMessage={setInputMessage}
+                setIsTyping={setIsTyping}
             />
         </Stack>
     )

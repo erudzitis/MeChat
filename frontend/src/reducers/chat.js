@@ -26,6 +26,17 @@ const chatReducer = (state = {}, action) => {
             return { ...state, roomData: null };
         case "RETRIEVE_ONLINE_USERS_SUCCESS":
             return { ...state, onlineUsers: action.payload };
+        case "RETRIEVE_TYPING_USER_SUCCESS":
+            console.log(state)
+            return { 
+                ...state, 
+                roomData: { ...state?.roomData, typingUsers: state.roomData.typingUsers ? [...state.roomData.typingUsers, action.payload.userId] : [action.payload.userId] } 
+            };
+        case "RETRIEVE_NOT_TYPING_USER_SUCCESS":
+            return { 
+                ...state, 
+                roomData: { ...state?.roomData, typingUsers: state?.roomData?.typingUsers.filter(typingUser => typingUser !== action.payload.userId) } 
+            };
         default:
             return state;
     }

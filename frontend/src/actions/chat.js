@@ -101,12 +101,20 @@ const createMessageAction = (formData) => async (dispatch) => {
         })
 }
 
-const recievedMessageHandleAction = (data) => async (dispatch) => {
+const receivedMessageHandleAction = (data) => async (dispatch) => {
     dispatch({ type: "CREATE_MESSAGE_SUCCESS", payload: data });
 }
 
-const recievedOnlineUsersHandleAction = (data) => async (dispatch) => {
+const receivedOnlineUsersHandleAction = (data) => async (dispatch) => {
     dispatch({ type: "RETRIEVE_ONLINE_USERS_SUCCESS", payload: data.onlineUsers });
+}
+
+const receivedTypingUserHandleAction = (data) => async (dispatch) => {
+    dispatch({ type: "RETRIEVE_TYPING_USER_SUCCESS", payload: data });
+}
+
+const receivedNotTypingUserHandleAction = (data) => async (dispatch) => {
+    dispatch({ type: "RETRIEVE_NOT_TYPING_USER_SUCCESS", payload: data });
 }
 
 const retrieveRoomDataAction = (roomId) => async (dispatch) => {
@@ -154,6 +162,8 @@ export {
     establishContactAction,
     removeContactAction,
     addRoomUserAction,
-    recievedMessageHandleAction,
-    recievedOnlineUsersHandleAction
+    receivedMessageHandleAction,
+    receivedOnlineUsersHandleAction,
+    receivedTypingUserHandleAction,
+    receivedNotTypingUserHandleAction
 }
