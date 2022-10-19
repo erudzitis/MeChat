@@ -1,4 +1,4 @@
-const chatReducer = (state = {}, action) => {
+const chatReducer = (state = { typingUsers: {} }, action) => {
     switch (action.type) {
         case "CREATE_ROOM_SUCCESS":
             return { ...state, rooms: [...state.rooms, action.payload] };
@@ -27,15 +27,17 @@ const chatReducer = (state = {}, action) => {
         case "RETRIEVE_ONLINE_USERS_SUCCESS":
             return { ...state, onlineUsers: action.payload };
         case "RETRIEVE_TYPING_USER_SUCCESS":
-            console.log(state)
-            return { 
-                ...state, 
-                roomData: { ...state?.roomData, typingUsers: state.roomData.typingUsers ? [...state.roomData.typingUsers, action.payload.userId] : [action.payload.userId] } 
+            return {
+                ...state,
+                typingUsers: { 
+                    ...state.typingUsers, 
+                    [action.payload.roomId]: state.typingUsers[action.payload.roomId] ? [...state.typingUsers[action.payload.roomId], action.payload.userId] : [action.payload.userId] 
+                }
             };
         case "RETRIEVE_NOT_TYPING_USER_SUCCESS":
-            return { 
-                ...state, 
-                roomData: { ...state?.roomData, typingUsers: state?.roomData?.typingUsers.filter(typingUser => typingUser !== action.payload.userId) } 
+            return {
+                ...state,
+                typingUsers: { ...state.typingUsers, [action.payload.roomId]: state.typingUsers[action.payload.roomId].filter(typingUser => typingUser !== action.payload.userId) }
             };
         default:
             return state;
