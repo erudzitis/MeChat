@@ -98,15 +98,14 @@ const ChatSection = () => {
         // if there's no room open, we don't fetch data
         if (!roomId) return;
 
-        // Informing server that we have joined a different room
-        websocketUtils.emit("room_connect", { roomId: roomId });
-
         // Retrieving room data
         dispatch(retrieveRoomDataAction(roomId));
     }, [roomId]);
 
     // Scrolling to the latest message
     useEffect(() => {
+        if (!roomId) return;
+
         handleScrollToLatestMessage();
     }, [roomData]);
 

@@ -17,11 +17,15 @@ import ChatSection from "./Chat/ChatSection";
 import { logoutAction } from "../../actions/auth";
 import { retrieveContactsAction, retrieveRoomsAction } from "../../actions/chat";
 
+// Utils
+import { participantTypingState } from "../../utils";
+import { websocketUtils } from "../../services/websockets/utils";
+
 const Home = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [searchFeed, setSearchFeed] = useState("");
-    const { rooms, contacts, roomData } = useSelector(state => state.chat);
+    const { rooms, contacts, roomData, typingUsers } = useSelector(state => state.chat);
     const { RETRIEVE_ROOMS } = useSelector(state => state.helper);
 
     // Combining contacts and rooms for generic 'feed'
@@ -32,7 +36,7 @@ const Home = () => {
 
         // Combining rooms and contacts into feed. Doing some modifications
         const feed = [...rooms, ...contacts?.map(c => {
-            return { id: c.room_id, name: c.username, description: "" }
+            return { id: c.room_id, name: c.username, description: "", contactId: c?.id }
         })]
 
         // Implementing non case-sensitive search
@@ -67,6 +71,17 @@ const Home = () => {
         dispatch(retrieveRoomsAction());
     }, []);
 
+    // Joining all conversation rooms
+    useEffect(() => {
+        if (rooms && contacts) {
+            // Informing server that we have joined a different room
+            websocketUtils.emit("room_connect", {
+                contactRooms: contacts.map(contact => contact.room_id),
+                groupRooms: rooms.map(room => room.id)
+            });
+        }
+    }, [rooms, contacts]);
+
     return (
         <>
             <Center className="h-screen overflow-hidden" direction="row" expand>
@@ -86,7 +101,10 @@ const Home = () => {
                                     <ChatListBox
                                         key={`ChatListBox-${feedElement.id}-${feedElement.name}`}
                                         username={feedElement.name}
-                                        chatPreview={feedElement.description}
+                                        chatPreview={
+                                            (feedElement.contactId && typingUsers[feedElement.id] && typingUsers[feedElement.id].indexOf(feedElement.contactId) >= 0) ?
+                                                `${feedElement.name} is typing...` : feedElement.description
+                                        }
                                         onClick={() => updateURLParams(feedElement.id)}
                                         isActive={roomData?.roomId === feedElement.id}
                                     />
