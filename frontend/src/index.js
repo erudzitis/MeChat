@@ -14,7 +14,7 @@ const store = configureStore({ reducer: rootReducer, middleware: [thunk] });
 
 root.render(
   <Provider store={store}>
-      <App />
+    <App />
   </Provider>
 );
 
