@@ -1,5 +1,16 @@
+// Requirements
+import { isCancel } from "axios";
+
 // local imports
 import { createRoomAPICall, leaveRoomAPICall, retrieveContactsAPICall, establishContactAPICall, removeContactAPICall, retrieveRoomsAPICall, createMessageAPICall, retrieveRoomDataAPICall, addRoomUserAPICall } from "../api";
+
+// error handler
+const chatErrorHandlerWrapper = (error, cb) => {
+    // Axios cancel request error, coming from component unmount, we ignore it
+    if (isCancel(error)) return;
+    // Otherwise we dispatch the error
+    cb();
+}
 
 const createRoomAction = (formData, navigate) => async (dispatch) => {
     dispatch({ type: "CREATE_ROOM_REQUEST" });
@@ -33,15 +44,15 @@ const leaveRoomAction = (formData, navigate) => async (dispatch) => {
         })
 }
 
-const retrieveContactsAction = () => async (dispatch) => {
+const retrieveContactsAction = (signal) => async (dispatch) => {
     dispatch({ type: "RETRIEVE_CONTACTS_REQUEST" });
 
-    retrieveContactsAPICall()
+    retrieveContactsAPICall(signal)
         .then(({ data }) => {
             dispatch({ type: "RETRIEVE_CONTACTS_SUCCESS", payload: data.data });
         })
         .catch((error) => {
-            dispatch({ type: "RETRIEVE_CONTACTS_ERROR", payload: error?.response?.data?.message });
+            chatErrorHandlerWrapper(error, dispatch({ type: "RETRIEVE_CONTACTS_ERROR", payload: error?.response?.data?.message }));
         })
 }
 
@@ -77,15 +88,15 @@ const removeContactAction = (formData, navigate) => async (dispatch) => {
         })
 }
 
-const retrieveRoomsAction = () => async (dispatch) => {
+const retrieveRoomsAction = (signal) => async (dispatch) => {
     dispatch({ type: "RETRIEVE_ROOMS_REQUEST" });
 
-    retrieveRoomsAPICall()
+    retrieveRoomsAPICall(signal)
         .then(({ data }) => {
             dispatch({ type: "RETRIEVE_ROOMS_SUCCESS", payload: data.data });
         })
         .catch((error) => {
-            dispatch({ type: "RETRIEVE_ROOMS_ERROR", payload: error?.response?.data?.message });
+            chatErrorHandlerWrapper(error, dispatch({ type: "RETRIEVE_ROOMS_ERROR", payload: error?.response?.data?.message }));
         })
 }
 
@@ -117,10 +128,10 @@ const receivedNotTypingUserHandleAction = (data) => async (dispatch) => {
     dispatch({ type: "RETRIEVE_NOT_TYPING_USER_SUCCESS", payload: data });
 }
 
-const retrieveRoomDataAction = (roomId) => async (dispatch) => {
+const retrieveRoomDataAction = (roomId, signal) => async (dispatch) => {
     dispatch({ type: "RETRIEVE_ROOM_DATA_REQUEST" });
 
-    retrieveRoomDataAPICall(roomId)
+    retrieveRoomDataAPICall(roomId, signal)
         .then(({ data }) => {
             dispatch({
                 type: "RETRIEVE_ROOM_DATA_SUCCESS", payload: {
@@ -131,7 +142,7 @@ const retrieveRoomDataAction = (roomId) => async (dispatch) => {
             });
         })
         .catch((error) => {
-            dispatch({ type: "RETRIEVE_ROOM_DATA_ERROR", payload: error?.response?.data?.message });
+            chatErrorHandlerWrapper(error, dispatch({ type: "RETRIEVE_ROOM_DATA_ERROR", payload: error?.response?.data?.message }));
         })
 }
 

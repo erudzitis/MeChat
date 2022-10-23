@@ -24,6 +24,9 @@ import {
     receivedNotTypingUserHandleAction
 } from "../../../actions/chat";
 
+// Hooks
+import UseAction from "../../../hooks/UseAction";
+
 // socket.io utils
 import { websocketUtils, websocketConstants } from "../../../services/websockets/utils";
 
@@ -89,17 +92,14 @@ const ChatSection = () => {
     }
 
     // Retrieving latest room data
+    UseAction(retrieveRoomDataAction, roomId);
+
     useEffect(() => {
         // Closing modals
         setShowContactModal(false);
         setShowGroupModal(false);
         // Clearing any saved room data in state
         dispatch(clearRoomDataAction());
-        // if there's no room open, we don't fetch data
-        if (!roomId) return;
-
-        // Retrieving room data
-        dispatch(retrieveRoomDataAction(roomId));
     }, [roomId]);
 
     // Scrolling to the latest message
@@ -107,7 +107,7 @@ const ChatSection = () => {
         if (!roomId) return;
 
         handleScrollToLatestMessage();
-    }, [roomData]);
+    }, [roomData?.messages?.length]);
 
     // Handling socket connection
     useEffect(() => {
@@ -163,7 +163,6 @@ const ChatSection = () => {
             userId: userData?.id
         })
 
-        console.log(isTyping);
     }, [isTyping]);
 
     // There's no room data, we display default message to the user

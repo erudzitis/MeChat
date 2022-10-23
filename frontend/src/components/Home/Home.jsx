@@ -1,6 +1,6 @@
 // Requirements
-import { ProgressSpinner } from "primereact/progressspinner";
 import { Button } from "primereact/button";
+import { ProgressSpinner } from "primereact/progressspinner";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -17,8 +17,10 @@ import ChatSection from "./Chat/ChatSection";
 import { logoutAction } from "../../actions/auth";
 import { retrieveContactsAction, retrieveRoomsAction } from "../../actions/chat";
 
+// Hooks
+import UseAction from "../../hooks/UseAction";
+
 // Utils
-import { participantTypingState } from "../../utils";
 import { websocketUtils } from "../../services/websockets/utils";
 
 const Home = () => {
@@ -59,17 +61,14 @@ const Home = () => {
         })
     }
 
-
     // Handling logout
     const handleLogout = () => {
         dispatch(logoutAction());
     }
 
     // fetching data on load
-    useEffect(() => {
-        dispatch(retrieveContactsAction());
-        dispatch(retrieveRoomsAction());
-    }, []);
+    UseAction(retrieveContactsAction);
+    UseAction(retrieveRoomsAction);
 
     // Joining all conversation rooms
     useEffect(() => {

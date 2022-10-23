@@ -47,20 +47,20 @@ const removeContactAPICall = (formData) => {
     return chatApplicationAPI.post("user/remove_contact", formData);
 }
 
-const retrieveContactsAPICall = () => {
-    return chatApplicationAPI.get("/user/contacts");
+const retrieveContactsAPICall = (signal) => {
+    return chatApplicationAPI.get("/user/contacts", { signal });
 }
 
-const retrieveRoomsAPICall = () => {
-    return chatApplicationAPI.get("/user/rooms");
+const retrieveRoomsAPICall = (signal) => {
+    return chatApplicationAPI.get("/user/rooms", { signal });
 }
 
 const createMessageAPICall = (formData) => {
     return chatApplicationAPI.post("/message/create", formData);
 }
 
-const retrieveRoomDataAPICall = (roomId) => {
-    return chatApplicationAPI.get(`/room/info/${roomId}`);
+const retrieveRoomDataAPICall = (roomId, signal) => {
+    return chatApplicationAPI.get(`/room/info/${roomId}`, { signal });
 }
 
 const addRoomUserAPICall = (formData) => {
@@ -68,7 +68,7 @@ const addRoomUserAPICall = (formData) => {
 }
 
 export {
-    registerAPICall, 
+    registerAPICall,
     loginAPICall,
     createRoomAPICall,
     leaveRoomAPICall,
