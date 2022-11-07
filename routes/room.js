@@ -7,7 +7,7 @@ const { roomCreateController, roomAddUserController, getRoomDataController, room
 // [POST]
 router.post("/create", roomCreateController);
 router.post("/leave", roomLeaveController);
-router.post("/add_user", roomAddUserController)
+router.post("/add_user", roomAddUserController);
 
 // [GET]
 router.get("/info/:roomId", getRoomDataController);

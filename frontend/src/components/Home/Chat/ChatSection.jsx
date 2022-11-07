@@ -182,7 +182,7 @@ const ChatSection = () => {
     return (
         <Stack className="flex-1 surface-card fadein animation-duration-350">
             {/* Top wrapper */}
-            <ChatHeader name={chatRoomName} isGroupChat={isGroupChat} isAdmin={isAdmin} />
+            <ChatHeader image={`https://chatapplicationbucket.s3.us-east-2.amazonaws.com/${roomData?.picture}`} name={chatRoomName} isGroupChat={isGroupChat} isAdmin={isAdmin} />
 
             {/* Middle wrapper */}
             <Stack className="flex-1 flex-shrink-0 overflow-y-auto p-4" spacing={4}>

@@ -1,28 +1,45 @@
 // Requirements
-import { Dialog } from "primereact/dialog";
-import { useState } from "react";
 import { Button } from "primereact/button";
-import { FileUpload } from "primereact/fileupload";
+import { Dialog } from "primereact/dialog";
 import { Divider } from "primereact/divider";
-import { useSelector, useDispatch } from "react-redux";
+import { useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 // Components
-import InputFloatLabel from "../../../Main/InputFloatLabel";
-import Stack from "../../../Custom/Stack";
 import Flex from "../../../Custom/Flex";
+import Stack from "../../../Custom/Stack";
+import FileUploadCustom from "../../../Main/FileUploadCustom";
+import InputFloatLabel from "../../../Main/InputFloatLabel";
 
 // Actions
 import { createRoomAction } from "../../../../actions/chat";
 
+import { newFormData } from "../../../../utils";
+
+// Determines how many contacts are displayed by default in the contact list
+const DISPLAYED_CONTACT_LIMIT = 5;
+
 const GroupModal = ({ show, setShow }) => {
-    const navigate = useNavigate();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const { contacts } = useSelector(state => state.chat);
     const [groupName, setGroupName] = useState("");
     const [groupDescription, setGroupDescription] = useState("");
     const [contactUsername, setContactUsername] = useState("");
     const [selectedContacts, setSelectedContacts] = useState([]);
+    const [selectedFile, setSelectedFile] = useState(null);
+
+    // Filtering user contacts based on search, if provided
+    const filteredContacts = useMemo(() => {
+        if (!contacts) return [];
+        if (!contactUsername) return contacts.slice(0, DISPLAYED_CONTACT_LIMIT);
+
+        const filteredArray = (contactUsername !== "") ? contacts.filter(contact => contact.username.indexOf(contactUsername) >= 0) : contacts;
+
+        return filteredArray.slice(0, DISPLAYED_CONTACT_LIMIT);
+    }, [contactUsername, contacts]);
 
     const handleSelectedContacts = (contact) => {
         // Checking whether user is already selected
@@ -35,20 +52,15 @@ const GroupModal = ({ show, setShow }) => {
         }
     }
 
-    const handleGroupImageUpload = (event) => {
-        console.log(event);
-    }
-
     // Handling room creation
     const handleCreateGroup = () => {
-        const selectedContactsIds = selectedContacts.map(selectedContact => selectedContact.id);
-
-        const query = {
+        const query = newFormData({
             name: groupName,
             description: groupDescription,
-            groupUsers: selectedContactsIds,
-            isGroupChat: true
-        }
+            groupUsers: selectedContacts.map(sc => sc.id),
+            isGroupChat: true,
+            image: selectedFile
+        });
 
         dispatch(createRoomAction(query, navigate));
     }
@@ -56,7 +68,7 @@ const GroupModal = ({ show, setShow }) => {
     return (
         <Dialog header="Create a new group" visible={show} draggable={false} onHide={() => setShow(false)}>
             <Stack className="py-2 w-20rem" spacing={3}>
-                <FileUpload accept="image/*" name="groupImage" mode="basic" customUpload uploadHandler={handleGroupImageUpload} />
+                <FileUploadCustom setSelectedFile={setSelectedFile} />
                 <InputFloatLabel id="create-group-name" label="Group name" size="sm" value={groupName} onChange={(e) => setGroupName(e.target.value)} />
                 <InputFloatLabel id="create-group-description" label="Group description" size="sm" value={groupDescription} onChange={(e) => setGroupDescription(e.target.value)} />
                 <Divider />
@@ -64,7 +76,7 @@ const GroupModal = ({ show, setShow }) => {
                 <InputFloatLabel id="create-group-search-user" label="Contact username" size="sm" value={contactUsername} onChange={(e) => setContactUsername(e.target.value)} />
 
                 <Stack spacing={1}>
-                    {contacts && contacts.map(contact => {
+                    {filteredContacts && filteredContacts.map(contact => {
                         return (
                             <Flex key={`cl-${contact.id}`} className="cursor-pointer transition-all transition-duration-500 hover:surface-card p-2 border-round" align="center" justify="between">
                                 <h4 className="m-0 p-0 font-normal">{contact.username}</h4>

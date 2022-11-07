@@ -17,6 +17,7 @@ exports.up = function(knex) {
                 table.integer("admin_id").references("user.id").nullable();
                 table.string("name").nullable();
                 table.string("description").nullable();
+                table.string("picture").nullable();
                 table.boolean("is_group_chat").defaultTo(false);
                 table.timestamps(true, true);
             })

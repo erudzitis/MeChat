@@ -23,60 +23,46 @@ chatApplicationAPI.interceptors.request.use((request) => {
 });
 
 // API Calls, that return Promise which has to be awaited further on
-const registerAPICall = (formData) => {
+export const registerAPICall = (formData) => {
     return chatApplicationAPI.post("/auth/register", formData);
 }
 
-const loginAPICall = (formData) => {
+export const loginAPICall = (formData) => {
     return chatApplicationAPI.post("/auth/login", formData);
 }
 
-const createRoomAPICall = (formData) => {
-    return chatApplicationAPI.post("/room/create", formData);
+export const createRoomAPICall = (formData) => {
+    return chatApplicationAPI.post("/room/create", formData, { headers: { "Content-Type": "multipart/form-data" } });
 }
 
-const leaveRoomAPICall = (formData) => {
+export const leaveRoomAPICall = (formData) => {
     return chatApplicationAPI.post("/room/leave", formData);
 }
 
-const establishContactAPICall = (formData) => {
+export const establishContactAPICall = (formData) => {
     return chatApplicationAPI.post("user/create_contact", formData);
 }
 
-const removeContactAPICall = (formData) => {
+export const removeContactAPICall = (formData) => {
     return chatApplicationAPI.post("user/remove_contact", formData);
 }
 
-const retrieveContactsAPICall = (signal) => {
+export const retrieveContactsAPICall = (signal) => {
     return chatApplicationAPI.get("/user/contacts", { signal });
 }
 
-const retrieveRoomsAPICall = (signal) => {
+export const retrieveRoomsAPICall = (signal) => {
     return chatApplicationAPI.get("/user/rooms", { signal });
 }
 
-const createMessageAPICall = (formData) => {
+export const createMessageAPICall = (formData) => {
     return chatApplicationAPI.post("/message/create", formData);
 }
 
-const retrieveRoomDataAPICall = (roomId, signal) => {
+export const retrieveRoomDataAPICall = (roomId, signal) => {
     return chatApplicationAPI.get(`/room/info/${roomId}`, { signal });
 }
 
-const addRoomUserAPICall = (formData) => {
+export const addRoomUserAPICall = (formData) => {
     return chatApplicationAPI.post("/room/add_user", formData);
-}
-
-export {
-    registerAPICall,
-    loginAPICall,
-    createRoomAPICall,
-    leaveRoomAPICall,
-    retrieveContactsAPICall,
-    establishContactAPICall,
-    removeContactAPICall,
-    retrieveRoomsAPICall,
-    createMessageAPICall,
-    retrieveRoomDataAPICall,
-    addRoomUserAPICall
 }
