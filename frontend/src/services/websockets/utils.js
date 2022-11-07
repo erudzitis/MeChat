@@ -1,6 +1,6 @@
 import { socket } from "./connection";
 
-const websocketConstants = {
+export const websocketConstants = {
     CONNECT: "connect",
     RECEIVE_ROOM_MESSAGE: "receive_room_message",
     RECEIVE_ONLINE_USERS: "receive_online_users",
@@ -13,7 +13,7 @@ const websocketConstants = {
     RECEIVE_USER_NOT_TYPING: "receive_user_not_typing"
 }
 
-const websocketUtils = {
+export const websocketUtils = {
     getSocketId: () => {
         return socket.id;
     },
@@ -35,9 +35,4 @@ const websocketUtils = {
         // Emitting event
         socket.emit(eventName, data);
     }
-}
-
-export {
-    websocketUtils,
-    websocketConstants
-}
+};

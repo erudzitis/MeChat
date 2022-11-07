@@ -4,6 +4,7 @@ const userModel = require("../database/models/user");
 const participantsModel = require("../database/models/participants");
 const messageModel = require("../database/models/message");
 const customError = require("../errors/customError");
+const imageUpload = require("../services/imageUpload");
 const { StatusCodes } = require("http-status-codes");
 
 // [POST] Route for creating chat rooms
@@ -11,10 +12,19 @@ const roomCreateController = async (req, res) => {
     // TODO: append userId after successful authorization to the request
     const { userId } = req;
     const { name, description, groupUsers, isGroupChat } = req.body;
+    const { image } = req.files;
 
     // Checking for missing requirements
-    if (!name) {
+    if (!name || !groupUsers) {
         throw new customError("Post body parameters missing!", StatusCodes.BAD_REQUEST);
+    }
+
+    // Attempting to upload an image
+    const uploadedImage = await imageUpload(image);
+
+    // TODO: implement better, more precise error handling approach
+    if (!uploadedImage.Location) {
+        throw new customError("Something went wrong while uploading the group image!", StatusCodes.INTERNAL_SERVER_ERROR);
     }
 
     // Proceeding with room creation
@@ -22,7 +32,8 @@ const roomCreateController = async (req, res) => {
         name: name,
         description: description,
         admin_id: isGroupChat ? userId : null,
-        is_group_chat: isGroupChat
+        is_group_chat: isGroupChat,
+        picture: uploadedImage.Key
     });
 
     // Adding request user as participant to the group
@@ -32,11 +43,14 @@ const roomCreateController = async (req, res) => {
     });
 
     // Adding array of group users to our group
-    if (groupUsers && groupUsers?.length) {
+    // Because of the form data, objects are 'stringified'
+    const groupUsersFormatted = groupUsers.split(",");
+
+    if (groupUsersFormatted && groupUsersFormatted?.length) {
         // Creating users object list
-        const groupUsersData = groupUsers.map(groupUserId => {
+        const groupUsersData = groupUsersFormatted.map(groupUserId => {
             return {
-                user_id: groupUserId,
+                user_id: parseInt(groupUserId),
                 room_id: newRoom.id
             }
         })
@@ -141,6 +155,11 @@ const getRoomDataController = async (req, res) => {
         throw new customError("You don't have permissions to view this room!", StatusCodes.UNAUTHORIZED);
     }
 
+    // Fetching generic room data
+    const roomData = await roomModel.query().findOne({
+        id: roomId
+    });
+
     // Fetching all other room participants
     const allParticipants = await participantsModel.query()
         .join("user", "user.id", "participants.user_id")
@@ -158,6 +177,7 @@ const getRoomDataController = async (req, res) => {
         data: {
             messages: roomMessages,
             participants: allParticipants,
+            ...roomData
         }
     });
 }

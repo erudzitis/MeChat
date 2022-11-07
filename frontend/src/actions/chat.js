@@ -2,17 +2,27 @@
 import { isCancel } from "axios";
 
 // local imports
-import { createRoomAPICall, leaveRoomAPICall, retrieveContactsAPICall, establishContactAPICall, removeContactAPICall, retrieveRoomsAPICall, createMessageAPICall, retrieveRoomDataAPICall, addRoomUserAPICall } from "../api";
+import {
+    createRoomAPICall,
+    leaveRoomAPICall, 
+    retrieveContactsAPICall,
+    establishContactAPICall, 
+    removeContactAPICall, 
+    retrieveRoomsAPICall, 
+    createMessageAPICall, 
+    retrieveRoomDataAPICall, 
+    addRoomUserAPICall
+} from "../api";
 
 // error handler
-const chatErrorHandlerWrapper = (error, cb) => {
+export const chatErrorHandlerWrapper = (error, cb) => {
     // Axios cancel request error, coming from component unmount, we ignore it
     if (isCancel(error)) return;
     // Otherwise we dispatch the error
     cb();
 }
 
-const createRoomAction = (formData, navigate) => async (dispatch) => {
+export const createRoomAction = (formData, navigate) => async (dispatch) => {
     dispatch({ type: "CREATE_ROOM_REQUEST" });
 
     createRoomAPICall(formData)
@@ -28,7 +38,7 @@ const createRoomAction = (formData, navigate) => async (dispatch) => {
         })
 }
 
-const leaveRoomAction = (formData, navigate) => async (dispatch) => {
+export const leaveRoomAction = (formData, navigate) => async (dispatch) => {
     dispatch({ type: "LEAVE_ROOM_REQUEST" });
 
     leaveRoomAPICall(formData)
@@ -44,7 +54,7 @@ const leaveRoomAction = (formData, navigate) => async (dispatch) => {
         })
 }
 
-const retrieveContactsAction = (signal) => async (dispatch) => {
+export const retrieveContactsAction = (signal) => async (dispatch) => {
     dispatch({ type: "RETRIEVE_CONTACTS_REQUEST" });
 
     retrieveContactsAPICall(signal)
@@ -56,7 +66,7 @@ const retrieveContactsAction = (signal) => async (dispatch) => {
         })
 }
 
-const establishContactAction = (formData, navigate) => async (dispatch) => {
+export const establishContactAction = (formData, navigate) => async (dispatch) => {
     dispatch({ type: "ESTABLISH_CONTACT_REQUEST" });
 
     establishContactAPICall(formData)
@@ -72,7 +82,7 @@ const establishContactAction = (formData, navigate) => async (dispatch) => {
         })
 }
 
-const removeContactAction = (formData, navigate) => async (dispatch) => {
+export const removeContactAction = (formData, navigate) => async (dispatch) => {
     dispatch({ type: "REMOVE_CONTACT_REQUEST" });
 
     removeContactAPICall(formData)
@@ -88,7 +98,7 @@ const removeContactAction = (formData, navigate) => async (dispatch) => {
         })
 }
 
-const retrieveRoomsAction = (signal) => async (dispatch) => {
+export const retrieveRoomsAction = (signal) => async (dispatch) => {
     dispatch({ type: "RETRIEVE_ROOMS_REQUEST" });
 
     retrieveRoomsAPICall(signal)
@@ -100,7 +110,7 @@ const retrieveRoomsAction = (signal) => async (dispatch) => {
         })
 }
 
-const createMessageAction = (formData) => async (dispatch) => {
+export const createMessageAction = (formData) => async (dispatch) => {
     dispatch({ type: "CREATE_MESSAGE_REQUEST" });
 
     createMessageAPICall(formData)
@@ -112,23 +122,23 @@ const createMessageAction = (formData) => async (dispatch) => {
         })
 }
 
-const receivedMessageHandleAction = (data) => async (dispatch) => {
+export const receivedMessageHandleAction = (data) => async (dispatch) => {
     dispatch({ type: "CREATE_MESSAGE_SUCCESS", payload: data });
 }
 
-const receivedOnlineUsersHandleAction = (data) => async (dispatch) => {
+export const receivedOnlineUsersHandleAction = (data) => async (dispatch) => {
     dispatch({ type: "RETRIEVE_ONLINE_USERS_SUCCESS", payload: data.onlineUsers });
 }
 
-const receivedTypingUserHandleAction = (data) => async (dispatch) => {
+export const receivedTypingUserHandleAction = (data) => async (dispatch) => {
     dispatch({ type: "RETRIEVE_TYPING_USER_SUCCESS", payload: data });
 }
 
-const receivedNotTypingUserHandleAction = (data) => async (dispatch) => {
+export const receivedNotTypingUserHandleAction = (data) => async (dispatch) => {
     dispatch({ type: "RETRIEVE_NOT_TYPING_USER_SUCCESS", payload: data });
 }
 
-const retrieveRoomDataAction = (roomId, signal) => async (dispatch) => {
+export const retrieveRoomDataAction = (roomId, signal) => async (dispatch) => {
     dispatch({ type: "RETRIEVE_ROOM_DATA_REQUEST" });
 
     retrieveRoomDataAPICall(roomId, signal)
@@ -137,7 +147,8 @@ const retrieveRoomDataAction = (roomId, signal) => async (dispatch) => {
                 type: "RETRIEVE_ROOM_DATA_SUCCESS", payload: {
                     roomId: roomId,
                     messages: data.data.messages,
-                    participants: data.data.participants
+                    participants: data.data.participants,
+                    picture: data.data.picture
                 }
             });
         })
@@ -146,11 +157,11 @@ const retrieveRoomDataAction = (roomId, signal) => async (dispatch) => {
         })
 }
 
-const clearRoomDataAction = () => async (dispatch) => {
+export const clearRoomDataAction = () => async (dispatch) => {
     dispatch({ type: "CLEAR_ROOM_DATA_SUCCESS" });
 }
 
-const addRoomUserAction = (formData) => async (dispatch) => {
+export const addRoomUserAction = (formData) => async (dispatch) => {
     dispatch({ type: "ADD_ROOM_USER_REQUEST" });
 
     addRoomUserAPICall(formData)
@@ -160,21 +171,4 @@ const addRoomUserAction = (formData) => async (dispatch) => {
         .catch((error) => {
             dispatch({ type: "ADD_ROOM_USER_ERROR", payload: error?.response?.data?.message });
         })
-}
-
-export {
-    createRoomAction,
-    leaveRoomAction,
-    retrieveContactsAction,
-    retrieveRoomsAction,
-    createMessageAction,
-    retrieveRoomDataAction,
-    clearRoomDataAction,
-    establishContactAction,
-    removeContactAction,
-    addRoomUserAction,
-    receivedMessageHandleAction,
-    receivedOnlineUsersHandleAction,
-    receivedTypingUserHandleAction,
-    receivedNotTypingUserHandleAction
 }
