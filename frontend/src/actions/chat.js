@@ -145,10 +145,10 @@ export const retrieveRoomDataAction = (roomId, signal) => async (dispatch) => {
         .then(({ data }) => {
             dispatch({
                 type: "RETRIEVE_ROOM_DATA_SUCCESS", payload: {
+                    ...data.data,
                     roomId: roomId,
                     messages: data.data.messages,
                     participants: data.data.participants,
-                    picture: data.data.picture
                 }
             });
         })

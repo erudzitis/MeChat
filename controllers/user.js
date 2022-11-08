@@ -19,9 +19,9 @@ const retrieveContacts = async (req, res) => {
                 .on("user.id", "contacts.user_id_1")
                 .orOn("user.id", "contacts.user_id_2")
         })
-        .select("user.id", "user.username", "user.email", "contacts.room_id")
+        .select("user.id", "user.username", "user.email", "contacts.room_id", "user.picture", "user.description")
         .having("user.id", "!=", userId)
-        .groupBy("user.id", "user.username", "contacts.room_id");
+        .groupBy("user.id", "user.username", "user.email", "contacts.room_id", "user.picture", "user.description");
 
     res.status(StatusCodes.OK).json({
         success: true,

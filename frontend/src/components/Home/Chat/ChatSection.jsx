@@ -49,15 +49,13 @@ const ChatSection = () => {
     // Reference for last element in chat list
     const chatMessagesEndReference = useRef(null);
 
-    // If it's a group chat, we can retrieve group data from already fetched rooms in state
-    const groupData = rooms?.find(room => room.id === roomId);
     // Room can either be a 1-1 converstation or group chat
-    const isGroupChat = groupData?.is_group_chat;
+    const isGroupChat = roomData?.is_group_chat;
     // Room admins have escalated privilages
-    const isAdmin = groupData?.admin_id === userData?.id;
+    const isAdmin = roomData?.admin_id === userData?.id;
 
     // Creating room name
-    const chatRoomName = groupData ? groupData.name : roomData?.participants.find(p => p.id !== userData.id)?.username;
+    const chatRoomName = isGroupChat ? roomData.name : roomData?.participants.find(p => p.id !== userData.id)?.username;
 
     // Handles emoji click action
     const handleEmojiClick = (event) => {

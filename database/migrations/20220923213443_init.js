@@ -10,6 +10,8 @@ exports.up = function(knex) {
                 table.string("username").notNullable().unique();
                 table.string("password").notNullable();
                 table.string("email").notNullable().unique();
+                table.string("picture").nullable();
+                table.string("description").defaultTo("Hey there, I am using Chat Application!");
                 table.timestamps(true, true);
             })
             .createTable("room", (table) => {
@@ -49,10 +51,4 @@ exports.up = function(knex) {
  */
 exports.down = function(knex) {
     // Need to use raw queries, because CASCADE can't be called otherwise...
-    return knex
-        .raw("DROP TABLE user CASCADE")
-        .raw("DROP TABLE room CASCADE")
-        .raw("DROP TABLE message CASCADE")
-        .raw("DROP TABLE participants CASCADE")
-        .raw("DROP TABLE contacts CASCADE");
 };

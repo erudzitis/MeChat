@@ -16,6 +16,9 @@ import { addRoomUserAction, leaveRoomAction, removeContactAction } from "../../.
 // Utils
 import { participantString, participantTypingState } from "../../../utils";
 
+// Constants
+import { S3_BUCKET_URL } from "../../../constants";
+
 const ChatHeader = ({ name, image, isGroupChat, isAdmin }) => {
     const popupMenu = useRef(null);
     const dispatch = useDispatch();
@@ -117,7 +120,11 @@ const ChatHeader = ({ name, image, isGroupChat, isAdmin }) => {
 
             <Flex className="h-5rem" align="center">
                 <Flex className="flex-1 p-2" align="center">
-                    <AvatarButton image={image} shape="circle" size="xlarge" />
+                    <AvatarButton
+                        image={image ? `${S3_BUCKET_URL}/${image}` : `${process.env.PUBLIC_URL}/images/defaultAvatar.png`}
+                        shape="circle"
+                        size="xlarge"
+                    />
                     <Stack spacing={1}>
                         <h3 className="p-0 m-0 ml-2 text-white">{name}</h3>
                         <h4 className="p-0 m-0 ml-2 text-300 font-normal cursor-pointer">{headerRoomInfo}</h4>
