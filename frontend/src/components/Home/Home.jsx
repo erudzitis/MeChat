@@ -38,7 +38,7 @@ const Home = () => {
 
         // Combining rooms and contacts into feed. Doing some modifications
         const feed = [...rooms, ...contacts?.map(c => {
-            return { id: c.room_id, name: c.username, description: "", contactId: c?.id }
+            return { id: c.room_id, name: c.username, description: c.description, picture: c.picture, contactId: c?.id }
         })]
 
         // Implementing non case-sensitive search
@@ -98,6 +98,7 @@ const Home = () => {
                             {roomsFiltered && roomsFiltered.map(feedElement => {
                                 return (
                                     <ChatListBox
+                                        image={feedElement?.picture}
                                         key={`ChatListBox-${feedElement.id}-${feedElement.name}`}
                                         username={feedElement.name}
                                         chatPreview={

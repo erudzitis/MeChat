@@ -1,4 +1,12 @@
-const chatReducer = (state = { typingUsers: {} }, action) => {
+const initialState = {
+    typingUsers: {}, // Dictionary that holds typing users per each room
+    roomData: null, // Hold the currently selected rooms data, otherwise gets cleared to null
+    onlineUsers: [], // Holds list of indexes of users that are online and in your contacts list
+    contacts: [], // Holds list of user objects that are in your contacts list
+    rooms: [], // Holds list of room objects that you are apart of
+}
+
+const chatReducer = (state = initialState, action) => {
     switch (action.type) {
         case "CREATE_ROOM_SUCCESS":
             return { ...state, rooms: [...state.rooms, action.payload] };
