@@ -118,6 +118,11 @@ const Home = () => {
                                         }
                                         onClick={() => updateURLParams(feedElement.id)}
                                         isActive={roomData?.roomId === feedElement.id}
+                                        badge={
+                                            feedElement?.latest_message_created_at 
+                                                ? new Date(feedElement.latest_message_created_at) > new Date(feedElement.read_at) ? "NEW" : null 
+                                                : null
+                                        }
                                     />
                                 )
                             })}

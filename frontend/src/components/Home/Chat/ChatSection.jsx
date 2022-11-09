@@ -17,7 +17,7 @@ import GroupModal from "./Modals/GroupModal";
 import {
     clearRoomDataAction,
     createMessageAction, receivedMessageHandleAction, receivedNotTypingUserHandleAction, receivedOnlineUsersHandleAction,
-    receivedTypingUserHandleAction, retrieveRoomDataAction
+    receivedTypingUserHandleAction, retrieveRoomDataAction, readRoomAction
 } from "../../../actions/chat";
 
 // Hooks
@@ -80,6 +80,9 @@ const ChatSection = () => {
             username: userData.username,
             roomId: roomData.roomId,
         });
+        
+        // Updating room last read timestamp localy, this way saving resources on unnecessary queries
+        dispatch({ type: "READ_ROOM_SUCCESS", payload: { room_id: roomId, read_at: new Date(new Date().getTime() + 1000)  }});
 
         // Clearing input
         setInputMessage("");
@@ -94,6 +97,10 @@ const ChatSection = () => {
         setShowGroupModal(false);
         // Clearing any saved room data in state
         dispatch(clearRoomDataAction());
+        // Updating room last read timestamp
+        if (roomId) {
+            dispatch(readRoomAction({ roomId: roomId }));
+        }
     }, [roomId]);
 
     // Scrolling to the latest message

@@ -11,7 +11,8 @@ import {
     retrieveRoomsAPICall, 
     createMessageAPICall, 
     retrieveRoomDataAPICall, 
-    addRoomUserAPICall
+    addRoomUserAPICall,
+    readRoomAPICall
 } from "../api";
 
 // error handler
@@ -170,5 +171,17 @@ export const addRoomUserAction = (formData) => async (dispatch) => {
         })
         .catch((error) => {
             dispatch({ type: "ADD_ROOM_USER_ERROR", payload: error?.response?.data?.message });
+        })
+}
+
+export const readRoomAction = (formData) => async (dispatch) => {
+    dispatch({ type: "READ_ROOM_REQUEST" });
+
+    readRoomAPICall(formData)
+        .then(({ data }) => {
+            dispatch({ type: "READ_ROOM_SUCCESS", payload: data.data });
+        })
+        .catch((error) => {
+            dispatch({ type: "READ_ROOM_ERROR", payload: error?.response?.data?.message });
         })
 }

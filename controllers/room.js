@@ -134,6 +134,29 @@ const roomAddUserController = async (req, res) => {
     });
 }
 
+// [POST] Route for updating last read_at timestamp for each participated room
+const readRoomController = async (req, res) => {
+    const { userId } = req;
+    const { roomId } = req.body;
+
+    // Updating last read timestamp
+    const updatedParticipation = await participantsModel.query()
+        .where("room_id", roomId)
+        .andWhere("user_id", userId)
+        .update({
+            read_at: new Date()
+        })
+        .returning(["read_at"]);
+
+    res.status(StatusCodes.OK).json({
+        success: true,
+        data: {
+            room_id: roomId,
+            read_at: updatedParticipation[0].read_at
+        }
+    })
+}
+
 // [GET] Route for retrieving room data
 const getRoomDataController = async (req, res) => {
     const { userId } = req;
@@ -182,9 +205,11 @@ const getRoomDataController = async (req, res) => {
     });
 }
 
+
 module.exports = {
     roomCreateController,
     roomLeaveController,
     roomAddUserController,
+    readRoomController,
     getRoomDataController
 }

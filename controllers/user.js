@@ -107,9 +107,13 @@ const retrieveRooms = async (req, res) => {
     // Querying all participated rooms
     const allParticipations = await participantsModel.query()
         .where("user_id", userId)
-        .select("room_id");
+        .select("room_id", "read_at");
+
+    // Stores last read dates per room
+    const allRoomsLastReadObject = {};
 
     const allRoomIndexes = allParticipations.map(participation => {
+        allRoomsLastReadObject[participation.room_id] = participation.read_at;
         return participation.room_id;
     })
 
@@ -132,7 +136,8 @@ const retrieveRooms = async (req, res) => {
                 ...room,
                 latest_message_username: roomLatestMessage[0].username,
                 latest_message_content: roomLatestMessage[0].content,
-                latest_message_created_at: roomLatestMessage[0].created_at
+                latest_message_created_at: roomLatestMessage[0].created_at,
+                read_at: allRoomsLastReadObject[room.id]
             }
         })
     );
