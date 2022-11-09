@@ -21,7 +21,7 @@ import { retrieveContactsAction, retrieveRoomsAction } from "../../actions/chat"
 import UseAction from "../../hooks/UseAction";
 
 // Utils
-import { websocketUtils } from "../../services/websockets/utils";
+import { websocketUtils, websocketConstants } from "../../services/websockets/utils";
 
 const Home = () => {
     const dispatch = useDispatch();
@@ -73,8 +73,16 @@ const Home = () => {
     // Joining all conversation rooms
     useEffect(() => {
         if (rooms && contacts) {
-            // Informing server that we have joined a different room
-            websocketUtils.emit("room_connect", {
+            // Informing server will list of rooms that we are apart of
+            websocketUtils.emit(websocketConstants.CONNECT_ROOM, {
+                contactRooms: contacts.map(contact => contact.room_id),
+                groupRooms: rooms.map(room => room.id)
+            });
+        }
+
+        // Leaving rooms on component unmount
+        return () => {
+            websocketUtils.emit(websocketConstants.DISCONNECT_ROOM, {
                 contactRooms: contacts.map(contact => contact.room_id),
                 groupRooms: rooms.map(room => room.id)
             });
@@ -102,8 +110,11 @@ const Home = () => {
                                         key={`ChatListBox-${feedElement.id}-${feedElement.name}`}
                                         username={feedElement.name}
                                         chatPreview={
-                                            (feedElement.contactId && typingUsers[feedElement.id] && typingUsers[feedElement.id].indexOf(feedElement.contactId) >= 0) ?
-                                                `${feedElement.name} is typing...` : feedElement.description
+                                            (feedElement.contactId && typingUsers[feedElement.id] && typingUsers[feedElement.id].indexOf(feedElement.contactId) >= 0) 
+                                                ? `${feedElement.name} is typing...` 
+                                                : feedElement?.latest_message_content
+                                                    ? `${feedElement.latest_message_username}: ${feedElement.latest_message_content}`
+                                                    : feedElement.description
                                         }
                                         onClick={() => updateURLParams(feedElement.id)}
                                         isActive={roomData?.roomId === feedElement.id}

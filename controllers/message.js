@@ -5,7 +5,7 @@ const { StatusCodes } = require("http-status-codes");
 
 // [POST] Creates chat message
 const messageCreateController = async (req, res) => {
-    const { userId } = req;
+    const { userId, userUsername } = req;
     const { roomId, content } = req.body;
 
     // Checking for missing requirements
@@ -23,7 +23,7 @@ const messageCreateController = async (req, res) => {
     res.status(StatusCodes.OK).json({
         success: true,
         data: {
-            ...newMessage,
+            ...{ ...newMessage, username: userUsername },
             created_at: new Date() // timestamps are not being returned after insertion ...
         } 
     });

@@ -3,6 +3,7 @@ const contactsModel = require("../database/models/contacts");
 const participantsModel = require("../database/models/participants");
 const roomModel = require("../database/models/room");
 const userModel = require("../database/models/user");
+const messageModel = require("../database/models/message");
 const { StatusCodes } = require("http-status-codes");
 const customError = require("../errors/customError");
 
@@ -14,7 +15,7 @@ const retrieveContacts = async (req, res) => {
     const allContacts = await contactsModel.query()
         .where("user_id_1", userId)
         .orWhere("user_id_2", userId)
-        .join("user", function() {
+        .join("user", function () {
             this
                 .on("user.id", "contacts.user_id_1")
                 .orOn("user.id", "contacts.user_id_2")
@@ -42,7 +43,7 @@ const createContact = async (req, res) => {
     // Checking whether a user with provided email exists
     const contactUser = await userModel.query().findOne({
         email: contactEmail
-    }); 
+    });
 
     // No user found
     if (!contactUser) {
@@ -54,7 +55,7 @@ const createContact = async (req, res) => {
         admin_id: null,
         name: null,
         description: null,
-    });    
+    });
 
     // Creating contact instance
     await contactsModel.query().insert({
@@ -69,7 +70,7 @@ const createContact = async (req, res) => {
 
     res.status(StatusCodes.OK).json({
         success: true,
-        data: { id: contactUser.id, username: contactUser.username, email: contactUser.email, room_id: newRoom.id }
+        data: { id: contactUser.id, username: contactUser.username, email: contactUser.email, picture: contactUser.picture, description: contactUser.description, room_id: newRoom.id }
     });
 }
 
@@ -81,7 +82,7 @@ const removeContact = async (req, res) => {
     const contact = await contactsModel.query()
         .where("user_id_1", userId).andWhere("user_id_2", contactId)
         .orWhere("user_id_1", contactId).andWhere("user_id_2", userId);
-        
+
     // Contact not found
     if (!contact) {
         throw new customError("Contact not found!", StatusCodes.NOT_FOUND);
@@ -102,7 +103,7 @@ const removeContact = async (req, res) => {
 // [POST] Used for retrieving request user rooms
 const retrieveRooms = async (req, res) => {
     const { userId } = req;
-    
+
     // Querying all participated rooms
     const allParticipations = await participantsModel.query()
         .where("user_id", userId)
@@ -117,9 +118,28 @@ const retrieveRooms = async (req, res) => {
         .whereIn("id", allRoomIndexes)
         .andWhere("is_group_chat", true);
 
+    // Querying the last message of each room and retrieving end result object
+    const allRoomsData = await Promise.all(
+        allRooms.map(async (room) => {
+            const roomLatestMessage = await messageModel.query()
+                .join("user", "message.user_id", "user.id")
+                .select("message.content", "message.created_at", "user.username")
+                .where("room_id", room.id)
+                .orderBy("created_at", "DESC")
+                .limit(1);
+
+            return { 
+                ...room,
+                latest_message_username: roomLatestMessage[0].username,
+                latest_message_content: roomLatestMessage[0].content,
+                latest_message_created_at: roomLatestMessage[0].created_at
+            }
+        })
+    );
+
     res.status(StatusCodes.OK).json({
         success: true,
-        data: allRooms
+        data: allRoomsData
     })
 }
 

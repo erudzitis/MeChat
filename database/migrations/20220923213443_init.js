@@ -34,6 +34,7 @@ exports.up = function(knex) {
                 table.increments("id").primary();
                 table.integer("user_id").references("user.id").onDelete("CASCADE");
                 table.uuid("room_id").references("room.id").onDelete("CASCADE"); 
+                table.timestamp("read_at").defaultTo(knex.fn.now()); // Will hold the timestamp of last time the user read messages in particular room
                 table.timestamps(true, true);           
             })
             .createTable("contacts", (table) => {

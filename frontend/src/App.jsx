@@ -58,13 +58,13 @@ const App = () => {
     fetchUser();
 
     // Adding event listener for localstorage changes
-    window.addEventListener("storage", () => {
+    const storageListener = window.addEventListener("storage", () => {
       fetchUser();
     });
 
     // When the component unmounts remove the event listener
     return () => {
-      window.removeEventListener("storage", null);
+      window.removeEventListener("storage", storageListener);
     };
   }, []);
 
