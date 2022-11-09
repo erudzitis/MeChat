@@ -66,3 +66,7 @@ export const retrieveRoomDataAPICall = (roomId, signal) => {
 export const addRoomUserAPICall = (formData) => {
     return chatApplicationAPI.post("/room/add_user", formData);
 }
+
+export const readRoomAPICall = (formData) => {
+    return chatApplicationAPI.post("/room/read", formData);
+}

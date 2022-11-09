@@ -1,6 +1,7 @@
 // Requirements
 const messageModel = require("../database/models/message");
 const customError = require("../errors/customError");
+const participantsModel = require("../database/models/participants");
 const { StatusCodes } = require("http-status-codes");
 
 // [POST] Creates chat message
@@ -19,6 +20,14 @@ const messageCreateController = async (req, res) => {
         room_id: roomId,
         content: content
     });
+
+    // Updating last read timestamp
+    await participantsModel.query()
+        .where("room_id", roomId)
+        .andWhere("user_id", userId)
+        .update({
+            read_at: new Date()
+        });
 
     res.status(StatusCodes.OK).json({
         success: true,

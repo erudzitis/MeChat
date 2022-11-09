@@ -18,10 +18,22 @@ const chatReducer = (state = initialState, action) => {
                 roomData: { ...state.roomData, messages: [...state.roomData.messages, action.payload] },
                 rooms: state.rooms.map(room => {
                     return room.id === action.payload.room_id 
-                        ? { ...room, latest_message_content: action.payload.content, latest_message_author: action.payload.username } 
+                        ? { 
+                            ...room, 
+                            latest_message_content: action.payload.content, 
+                            latest_message_username: action.payload.username,
+                            latest_message_created_at: action.payload.created_at,
+                        } 
                         : room
                 })
             };
+        case "READ_ROOM_SUCCESS":
+            console.log(action.payload);
+
+            return { 
+                ...state,
+                rooms: state.rooms.map(room => room.id === action.payload.room_id ? { ...room, read_at: action.payload.read_at } : room)
+             };
         case "RETRIEVE_CONTACTS_SUCCESS":
             return { ...state, contacts: action.payload };
         case "ESTABLISH_CONTACT_SUCCESS":
