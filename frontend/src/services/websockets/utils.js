@@ -2,9 +2,10 @@ import { socket } from "./connection";
 
 export const websocketConstants = {
     CONNECT: "connect",
+    CONNECT_ROOM: "room_connect",
+    DISCONNECT_ROOM: "room_disconnect",
     RECEIVE_ROOM_MESSAGE: "receive_room_message",
     RECEIVE_ONLINE_USERS: "receive_online_users",
-    CLIENT_CONNECT: "client_connect",
     ROOM_MESSAGE: "room_message",
     CONTACT_INITIATED: "contact_initated",
     USER_TYPING: "user_typing",
@@ -16,10 +17,6 @@ export const websocketConstants = {
 export const websocketUtils = {
     getSocketId: () => {
         return socket.id;
-    },
-    clientConnect: (userId) => {
-        // Emitting initial connection event
-        socket.emit(websocketConstants.CLIENT_CONNECT, { userId });
     },
     registerEvent: (eventName, callback) => {
         // Registering socket listen event

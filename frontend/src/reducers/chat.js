@@ -13,7 +13,15 @@ const chatReducer = (state = initialState, action) => {
         case "LEAVE_ROOM_SUCCESS":
             return { ...state, rooms: state.rooms.filter(room => room.id !== action.payload.leftRoomId) };
         case "CREATE_MESSAGE_SUCCESS":
-            return { ...state, roomData: { ...state.roomData, messages: [...state.roomData.messages, action.payload] } };
+            return {
+                ...state,
+                roomData: { ...state.roomData, messages: [...state.roomData.messages, action.payload] },
+                rooms: state.rooms.map(room => {
+                    return room.id === action.payload.room_id 
+                        ? { ...room, latest_message_content: action.payload.content, latest_message_author: action.payload.username } 
+                        : room
+                })
+            };
         case "RETRIEVE_CONTACTS_SUCCESS":
             return { ...state, contacts: action.payload };
         case "ESTABLISH_CONTACT_SUCCESS":
@@ -37,9 +45,9 @@ const chatReducer = (state = initialState, action) => {
         case "RETRIEVE_TYPING_USER_SUCCESS":
             return {
                 ...state,
-                typingUsers: { 
-                    ...state.typingUsers, 
-                    [action.payload.roomId]: state.typingUsers[action.payload.roomId] ? [...state.typingUsers[action.payload.roomId], action.payload.userId] : [action.payload.userId] 
+                typingUsers: {
+                    ...state.typingUsers,
+                    [action.payload.roomId]: state.typingUsers[action.payload.roomId] ? [...state.typingUsers[action.payload.roomId], action.payload.userId] : [action.payload.userId]
                 }
             };
         case "RETRIEVE_NOT_TYPING_USER_SUCCESS":

@@ -21,7 +21,7 @@ const ChatFooter = ({ handleChat, handleEmoji, showEmoji, setShowEmoji, message,
             <InputText
                 type="text"
                 className="p-inputtext-md w-full" v
-                alue={message}
+                value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onFocus={() => setIsTyping(true)}
                 onBlur={() => setIsTyping(false)}

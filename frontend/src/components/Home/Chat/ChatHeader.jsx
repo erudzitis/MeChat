@@ -18,6 +18,7 @@ import { participantString, participantTypingState } from "../../../utils";
 
 // Constants
 import { S3_BUCKET_URL } from "../../../constants";
+import { websocketConstants, websocketUtils } from "../../../services/websockets/utils";
 
 const ChatHeader = ({ name, image, isGroupChat, isAdmin }) => {
     const popupMenu = useRef(null);
@@ -64,7 +65,12 @@ const ChatHeader = ({ name, image, isGroupChat, isAdmin }) => {
             contactId
         }
 
+        // Dispatching event
         dispatch(removeContactAction(query, navigate));
+        // Leaving room
+        websocketUtils.emit(websocketConstants.DISCONNECT_ROOM, {
+            contactRooms: [roomData.id],
+        })
     }
 
     // Function for leaving group room
@@ -73,7 +79,12 @@ const ChatHeader = ({ name, image, isGroupChat, isAdmin }) => {
             roomId: roomData.roomId
         }
 
+        // Dispatching event
         dispatch(leaveRoomAction(query, navigate));
+        // Leaving group
+        websocketUtils.emit(websocketConstants.DISCONNECT_ROOM, {
+            groupRooms: [roomData.id],
+        })
     }
 
     // Function for adding a user to a group
@@ -130,7 +141,8 @@ const ChatHeader = ({ name, image, isGroupChat, isAdmin }) => {
                         <h4 className="p-0 m-0 ml-2 text-300 font-normal cursor-pointer">{headerRoomInfo}</h4>
                     </Stack>
                 </Flex>
-                <Flex className="p-3">
+                <Flex className="p-3 gap-1">
+                    <Button icon="pi pi-phone" className="p-button-rounded p-button-text" />
                     <Button icon="pi pi-list" className="p-button-rounded p-button-text" onClick={(e) => popupMenu.current.toggle(e)} />
                 </Flex>
             </Flex>

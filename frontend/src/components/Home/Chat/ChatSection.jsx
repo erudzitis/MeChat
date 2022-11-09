@@ -1,8 +1,8 @@
 // Requirements
 import { Button } from "primereact/button";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useFetcher, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 // Components
 import Center from "../../Custom/Center";
@@ -14,21 +14,17 @@ import ContactModal from "./Modals/ContactModal";
 import GroupModal from "./Modals/GroupModal";
 
 // Actions
-import { 
-    clearRoomDataAction, 
-    createMessageAction, 
-    retrieveRoomDataAction, 
-    receivedMessageHandleAction, 
-    receivedOnlineUsersHandleAction, 
-    receivedTypingUserHandleAction,
-    receivedNotTypingUserHandleAction
+import {
+    clearRoomDataAction,
+    createMessageAction, receivedMessageHandleAction, receivedNotTypingUserHandleAction, receivedOnlineUsersHandleAction,
+    receivedTypingUserHandleAction, retrieveRoomDataAction
 } from "../../../actions/chat";
 
 // Hooks
 import UseAction from "../../../hooks/UseAction";
 
 // socket.io utils
-import { websocketUtils, websocketConstants } from "../../../services/websockets/utils";
+import { websocketConstants, websocketUtils } from "../../../services/websockets/utils";
 
 const ChatSection = () => {
     const dispatch = useDispatch();
@@ -83,8 +79,8 @@ const ChatSection = () => {
             content: inputMessage,
             username: userData.username,
             roomId: roomData.roomId,
-            userId: userData.id
-        })
+        });
+
         // Clearing input
         setInputMessage("");
     }
@@ -101,7 +97,7 @@ const ChatSection = () => {
     }, [roomId]);
 
     // Scrolling to the latest message
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!roomId) return;
 
         handleScrollToLatestMessage();
@@ -136,21 +132,13 @@ const ChatSection = () => {
         // Remove socket event listener on component unmount
         return () => {
             websocketUtils.unregisterEvents(
-                websocketConstants.RECEIVE_ROOM_MESSAGE, 
-                websocketConstants.RECEIVE_ONLINE_USERS, 
+                websocketConstants.RECEIVE_ROOM_MESSAGE,
+                websocketConstants.RECEIVE_ONLINE_USERS,
                 websocketConstants.RECEIVE_USER_TYPING,
                 websocketConstants.RECEIVE_USER_NOT_TYPING
             );
         }
     }, []);
-
-    // 
-    useEffect(() => {
-        if (!userData) return;
-
-        // Emitting initial connection event
-        websocketUtils.clientConnect(userData.id);
-    }, [userData])
 
     // Handling user typing state
     useEffect(() => {
@@ -158,7 +146,6 @@ const ChatSection = () => {
 
         websocketUtils.emit(isTyping ? websocketConstants.USER_TYPING : websocketConstants.USER_NOT_TYPING, {
             roomId: roomData?.roomId,
-            userId: userData?.id
         })
 
     }, [isTyping]);
@@ -166,13 +153,20 @@ const ChatSection = () => {
     // There's no room data, we display default message to the user
     if (!roomId) {
         return (
-            <Center className="w-full surface-card gap-3">
+            <Center className="w-full surface-card gap-8">
                 <ContactModal show={showContactModal} setShow={setShowContactModal} />
                 <GroupModal show={showGroupModal} setShow={setShowGroupModal} />
 
-                <h4 className="p-0 m-0 text-white font-normal">Select a contact or a group to start messaging!</h4>
-                <Button label="Create contact" icon="pi pi-user-plus" iconPos="right" onClick={() => setShowContactModal(true)} />
-                <Button label="Create group" icon="pi pi-users" iconPos="right" onClick={() => setShowGroupModal(true)} />
+                {/* TODO: Implement user profile edit functionality */}
+                <Stack>
+                    <Button className="p-button-lg" label="Edit profile" icon="pi pi-user-edit" iconPos="right" onClick={() => setShowContactModal(true)} />
+                </Stack>
+
+                <Center className="gap-3">
+                    <h4 className="p-0 m-0 text-white font-normal">Select a contact or a group to start messaging!</h4>
+                    <Button label="Create contact" icon="pi pi-user-plus" iconPos="right" onClick={() => setShowContactModal(true)} />
+                    <Button label="Create group" icon="pi pi-users" iconPos="right" onClick={() => setShowGroupModal(true)} />
+                </Center>
             </Center>
         )
     }
@@ -180,7 +174,7 @@ const ChatSection = () => {
     return (
         <Stack className="flex-1 surface-card fadein animation-duration-350">
             {/* Top wrapper */}
-            <ChatHeader image={`https://chatapplicationbucket.s3.us-east-2.amazonaws.com/${roomData?.picture}`} name={chatRoomName} isGroupChat={isGroupChat} isAdmin={isAdmin} />
+            <ChatHeader image={roomData?.picture} name={chatRoomName} isGroupChat={isGroupChat} isAdmin={isAdmin} />
 
             {/* Middle wrapper */}
             <Stack className="flex-1 flex-shrink-0 overflow-y-auto p-4" spacing={4}>
