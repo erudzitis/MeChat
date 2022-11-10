@@ -186,7 +186,7 @@ const getRoomDataController = async (req, res) => {
     // Fetching all other room participants
     const allParticipants = await participantsModel.query()
         .join("user", "user.id", "participants.user_id")
-        .select("user.username", "user.id")
+        .select("user.username", "user.id", "user.picture")
         .where("room_id", roomId);
 
     // Fetching latest messages

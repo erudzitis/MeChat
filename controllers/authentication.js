@@ -2,11 +2,13 @@
 const argon2 = require("argon2");
 const userModel = require("../database/models/user");
 const customError = require("../errors/customError");
+const imageUpload = require("../services/imageUpload");
 const { StatusCodes } = require("http-status-codes");
 
 // [POST] Registration controller for users
 const registerController = async (req, res) => {
-    const { username, password, email } = req.body;
+    const { username, password, email, description = "Hey there, I am using Chat Application!" } = req.body;
+    const { image = null } = req.files || {};
 
     // Missing parameters
     if (!username | !password | !email) {
@@ -23,6 +25,9 @@ const registerController = async (req, res) => {
         throw new customError("User with provided email already exists!", StatusCodes.CONFLICT);
     }
 
+    // Attempting to upload an image if provided
+    const uploadedImage = image && await imageUpload(image);
+
     // Hashing user provided password
     const passwordHash = await argon2.hash(password);
 
@@ -30,7 +35,9 @@ const registerController = async (req, res) => {
     const newUser = await userModel.query().insert({
         username: username,
         password: passwordHash,
-        email: email
+        email: email,
+        description,
+        picture: uploadedImage && uploadedImage.Key
     });
 
     // Generate jwt token
@@ -49,7 +56,7 @@ const loginController = async (req, res) => {
     // Missing parameters
     if (!username | !password) {
         throw new customError("Post body parameters missing!", StatusCodes.BAD_REQUEST);
-    }    
+    }
 
     // Checking whether requested user even exists
     const requestUser = await userModel.query().findOne({
@@ -59,8 +66,8 @@ const loginController = async (req, res) => {
     // User with provided email already exists
     if (!requestUser) {
         throw new customError("User not found!", StatusCodes.NOT_FOUND);
-    } 
-    
+    }
+
     // Proceed with password validation
     const validateHash = await argon2.verify(requestUser.password, password);
 

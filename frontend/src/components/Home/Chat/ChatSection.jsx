@@ -50,8 +50,12 @@ const ChatSection = () => {
     // Room admins have escalated privilages
     const isAdmin = roomData?.admin_id === userData?.id;
 
+    // If the room is not a group chat, it means it's a 1-1 conversation and we can acquire neccessary data from contacts
+    const chatRoomContact = isGroupChat ? null : roomData?.participants.find(p => p.id !== userData.id);
     // Creating room name
-    const chatRoomName = isGroupChat ? roomData.name : roomData?.participants.find(p => p.id !== userData.id)?.username;
+    const chatRoomName = isGroupChat ? roomData.name : chatRoomContact?.username;
+    // Creating room picture
+    const chatRoomPicture = isGroupChat ? roomData?.picture : chatRoomContact?.picture;
 
     // Handles emoji click action
     const handleEmojiClick = (event) => {
@@ -181,7 +185,7 @@ const ChatSection = () => {
     return (
         <Stack className="flex-1 surface-card fadein animation-duration-350">
             {/* Top wrapper */}
-            <ChatHeader image={roomData?.picture} name={chatRoomName} isGroupChat={isGroupChat} isAdmin={isAdmin} />
+            <ChatHeader image={chatRoomPicture} name={chatRoomName} isGroupChat={isGroupChat} isAdmin={isAdmin} />
 
             {/* Middle wrapper */}
             <Stack className="flex-1 flex-shrink-0 overflow-y-auto p-4" spacing={4}>
