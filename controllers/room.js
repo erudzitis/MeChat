@@ -12,20 +12,15 @@ const roomCreateController = async (req, res) => {
     // TODO: append userId after successful authorization to the request
     const { userId } = req;
     const { name, description, groupUsers, isGroupChat } = req.body;
-    const { image } = req.files;
+    const { image = null } = req.files || {};
 
     // Checking for missing requirements
     if (!name || !groupUsers) {
         throw new customError("Post body parameters missing!", StatusCodes.BAD_REQUEST);
     }
 
-    // Attempting to upload an image
-    const uploadedImage = await imageUpload(image);
-
-    // TODO: implement better, more precise error handling approach
-    if (!uploadedImage.Location) {
-        throw new customError("Something went wrong while uploading the group image!", StatusCodes.INTERNAL_SERVER_ERROR);
-    }
+    // Attempting to upload an image if provided
+    const uploadedImage = image && await imageUpload(image);
 
     // Proceeding with room creation
     const newRoom = await roomModel.query().insert({
@@ -33,7 +28,7 @@ const roomCreateController = async (req, res) => {
         description: description,
         admin_id: isGroupChat ? userId : null,
         is_group_chat: isGroupChat,
-        picture: uploadedImage.Key
+        picture: uploadedImage && uploadedImage.Key
     });
 
     // Adding request user as participant to the group
@@ -74,6 +69,8 @@ const roomLeaveController = async (req, res) => {
     if (!roomId) {
         throw new customError("Post body parameters missing!", StatusCodes.BAD_REQUEST);
     }
+
+    // TODO: If we are admin, pass the admin status to other user in the group
 
     // Deleting participation
     await participantsModel.query()

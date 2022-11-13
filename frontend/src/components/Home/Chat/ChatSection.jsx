@@ -168,11 +168,6 @@ const ChatSection = () => {
                 <ContactModal show={showContactModal} setShow={setShowContactModal} />
                 <GroupModal show={showGroupModal} setShow={setShowGroupModal} />
 
-                {/* TODO: Implement user profile edit functionality */}
-                <Stack>
-                    <Button className="p-button-lg" label="Edit profile" icon="pi pi-user-edit" iconPos="right" onClick={() => setShowContactModal(true)} />
-                </Stack>
-
                 <Center className="gap-3">
                     <h4 className="p-0 m-0 text-white font-normal">Select a contact or a group to start messaging!</h4>
                     <Button label="Create contact" icon="pi pi-user-plus" iconPos="right" onClick={() => setShowContactModal(true)} />

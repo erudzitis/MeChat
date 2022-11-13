@@ -1,5 +1,5 @@
 // Requirements
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState } from "react";
 import { Button } from "primereact/button";
 import { SlideMenu } from "primereact/slidemenu";
 import { useSelector, useDispatch } from "react-redux";
@@ -9,6 +9,9 @@ import { useNavigate } from "react-router-dom";
 import Stack from "../../Custom/Stack";
 import Flex from "../../Custom/Flex";
 import AvatarButton from "../../Main/AvatarButton";
+
+// Modals
+import RoomCallModal from "./Modals/RoomCallModal";
 
 // Actions
 import { addRoomUserAction, leaveRoomAction, removeContactAction } from "../../../actions/chat";
@@ -25,6 +28,7 @@ const ChatHeader = ({ name, image, isGroupChat, isAdmin }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const [showRoomCallModal, setShowRoomCallModal] = useState(false);
     const { roomData, contacts, onlineUsers, typingUsers } = useSelector(state => state.chat);
     const { userData } = useSelector(state => state.auth);
 
@@ -127,6 +131,7 @@ const ChatHeader = ({ name, image, isGroupChat, isAdmin }) => {
 
     return (
         <>
+            {showRoomCallModal && <RoomCallModal name={name} show={showRoomCallModal} setShow={setShowRoomCallModal} />}
             <SlideMenu ref={popupMenu} model={popupMenuItems} popup className="mt-2 h-auto" />
 
             <Flex className="h-5rem" align="center">
@@ -142,7 +147,7 @@ const ChatHeader = ({ name, image, isGroupChat, isAdmin }) => {
                     </Stack>
                 </Flex>
                 <Flex className="p-3 gap-1">
-                    <Button icon="pi pi-phone" className="p-button-rounded p-button-text" />
+                    <Button icon="pi pi-phone" className="p-button-rounded p-button-text" onClick={() => setShowRoomCallModal(true)} />
                     <Button icon="pi pi-list" className="p-button-rounded p-button-text" onClick={(e) => popupMenu.current.toggle(e)} />
                 </Flex>
             </Flex>
