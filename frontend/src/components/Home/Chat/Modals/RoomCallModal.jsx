@@ -20,17 +20,38 @@ const RoomCallModal = ({ name, show, setShow }) => {
 
     // On component mount, get local media stream
     useEffect(() => {
-        getLocalMediaStream();
-
-        return () => {
-            localStreamRef.current = null;
+        // Room call modal is visible, we attempt to retrieve local media stream
+        if (show) {
+            getLocalMediaStream();
         }
-    }, []);
 
+        // Modal is closed, we stop media stream
+        if (!show && localStreamRef.current) {
+            stopStreamTracks(localStreamRef.current.srcObject);
+        }
+
+        // Un unmount stop media stream
+        return () => {
+            if (localStreamRef.current) {
+                stopStreamTracks(localStreamRef.current.srcObject);
+            }
+        }
+    }, [show]);
+
+    // Function that fetches media stream from user if permitted
     const getLocalMediaStream = () => {
         navigator.mediaDevices.getUserMedia({ audio: true, video: true })
             .then((stream) => localStreamRef.current.srcObject = stream)
             .catch((error) => console.error(error))
+    }
+
+    // Function that streams all media tracks
+    const stopStreamTracks = (stream) => {
+        stream.getTracks().forEach(track => {
+            if (track.readyState == "live") {
+                track.stop();
+            }
+        });
     }
 
     return (
