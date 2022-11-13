@@ -16,7 +16,7 @@ import {
 } from "../api";
 
 // error handler
-export const chatErrorHandlerWrapper = (error, cb) => {
+const chatErrorHandlerWrapper = (error, cb) => {
     // Axios cancel request error, coming from component unmount, we ignore it
     if (isCancel(error)) return;
     // Otherwise we dispatch the error
