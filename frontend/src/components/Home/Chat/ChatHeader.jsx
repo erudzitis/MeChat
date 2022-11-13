@@ -131,7 +131,7 @@ const ChatHeader = ({ name, image, isGroupChat, isAdmin }) => {
 
     return (
         <>
-            {showRoomCallModal && <RoomCallModal name={name} show={showRoomCallModal} setShow={setShowRoomCallModal} />}
+            <RoomCallModal name={name} show={showRoomCallModal} setShow={setShowRoomCallModal} />
             <SlideMenu ref={popupMenu} model={popupMenuItems} popup className="mt-2 h-auto" />
 
             <Flex className="h-5rem" align="center">
