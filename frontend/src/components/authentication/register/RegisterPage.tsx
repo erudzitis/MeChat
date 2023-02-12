@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Container, Title, Text, Paper, TextInput, PasswordInput, Group, Checkbox, Anchor, Button, Center } from "@mantine/core";
+import { Container, Image, Text, Paper, TextInput, PasswordInput, Group, Checkbox, Anchor, Button, Center } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useAppSelector } from "../../../common/hooks";
 
@@ -46,12 +46,10 @@ export const RegisterPage: React.FC<IRegisterPageProps> = (props: IRegisterPageP
         <Center style={{ width: "100%", height: "100%", position: "absolute" }}>
             <Container fluid style={{ position: "relative", width: 400 }}>
                 <form onSubmit={form.onSubmit(handleSubmit)}>
-                    <Title
-                        align="center"
-                        sx={(theme) => ({ fontFamily: `Greycliff CF, ${theme.fontFamily}`, fontWeight: 900 })}
-                    >
-                        Chat application
-                    </Title>
+                    <Center>
+                        <Image src="/images/mechat.png" width={200} />
+                    </Center>
+
                     <Text color="dimmed" size="sm" align="center" mt={5}>
                         Already have an account?{' '}
                         <Anchor<'a'> size="sm" onClick={navigateLogin}>
