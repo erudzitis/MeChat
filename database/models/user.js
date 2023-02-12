@@ -7,8 +7,14 @@ class User extends Model {
         return "user";
     }
 
-    generateJWT() {
-        return jwt.sign({ id: this.id, username: this.username, email: this.email }, process.env.JWT_SECRET);
+    generateAccessToken() {
+        return jwt.sign({ id: this.id, username: this.username, email: this.email },
+             process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+    }
+
+    generateRefreshToken() {
+        return jwt.sign({ id: this.id, username: this.username, email: this.email },
+             process.env.JWT_REFRESH_SECRET, { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN });
     }
 }
 
