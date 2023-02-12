@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const onlineUsers = {};
 
 module.exports = (socket) => {
+    // TODO: Needs "corner case" implementation when unauthenticated user establishes connection, since the token passed will be undefined
     socket.use((s, next) => {
         const token = s.handshake.auth.token;
 
@@ -31,7 +32,7 @@ module.exports = (socket) => {
         // Informing all sockets of the newly connected user
         socket.emit("receive_online_users", {
             onlineUsers: Object.values(onlineUsers)
-        })
+        });
 
         // Event that gets called after user enters a room
         client.on("room_connect", data => {
@@ -63,7 +64,42 @@ module.exports = (socket) => {
                 room_id: roomId,
                 user_id: client.userId
             })
-        })
+        });
+
+        // Event that gets called every time user starts typing
+        client.on("user_typing", data => {
+            const { roomId } = data;
+
+            client.to(roomId).emit("receive_user_typing", {
+                userId: client.userId,
+                roomId
+            })
+        });
+
+        // Event that gets called every time user stops typing
+        client.on("user_not_typing", data => {
+            const { roomId } = data;
+
+            client.to(roomId).emit("receive_user_not_typing", {
+                userId: client.userId,
+                roomId
+            })
+        });
+
+        // Event that gets called every time a user initializes room call
+        client.on("initialize_room_call", data => {
+            const { roomId } = data;
+
+            // Going over all other client sockets in the same room and sending them information about this incoming call
+            client.to(roomId).emit("incoming_room_call", { roomId, callerId: client.userId });
+        });
+
+        client.on("abort_room_call", data => {
+            const { roomId } = data;
+
+            // Going over all other client sockets in the same room and sending them information about this incoming call
+            client.to(roomId).emit("ended_room_call", { roomId });
+        });
 
         // Keeping track of users disconnecting
         client.on("disconnect", () => {
@@ -74,26 +110,7 @@ module.exports = (socket) => {
             socket.emit("receive_online_users", {
                 onlineUsers: Object.values(onlineUsers)
             })
-        })
+        });
 
-        // Event that gets called every time user starts typing
-        client.on("user_typing", data => {
-            const { roomId } = data;
-
-            client.to(roomId).emit("receive_user_typing", {
-                userId: client.userId,
-                roomId
-            })
-        })
-
-        // Event that gets called every time user stops typing
-        client.on("user_not_typing", data => {
-            const { roomId } = data;
-
-            client.to(roomId).emit("receive_user_not_typing", {
-                userId: client.userId,
-                roomId
-            })
-        })
     })
 }

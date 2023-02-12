@@ -103,6 +103,7 @@ const removeContact = async (req, res) => {
 // [POST] Used for retrieving request user rooms
 // TODO: Implement read/unread status for 1-1 conversations. Currently only functions for group chats
 const retrieveRooms = async (req, res) => {
+    console.log("HERE");
     const { userId } = req;
 
     // Querying all participated rooms
