@@ -21,7 +21,7 @@ export const Register: React.FC = () => {
      * Handles login logic and redirects the user to the homepage
      * @param formData IRegisterFormData
      */
-    const handleSubmit = (formData: IRegisterFormData) => { 
+    const handleSubmit = (formData: IRegisterFormData) => {
         dispatch(registerAction(formData, navigate));
     };
 
