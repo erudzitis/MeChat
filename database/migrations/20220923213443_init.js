@@ -11,13 +11,13 @@ exports.up = function(knex) {
                 table.string("password").notNullable();
                 table.string("email").notNullable().unique();
                 table.string("picture").nullable();
-                table.string("description").defaultTo("Hey there, I am using Chat Application!");
+                table.string("description").defaultTo("Hey there, I am using MeChat!");
                 table.timestamps(true, true);
             })
             .createTable("room", (table) => {
                 table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
                 table.integer("admin_id").references("user.id").nullable();
-                table.string("name").nullable();
+                table.string("name");
                 table.string("description").nullable();
                 table.string("picture").nullable();
                 table.boolean("is_group_chat").defaultTo(false);

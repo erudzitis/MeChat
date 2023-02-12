@@ -7,7 +7,7 @@ import { useAppSelector } from "../../../common/hooks";
 import { MIN_PASSWORD_LEN, MIN_USERNAME_LEN } from "../../../common/contants";
 
 // Types
-import { IRegisterFormData } from "../../../common/types";
+import { IRegisterFormData } from "../../../common/types";  
 
 interface IRegisterPageProps {
     navigateLogin: () => void;

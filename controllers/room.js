@@ -9,9 +9,8 @@ const { StatusCodes } = require("http-status-codes");
 
 // [POST] Route for creating chat rooms
 const roomCreateController = async (req, res) => {
-    // TODO: append userId after successful authorization to the request
     const { userId } = req;
-    const { name, description, groupUsers, isGroupChat } = req.body;
+    const { name, description, groupUsers } = req.body;
     const { image = null } = req.files || {};
 
     // Checking for missing requirements
@@ -26,8 +25,8 @@ const roomCreateController = async (req, res) => {
     const newRoom = await roomModel.query().insert({
         name: name,
         description: description,
-        admin_id: isGroupChat ? userId : null,
-        is_group_chat: isGroupChat,
+        admin_id: userId,
+        is_group_chat: true,
         picture: uploadedImage && uploadedImage.Key
     });
 

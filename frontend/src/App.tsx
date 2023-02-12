@@ -9,6 +9,9 @@ import { Login } from "./components/authentication/login/Login";
 import { Register } from "./components/authentication/register/Register";
 import { Home } from "./components/authentication/home/Home";
 
+// Routes
+import { ProtectedRoute } from "./routes/ProtectedRoute";
+
 export const App: React.FC = () => {
     return (
         <MantineProvider
@@ -20,7 +23,12 @@ export const App: React.FC = () => {
 
             <BrowserRouter>
                 <Routes>
-                    <Route path="" element={<Home />} />
+                    <Route 
+                        path="" 
+                        element={
+                            <ProtectedRoute children={<Home />} />
+                        } 
+                    />
                     <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                 </Routes>

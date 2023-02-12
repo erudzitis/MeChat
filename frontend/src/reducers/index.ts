@@ -5,9 +5,13 @@ import thunk, { ThunkDispatch } from "redux-thunk";
 
 // Reducers
 import { helperReducer } from "./helper";
+import { authReducer } from "./auth";
+import { chatReducer } from "./chat";
 
 const rootReducer = combineReducers({
-    helper: helperReducer
+    helper: helperReducer,
+    auth: authReducer,
+    chat: chatReducer
 });
 
 export const store = configureStore({ 
