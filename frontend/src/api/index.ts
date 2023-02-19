@@ -1,10 +1,9 @@
 // Requirements
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { StatusCodes } from "http-status-codes";
-import { redirect } from "react-router-dom";
 
 // Types
-import { IRegisterFormData, ILoginFormData, AxiosErrorExtended } from "../common/types";
+import { IRegisterFormData, ILoginFormData, IAddFriendFormData, AxiosErrorExtended } from "../common/types";
 
 // Constants
 import { ACCESS_TOKEN_ERROR_MSG, REFRESH_TOKEN_ERROR_MSG } from "../common/contants";
@@ -98,4 +97,12 @@ export const logoutCall = () => {
 
 export const retrieveRoomsCall = () => {
     return API.get("/user/rooms");
+}
+
+export const retrieveContactsCall = () => {
+    return API.get("/user/contacts");
+}
+
+export const addFriendCall = (formData: IAddFriendFormData) => {
+    return API.post("/user/create_contact", formData);
 }

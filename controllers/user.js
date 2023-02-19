@@ -70,7 +70,14 @@ const createContact = async (req, res) => {
 
     res.status(StatusCodes.OK).json({
         success: true,
-        data: { id: contactUser.id, username: contactUser.username, email: contactUser.email, picture: contactUser.picture, description: contactUser.description, room_id: newRoom.id }
+        data: {
+            id: contactUser.id, 
+            username: contactUser.username, 
+            email: contactUser.email, 
+            picture: contactUser.picture, 
+            description: contactUser.description, 
+            room_id: newRoom.id
+        }
     });
 }
 
@@ -135,7 +142,7 @@ const retrieveRooms = async (req, res) => {
 
             const roomLatestMessageExists = roomLatestMessage.length > 0;
 
-            return { 
+            return {
                 ...room,
                 latest_msg_username: roomLatestMessageExists ? roomLatestMessage[0].username : null,
                 latest_msg_content: roomLatestMessageExists ? roomLatestMessage[0].content : null,
