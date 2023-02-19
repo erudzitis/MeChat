@@ -2,11 +2,14 @@ import { NavigateFunction } from "react-router-dom";
 import { Dispatch } from "redux";
 
 // API endoint calls
-import { registerCall, loginCall } from "../api";
+import { registerCall, loginCall, logoutCall } from "../api";
 
 // Types
 import { IRegisterFormData, ILoginFormData } from "../common/types";
 import { REGISTER_REQUEST_STATUS, LOGIN_REQUEST_STATUS } from "../common/types";
+
+// Services
+import { clearAccessToken } from "../common/services";
 
 interface IAuthDispatch {
     type: REGISTER_REQUEST_STATUS | LOGIN_REQUEST_STATUS;
@@ -21,7 +24,7 @@ interface IAuthDispatch {
  * @param formData IRegisterFormData
  * @returns 
  */
-export const registerAction = (formData: IRegisterFormData, navigate: NavigateFunction) => async (dispatch: Dispatch<IAuthDispatch>) => { 
+export const registerAction = (formData: IRegisterFormData, navigate: NavigateFunction) => async (dispatch: Dispatch<IAuthDispatch>) => {
     dispatch({ type: REGISTER_REQUEST_STATUS.REQUEST });
 
     registerCall(formData)
@@ -50,4 +53,16 @@ export const loginAction = (formData: ILoginFormData, navigate: NavigateFunction
         .catch((error) => {
             dispatch({ type: LOGIN_REQUEST_STATUS.ERROR, payload: error?.response?.data?.message });
         })
+};
+
+/**
+ * Logs out the user and performs browser refresh
+ */
+export const logoutAction = () => {
+    logoutCall()
+        .then(() => { 
+            clearAccessToken();
+            window.location.href = "/login" 
+        })
+        .catch(error => console.log(error));
 }

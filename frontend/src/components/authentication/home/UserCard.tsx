@@ -1,5 +1,9 @@
-import { Avatar, Box, Group, UnstyledButton, Text } from "@mantine/core";
 import React from "react";
+import { Avatar, Box, Group, UnstyledButton, Text, ActionIcon } from "@mantine/core";
+import { IconLogout } from "@tabler/icons-react";
+
+// Actions
+import { logoutAction } from "../../../actions/authentication";
 
 interface IUserCardProps {
     username: string;
@@ -44,7 +48,11 @@ export const UserCard: React.FC<IUserCardProps> = (props) => {
                             { email }
                         </Text>
                     </Box>
-
+                    <Box>
+                        <ActionIcon onClick={logoutAction}>
+                            <IconLogout size={20} />
+                        </ActionIcon>
+                    </Box>
                 </Group>
             </UnstyledButton>
         </Box>

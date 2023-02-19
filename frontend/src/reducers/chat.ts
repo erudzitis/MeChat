@@ -1,20 +1,21 @@
 // Types
-import { IChatRoom, RETRIEVE_ROOMS_STATUS } from "../common/types"
+import { IChatRoom, RETRIEVE_ROOMS_STATUS, IRetrieveRoomSuccess } from "../common/types"
 
-type RetrieveRoomsSuccess = {
-    type: RETRIEVE_ROOMS_STATUS.SUCCESS;
-    payload: Array<IChatRoom>;
+type ChatReducerAction = IRetrieveRoomSuccess;
+
+interface IChatState {
+    rooms: Array<IChatRoom>;
 }
-
-type ChatReducerAction = RetrieveRoomsSuccess;
 
 const initialState = {
-    rooms: Array<IChatRoom>
-}
+    rooms: []
+} as IChatState;
 
 export const chatReducer = (state = initialState, action: ChatReducerAction) => {
     switch (action.type) {
         case RETRIEVE_ROOMS_STATUS.SUCCESS:
+            console.log(action.payload);
+            
             return { ...state, rooms: action.payload };
         default:
             return state;

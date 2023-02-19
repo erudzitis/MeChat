@@ -34,6 +34,8 @@ export interface IAuthUserData {
     id: number;
     username: string;
     email: string;
+    iat: number;
+    exp: number;
 }
 
 export type AxiosErrorExtended = AxiosError & {
@@ -60,4 +62,24 @@ export interface IChatRoom {
     is_group_chat: boolean;
     created_at: Date;
     updated_at: Date;
+}
+
+export interface IChatRoomHook {
+    data: Array<IChatRoom>;
+    loading: boolean;
+    error: string | null;
+}
+
+export interface IRetrieveRoomSuccess {
+    type: RETRIEVE_ROOMS_STATUS.SUCCESS;
+    payload: Array<IChatRoom>;
+}
+
+export interface IRetrieveRoomError {
+    type: RETRIEVE_ROOMS_STATUS.ERROR;
+    payload: string;
+}
+
+export interface IRetrieveRoomRequest {
+    type: RETRIEVE_ROOMS_STATUS.REQUEST;
 }

@@ -19,7 +19,8 @@ const API = axios.create({
     baseURL: "http://localhost:8000/api/v1",
     headers: {
         "Content-Type": "application/json",
-    }
+    },
+    withCredentials: true
 });
 
 /**
@@ -50,7 +51,7 @@ API.interceptors.response.use(
         // we need to just redirect the user to log in
         if (error?.response?.status === StatusCodes.FORBIDDEN && error?.response?.data?.message === REFRESH_TOKEN_ERROR_MSG) {
             clearAccessToken();
-            redirect("/login");
+            window.location.href = "/login";
             
             return Promise.reject(error);
         }
@@ -79,6 +80,10 @@ API.interceptors.response.use(
     }
 );
 
+const accessTokenCall = () => {
+    return API.post("/auth/token");
+}
+
 export const registerCall = (formData: IRegisterFormData) => {
     return API.post("/auth/register", formData);
 }
@@ -87,6 +92,10 @@ export const loginCall = (formData: ILoginFormData) => {
     return API.post("/auth/login", formData);
 }
 
-const accessTokenCall = () => {
-    return API.post("/auth/token");
+export const logoutCall = () => {
+    return API.post("/auth/logout");
+}
+
+export const retrieveRoomsCall = () => {
+    return API.get("/user/rooms");
 }
