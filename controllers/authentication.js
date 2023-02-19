@@ -119,6 +119,13 @@ const tokenController = async (req, res) => {
                 id: decoded.id
             });
 
+            // User not found, this shouldn't generically happen, 
+            // since the server has generated a jwt for the particular user previously
+            if (!user) {
+                return res.status(StatusCodes.FORBIDDEN)
+                    .json({ message: "Forbidden, invalid refresh token!" });
+            }
+
             // Generating new access token
             const accessToken = user.generateAccessToken();
 
