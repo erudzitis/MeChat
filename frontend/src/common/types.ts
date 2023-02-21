@@ -31,6 +31,12 @@ export const enum ADD_FRIEND_STATUS {
     ERROR = "ADD_FRIEND_ERROR"
 }
 
+export const enum CREATE_GROUP_STATUS {
+    REQUEST = "CREATE_GROUP_REQUEST",
+    SUCCESS = "CREATE_GROUP_SUCCESS",
+    ERROR = "CREATE_GROUP_ERROR"
+}
+
 /* Interfaces */
 export interface ILoginFormData {
     username: string;
@@ -52,6 +58,12 @@ export interface IAuthUserData {
 
 export interface IAddFriendFormData {
     contactEmail: string;
+}
+
+export interface ICreateGroupFormData {
+    name: string;
+    description: string;
+    groupUsers: Array<Number>;
 }
 
 export type AxiosErrorExtended = AxiosError & {
@@ -138,6 +150,20 @@ export interface IAddFriendError {
 
 export interface IAddFriendRequest {
     type: ADD_FRIEND_STATUS.REQUEST;
+}
+
+export interface ICreateGroupSuccess {
+    type: CREATE_GROUP_STATUS.SUCCESS;
+    payload: IChatRoom;
+}
+
+export interface ICreateGroupError {
+    type: CREATE_GROUP_STATUS.ERROR;
+    payload: string;
+}
+
+export interface ICreateGroupRequest {
+    type: CREATE_GROUP_STATUS.REQUEST;
 }
 
 interface ICustomHooks {

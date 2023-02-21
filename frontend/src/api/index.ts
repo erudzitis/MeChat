@@ -3,7 +3,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { StatusCodes } from "http-status-codes";
 
 // Types
-import { IRegisterFormData, ILoginFormData, IAddFriendFormData, AxiosErrorExtended } from "../common/types";
+import { IRegisterFormData, ILoginFormData, IAddFriendFormData, ICreateGroupFormData, AxiosErrorExtended } from "../common/types";
 
 // Constants
 import { ACCESS_TOKEN_ERROR_MSG, REFRESH_TOKEN_ERROR_MSG } from "../common/contants";
@@ -105,4 +105,8 @@ export const retrieveContactsCall = () => {
 
 export const addFriendCall = (formData: IAddFriendFormData) => {
     return API.post("/user/create_contact", formData);
+}
+
+export const createGroupCall = (formData: ICreateGroupFormData) => {
+    return API.post("/room/create", formData);
 }
