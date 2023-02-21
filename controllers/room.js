@@ -36,13 +36,9 @@ const roomCreateController = async (req, res) => {
         room_id: newRoom.id
     });
 
-    // Adding array of group users to our group
-    // Because of the form data, objects are 'stringified'
-    const groupUsersFormatted = groupUsers.split(",");
-
-    if (groupUsersFormatted && groupUsersFormatted?.length) {
+    if (groupUsers.length) {
         // Creating users object list
-        const groupUsersData = groupUsersFormatted.map(groupUserId => {
+        const groupUsersData = groupUsers.map(groupUserId => {
             return {
                 user_id: parseInt(groupUserId),
                 room_id: newRoom.id

@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 
 // API endpoint calls
-import { retrieveRoomsCall, addFriendCall, retrieveContactsCall } from "../api";
+import { retrieveRoomsCall, addFriendCall, retrieveContactsCall, createGroupCall } from "../api";
 
 // Types
 import {
@@ -20,7 +20,12 @@ import {
     IRetrieveContactsSuccess,
     IRetrieveContactsError,
     IRetrieveContactsRequest,
-    IContact
+    IContact,
+    ICreateGroupFormData,
+    ICreateGroupSuccess,
+    ICreateGroupError,
+    ICreateGroupRequest,
+    CREATE_GROUP_STATUS
 } from "../common/types";
 
 type RetrieveRoomsDispatch = IRetrieveRoomSuccess | IRetrieveRoomError | IRetrieveRoomRequest;
@@ -75,4 +80,24 @@ export const retrieveContactsAction = () => async (dispatch: Dispatch<RetrieveCo
         .catch((error) => {
             dispatch({ type: RETRIEVE_CONTACTS_STATUS.ERROR, payload: error?.response?.data?.message });
         })
+};
+
+type CreateGroupDispatch = ICreateGroupSuccess | ICreateGroupError | ICreateGroupRequest;
+
+/**
+ * Invokes the API call to send a friend request and updates the state of the request.
+ * @param formData IAddFriendFormData
+ * @param onSuccess Method that gets called after successful request
+ */
+export const createGroupAction = (formData: ICreateGroupFormData, onSuccess: () => void) => async (dispatch: Dispatch<CreateGroupDispatch>) => {
+    dispatch({ type: CREATE_GROUP_STATUS.REQUEST });
+
+    createGroupCall(formData)
+        .then(({ data }: { data: { data: IChatRoom } }) => {
+            dispatch({ type: CREATE_GROUP_STATUS.SUCCESS, payload: data.data });
+            onSuccess();
+        })
+        .catch((error) => {
+            dispatch({ type: CREATE_GROUP_STATUS.ERROR, payload: error?.response?.data?.message });
+        });
 };

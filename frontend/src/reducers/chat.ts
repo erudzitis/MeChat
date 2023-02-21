@@ -7,10 +7,12 @@ import {
     IContact,
     RETRIEVE_CONTACTS_STATUS,
     ADD_FRIEND_STATUS,
-    IAddFriendSuccess
+    IAddFriendSuccess,
+    CREATE_GROUP_STATUS,
+    ICreateGroupSuccess
 } from "../common/types"
 
-type ChatReducerAction = IRetrieveRoomSuccess | IRetrieveContactsSuccess | IAddFriendSuccess;
+type ChatReducerAction = IRetrieveRoomSuccess | IRetrieveContactsSuccess | IAddFriendSuccess | ICreateGroupSuccess;
 
 interface IChatState {
     rooms: Array<IChatRoom>;
@@ -30,6 +32,8 @@ export const chatReducer = (state = initialState, action: ChatReducerAction) => 
             return { ...state, contacts: action.payload };
         case ADD_FRIEND_STATUS.SUCCESS:
             return { ...state, contacts: [action.payload, ...state.contacts] };
+        case CREATE_GROUP_STATUS.SUCCESS:
+            return { ...state, rooms: [action.payload, ...state.rooms] };
         default:
             return state;
     }
