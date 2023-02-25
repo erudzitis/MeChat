@@ -1,3 +1,4 @@
+import { integer } from "aws-sdk/clients/cloudfront";
 import { AxiosError } from "axios";
 
 /* Enums */
@@ -43,6 +44,16 @@ export const enum RETRIEVE_ROOM_DATA_STATUS {
     ERROR = "RETRIEVE_ROOM_DATA_ERROR"
 }
 
+export const enum CLEAR_ROOM_DATA_STATUS {
+    REQUEST = "CLEAR_ROOM_DATA_STATUS_REQUEST"
+}
+
+export const enum CREATE_MESSAGE_STATUS {
+    REQUEST = "CREATE_MESSAGE_REQUEST",
+    SUCCESS = "CREATE_MESSAGE_SUCCESS",
+    ERROR = "CREATE_MESSAGE_ERROR"
+}
+
 /* Interfaces */
 export interface ILoginFormData {
     username: string;
@@ -70,6 +81,11 @@ export interface ICreateGroupFormData {
     name: string;
     description: string;
     groupUsers: Array<Number>;
+}
+
+export interface ISendMessageFormData {
+    roomId: string;
+    content: string;
 }
 
 export type AxiosErrorExtended = AxiosError & {
@@ -116,11 +132,17 @@ export interface IContact {
     description: string;
 }
 
-interface IChatRoomMessage {
+export interface IChatRoomMessage {
     user_id: number;
     username: string;
     content: string;
     created_at: Date;
+}
+
+export interface IChatRoomMessageData {
+    user_id: number;
+    room_id: string;
+    content: string;
 }
 
 export interface IChatRoomParticipant {
@@ -205,6 +227,24 @@ export interface IRetreiveRoomInfoRequest {
     type: RETRIEVE_ROOM_DATA_STATUS.REQUEST;
 }
 
+export interface IClearRoomInfoRequest {
+    type: CLEAR_ROOM_DATA_STATUS.REQUEST;
+}
+
+export interface ICreateMessageSuccess {
+    type: CREATE_MESSAGE_STATUS.SUCCESS;
+    payload: IChatRoomMessageData;
+}
+
+export interface ICreateMessageError {
+    type: CREATE_MESSAGE_STATUS.ERROR;
+    payload: string;
+}
+
+export interface ICreateMessageRequest {
+    type: CREATE_MESSAGE_STATUS.REQUEST;
+}
+
 interface ICustomHooks {
     loading: boolean;
     error: string | null;
@@ -223,4 +263,10 @@ export interface IModalHook {
     open: () => void;
     close: () => void;
     toggle: () => void;
+}
+
+export interface IUserHook {
+    id: number;
+    username: string;
+    email: string;
 }

@@ -10,13 +10,14 @@ import { AddFriend } from "../modals/AddFriend";
 import { CreateGroup } from "../modals/CreateGroup";
 
 // Hooks
-import { useGetRooms, useModal, useGetContacts, useAppSelector } from "../../../../common/hooks";
+import { useGetRooms, useModal, useGetContacts, useAppSelector, UseGetUser } from "../../../../common/hooks";
 import { IChatRoom } from "../../../../common/types";
 
 export const Navbar: React.FC = () => {
     const { data: roomData, loading: roomsLoading, error: roomsError } = useGetRooms();
     const { data: contactData, loading: contactsLoading, error: contactsError } = useGetContacts();
     const { rooms }: { rooms: IChatRoom[] } = useAppSelector(state => state.chat); // ???
+    const user = UseGetUser();
 
     const roomsHeight = useMemo(() => Math.min(300, rooms.length * 75), [rooms.length]);
 
@@ -94,7 +95,7 @@ export const Navbar: React.FC = () => {
             </MantineNavbar.Section>
 
             <MantineNavbar.Section>
-                <UserCard username="Ernests" email="ernests@mail.com" />
+                <UserCard username={user!.username} email={user!.email} />
             </MantineNavbar.Section>
         </MantineNavbar>
     )

@@ -12,10 +12,15 @@ import {
     ICreateGroupSuccess,
     IChatRoomInfo,
     RETRIEVE_ROOM_DATA_STATUS,
-    IRetreiveRoomInfoSuccess
+    IRetreiveRoomInfoSuccess,
+    IClearRoomInfoRequest,
+    CLEAR_ROOM_DATA_STATUS,
+    CREATE_MESSAGE_STATUS,
+    ICreateMessageSuccess
 } from "../common/types"
 
-type ChatReducerAction = IRetrieveRoomSuccess | IRetrieveContactsSuccess | IAddFriendSuccess | ICreateGroupSuccess | IRetreiveRoomInfoSuccess;
+type ChatReducerAction = IRetrieveRoomSuccess | IRetrieveContactsSuccess | IAddFriendSuccess | ICreateGroupSuccess 
+    | IRetreiveRoomInfoSuccess | IClearRoomInfoRequest | ICreateMessageSuccess;
 
 interface IChatState {
     rooms: Array<IChatRoom>;
@@ -41,6 +46,12 @@ export const chatReducer = (state = initialState, action: ChatReducerAction) => 
             return { ...state, rooms: [action.payload, ...state.rooms] };
         case RETRIEVE_ROOM_DATA_STATUS.SUCCESS:
             return { ...state, roomData: action.payload };
+        case CLEAR_ROOM_DATA_STATUS.REQUEST:
+            return { ...state, roomData: null };
+        case CREATE_MESSAGE_STATUS.SUCCESS:
+            return { ...state, 
+                roomData: { ...state.roomData, messages: [ ...state.roomData!.messages, action.payload ] } 
+            };    
         default:
             return state;
     }

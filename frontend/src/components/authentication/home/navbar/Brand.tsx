@@ -2,9 +2,20 @@ import React from "react";
 import { Box, Image } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 
+// Hooks
+import { useAppDispatch } from "../../../../common/hooks";
+
+// Actions 
+import { clearRoomInfoAction } from "../../../../actions/chat";
+
 export const Brand: React.FC = () => {
     const navigate = useNavigate();
-    const navigateHome = () => navigate("/");
+    const dispatch = useAppDispatch();
+
+    const navigateHome = () => {
+        navigate("/");
+        dispatch(clearRoomInfoAction());
+    }
 
     return (
         <Box sx={(theme) => ({

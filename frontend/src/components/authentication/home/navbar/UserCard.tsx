@@ -42,10 +42,10 @@ export const UserCard: React.FC<IUserCardProps> = (props) => {
                     />
                     <Box sx={{ flex: 1 }}>
                         <Text size="sm" weight={500}>
-                            { username }
+                            {username}
                         </Text>
                         <Text color="dimmed" size="xs">
-                            { email }
+                            {email}
                         </Text>
                     </Box>
                     <Box>
