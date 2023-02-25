@@ -37,6 +37,12 @@ export const enum CREATE_GROUP_STATUS {
     ERROR = "CREATE_GROUP_ERROR"
 }
 
+export const enum RETRIEVE_ROOM_DATA_STATUS {
+    REQUEST = "RETRIEVE_ROOM_DATA_REQUEST",
+    SUCCESS = "RETRIEVE_ROOM_DATA_SUCCESS",
+    ERROR = "RETRIEVE_ROOM_DATA_ERROR"
+}
+
 /* Interfaces */
 export interface ILoginFormData {
     username: string;
@@ -105,9 +111,28 @@ export interface IContact {
     id: number;
     username: string;
     email: string;
-    room_id: number;
+    room_id: string;
     picture: string | null;
     description: string;
+}
+
+interface IChatRoomMessage {
+    user_id: number;
+    username: string;
+    content: string;
+    created_at: Date;
+}
+
+export interface IChatRoomParticipant {
+    id: number;
+    username: string;
+    picture: string | null;
+}
+
+export interface IChatRoomInfo extends IChatRoom {
+    messages: Array<IChatRoomMessage>;
+    participants: Array<IChatRoomParticipant>;
+
 }
 
 export interface IRetrieveRoomSuccess {
@@ -164,6 +189,20 @@ export interface ICreateGroupError {
 
 export interface ICreateGroupRequest {
     type: CREATE_GROUP_STATUS.REQUEST;
+}
+
+export interface IRetreiveRoomInfoSuccess {
+    type: RETRIEVE_ROOM_DATA_STATUS.SUCCESS;
+    payload: IChatRoomInfo;
+}
+
+export interface IRetreiveRoomInfoError {
+    type: RETRIEVE_ROOM_DATA_STATUS.ERROR;
+    payload: string;
+}
+
+export interface IRetreiveRoomInfoRequest {
+    type: RETRIEVE_ROOM_DATA_STATUS.REQUEST;
 }
 
 interface ICustomHooks {

@@ -9,19 +9,24 @@ import {
     ADD_FRIEND_STATUS,
     IAddFriendSuccess,
     CREATE_GROUP_STATUS,
-    ICreateGroupSuccess
+    ICreateGroupSuccess,
+    IChatRoomInfo,
+    RETRIEVE_ROOM_DATA_STATUS,
+    IRetreiveRoomInfoSuccess
 } from "../common/types"
 
-type ChatReducerAction = IRetrieveRoomSuccess | IRetrieveContactsSuccess | IAddFriendSuccess | ICreateGroupSuccess;
+type ChatReducerAction = IRetrieveRoomSuccess | IRetrieveContactsSuccess | IAddFriendSuccess | ICreateGroupSuccess | IRetreiveRoomInfoSuccess;
 
 interface IChatState {
     rooms: Array<IChatRoom>;
     contacts: Array<IContact>;
+    roomData: IChatRoomInfo | null;
 }
 
 const initialState = {
     rooms: [],
-    contacts: []
+    contacts: [],
+    roomData: null
 } as IChatState;
 
 export const chatReducer = (state = initialState, action: ChatReducerAction) => {
@@ -34,6 +39,8 @@ export const chatReducer = (state = initialState, action: ChatReducerAction) => 
             return { ...state, contacts: [action.payload, ...state.contacts] };
         case CREATE_GROUP_STATUS.SUCCESS:
             return { ...state, rooms: [action.payload, ...state.rooms] };
+        case RETRIEVE_ROOM_DATA_STATUS.SUCCESS:
+            return { ...state, roomData: action.payload };
         default:
             return state;
     }

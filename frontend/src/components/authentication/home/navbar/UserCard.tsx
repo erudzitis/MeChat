@@ -3,7 +3,7 @@ import { Avatar, Box, Group, UnstyledButton, Text, ActionIcon } from "@mantine/c
 import { IconLogout } from "@tabler/icons-react";
 
 // Actions
-import { logoutAction } from "../../../actions/authentication";
+import { logoutAction } from "../../../../actions/authentication";
 
 interface IUserCardProps {
     username: string;

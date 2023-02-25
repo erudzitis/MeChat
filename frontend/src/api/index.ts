@@ -110,3 +110,7 @@ export const addFriendCall = (formData: IAddFriendFormData) => {
 export const createGroupCall = (formData: ICreateGroupFormData) => {
     return API.post("/room/create", formData);
 }
+
+export const retrieveRoomInfoCall = (roomId: string) => {
+    return API.get(`/room/info/${roomId}`);
+}

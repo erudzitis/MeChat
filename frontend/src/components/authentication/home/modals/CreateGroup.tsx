@@ -6,7 +6,7 @@ import { useForm } from "@mantine/form";
 import { addFriendAction, createGroupAction } from "../../../../actions/chat";
 
 // Types
-import { ICreateGroupFormData, IModalHook } from "../../../../common/types";
+import { IContact, ICreateGroupFormData, IModalHook } from "../../../../common/types";
 
 // Hooks
 import { useAppDispatch, useAppSelector } from "../../../../common/hooks";
@@ -16,7 +16,7 @@ import { MAX_GROUP_SIZE } from "../../../../common/contants";
 
 export const CreateGroup = (props: IModalHook) => {
     const { isOpen, open, close, toggle } = props;
-    const { contacts } = useAppSelector(state => state.chat);
+    const { contacts } : { contacts: IContact[] } = useAppSelector(state => state.chat);
     const { CREATE_GROUP } = useAppSelector(state => state.helper);
     const dispatch = useAppDispatch();
 
