@@ -3,21 +3,22 @@ import { Navbar as MantineNavbar, Flex, ScrollArea, Loader, Center, Button, Divi
 import { IconFriends, IconUserPlus, IconAddressBook, IconPlaylistAdd } from "@tabler/icons-react";
 
 // Components
-import { ContactCard } from "./contacts/ContactCard";
+import { ContactCard } from "../contacts/ContactCard";
 import { UserCard } from "./UserCard";
 import { Brand } from "./Brand";
-import { AddFriend } from "./modals/AddFriend";
-import { CreateGroup } from "./modals/CreateGroup";
+import { AddFriend } from "../modals/AddFriend";
+import { CreateGroup } from "../modals/CreateGroup";
 
 // Hooks
-import { useGetRooms, useModal, useGetContacts, useAppSelector } from "../../../common/hooks";
+import { useGetRooms, useModal, useGetContacts, useAppSelector } from "../../../../common/hooks";
+import { IChatRoom } from "../../../../common/types";
 
 export const Navbar: React.FC = () => {
     const { data: roomData, loading: roomsLoading, error: roomsError } = useGetRooms();
     const { data: contactData, loading: contactsLoading, error: contactsError } = useGetContacts();
-    const { rooms } = useAppSelector(state => state.chat);
+    const { rooms }: { rooms: IChatRoom[] } = useAppSelector(state => state.chat); // ???
 
-    const roomsHeight = useMemo(() => Math.min(300, rooms.length * 75), [rooms]);
+    const roomsHeight = useMemo(() => Math.min(300, rooms.length * 75), [rooms.length]);
 
     const addFriendsModalState = useModal();
     const createGroupModalState = useModal();
@@ -69,7 +70,7 @@ export const Navbar: React.FC = () => {
                             <ScrollArea style={{ height: roomsHeight }} scrollbarSize={6}>
                                 <Flex direction="column" gap="xs">
                                     {roomData.map(room => (
-                                        <ContactCard username={room.name} key={room.id} />
+                                        <ContactCard username={room.name} key={room.id} id={room.id} />
                                     ))}
                                 </Flex>
                             </ScrollArea>
@@ -84,7 +85,7 @@ export const Navbar: React.FC = () => {
                             <ScrollArea style={{ height: 500 - roomsHeight }} scrollbarSize={6}>
                                 <Flex direction="column" gap="xs">
                                     {contactData.map(contact => (
-                                        <ContactCard username={contact.username} key={contact.id} />
+                                        <ContactCard username={contact.username} key={contact.room_id} id={contact.room_id} />
                                     ))}
                                 </Flex>
                             </ScrollArea>

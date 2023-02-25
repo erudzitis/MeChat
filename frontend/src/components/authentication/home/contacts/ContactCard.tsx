@@ -1,14 +1,28 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Avatar, Card, Flex, Text } from "@mantine/core";
+
+// Actions
+import { retrieveRoomInfoAction } from "../../../../actions/chat";
+
+// Hooks
+import { useAppDispatch } from "../../../../common/hooks";
+
+// Services
+import { createInitials } from "../../../../common/services";
 
 interface IContactCardProps {
     username: string;
+    id: string;
     image?: string;
 }
 
 export const ContactCard: React.FC<IContactCardProps> = (props) => {
-    const { username, image } = props;
-    const initals = username.match(/(\b\S)?/g)?.join("")?.match(/(^\S|\S$)?/g)?.join("").toUpperCase() || username.charAt(0);
+    const { username, image, id } = props;
+    const dispatch = useAppDispatch();
+    const initals = useMemo(() => createInitials(username), [username]);
+
+
+    const handleOnClick = () => dispatch(retrieveRoomInfoAction(id));
 
     return (
         <Card
@@ -24,6 +38,7 @@ export const ContactCard: React.FC<IContactCardProps> = (props) => {
                     cursor: "pointer"
                 },
             })}
+            onClick={handleOnClick}
         >
             <Flex align="center" gap="sm">
                 <Avatar color="blue" radius="xl">{initals}</Avatar>

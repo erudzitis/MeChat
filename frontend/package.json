@@ -20,6 +20,7 @@
     "axios": "^1.2.1",
     "http-status-code": "^2.1.0",
     "jwt-decode": "^3.1.2",
+    "lottie-react": "^2.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
