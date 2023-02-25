@@ -1,12 +1,18 @@
 // Imports
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import type { ReducerState, TypedDispatch } from "../reducers";
+import jwtDecode from "jwt-decode";
 
-import { IChatRoomHook, IModalHook, IContactsHook } from "./types";
+// Types
+import { IChatRoomHook, IModalHook, IContactsHook, IUserHook } from "./types";
 
+// Actions
 import { retrieveContactsAction, retrieveRoomsAction } from "../actions/chat";
+
+// Services
+import { getAccessToken } from "./services";
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<TypedDispatch>();
@@ -66,3 +72,14 @@ export const useModal = (): IModalHook => {
         toggle: () => handlers.toggle()
     }
 };
+
+/**
+ * Hook for retrieving local user data
+ */
+export const UseGetUser = (): IUserHook | null => {
+    const token = getAccessToken();
+
+    return useMemo(() => {
+        return token ? jwtDecode(token) : null;
+    }, [token]);
+}

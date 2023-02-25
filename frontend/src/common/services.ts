@@ -13,6 +13,6 @@ export const clearAccessToken = (): void => {
     localStorage.removeItem(ACCESS_TOKEN);
 }
 
-export const createInitials = (name = " "): string => {
+export const createInitials = (name = "?"): string => {
     return name.match(/(\b\S)?/g)?.join("")?.match(/(^\S|\S$)?/g)?.join("").toUpperCase() || name.charAt(0);
 }

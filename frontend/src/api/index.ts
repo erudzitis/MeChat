@@ -3,7 +3,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { StatusCodes } from "http-status-codes";
 
 // Types
-import { IRegisterFormData, ILoginFormData, IAddFriendFormData, ICreateGroupFormData, AxiosErrorExtended } from "../common/types";
+import { IRegisterFormData, ILoginFormData, IAddFriendFormData, ICreateGroupFormData, AxiosErrorExtended, ISendMessageFormData } from "../common/types";
 
 // Constants
 import { ACCESS_TOKEN_ERROR_MSG, REFRESH_TOKEN_ERROR_MSG } from "../common/contants";
@@ -113,4 +113,8 @@ export const createGroupCall = (formData: ICreateGroupFormData) => {
 
 export const retrieveRoomInfoCall = (roomId: string) => {
     return API.get(`/room/info/${roomId}`);
+}
+
+export const createMessageCall = (formData: ISendMessageFormData) => {
+    return API.post("/message/create", formData);
 }

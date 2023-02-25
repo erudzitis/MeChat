@@ -7,9 +7,10 @@ import chatBotAnimation from "./main/noChatRoomSelectedAnim.json";
 
 // Hooks
 import { useAppSelector } from "../../../common/hooks";
+import { IChatRoomInfo } from "../../../common/types";
 
 export const Home: React.FC = () => {
-    const { roomData } = useAppSelector(state => state.chat);
+    const { roomData }: { roomData: IChatRoomInfo } = useAppSelector(state => state.chat);
 
     return (
         <AppShell
@@ -19,9 +20,9 @@ export const Home: React.FC = () => {
                 main: { backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0] },
             })}
         >
-            {roomData ? 
+            {roomData ?
                 (
-                    <Main />
+                    <Main key={roomData?.id || "no-room-info"} />
                 ) : (
                     <Center h="100%">
                         <Lottie animationData={chatBotAnimation} loop={true} />

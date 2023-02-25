@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 
 // API endpoint calls
-import { retrieveRoomsCall, addFriendCall, retrieveContactsCall, createGroupCall, retrieveRoomInfoCall } from "../api";
+import { retrieveRoomsCall, addFriendCall, retrieveContactsCall, createGroupCall, retrieveRoomInfoCall, createMessageCall } from "../api";
 
 // Types
 import {
@@ -30,7 +30,15 @@ import {
     IRetreiveRoomInfoError,
     IRetreiveRoomInfoRequest,
     RETRIEVE_ROOM_DATA_STATUS,
-    IChatRoomInfo
+    IChatRoomInfo,
+    CLEAR_ROOM_DATA_STATUS,
+    IClearRoomInfoRequest,
+    ISendMessageFormData,
+    CREATE_MESSAGE_STATUS,
+    IChatRoomMessageData,
+    ICreateMessageError,
+    ICreateMessageRequest,
+    ICreateMessageSuccess
 } from "../common/types";
 
 type RetrieveRoomsDispatch = IRetrieveRoomSuccess | IRetrieveRoomError | IRetrieveRoomRequest;
@@ -122,5 +130,27 @@ export const retrieveRoomInfoAction = (roomId: string) => async (dispatch: Dispa
         })
         .catch((error) => {
             dispatch({ type: RETRIEVE_ROOM_DATA_STATUS.ERROR, payload: error?.response?.data?.message });
+        });
+};
+
+export const clearRoomInfoAction = () => async (dispatch: Dispatch<IClearRoomInfoRequest>) => {
+    dispatch({ type: CLEAR_ROOM_DATA_STATUS.REQUEST });
+}
+
+type CreateMessageDispatch = ICreateMessageSuccess | ICreateMessageError | ICreateMessageRequest;
+
+/**
+ * Invokes the API call to retrieve a particular rooms info and updates the state of the request.
+ * @param roomId string, uuid of the room
+ */
+export const createMessageAction = (formData: ISendMessageFormData) => async (dispatch: Dispatch<CreateMessageDispatch>) => {
+    dispatch({ type: CREATE_MESSAGE_STATUS.REQUEST });
+
+    createMessageCall(formData)
+        .then(({ data }: { data: { data: IChatRoomMessageData } }) => {
+            dispatch({ type: CREATE_MESSAGE_STATUS.SUCCESS, payload: data.data });
+        })
+        .catch((error) => {
+            dispatch({ type: CREATE_MESSAGE_STATUS.ERROR, payload: error?.response?.data?.message });
         });
 };

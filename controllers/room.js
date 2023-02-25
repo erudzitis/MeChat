@@ -185,7 +185,8 @@ const getRoomDataController = async (req, res) => {
     const roomMessages = await messageModel.query()
         .join("user", "user.id", "message.user_id")
         .select("message.user_id", "user.username", "message.content", "message.created_at")
-        .where("room_id", roomId);
+        .where("room_id", roomId)
+        .limit(50);
 
     res.status(StatusCodes.OK).json({
         success: true,
