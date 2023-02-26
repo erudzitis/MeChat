@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 
 // API endpoint calls
-import { retrieveRoomsCall, addFriendCall, retrieveContactsCall, createGroupCall, retrieveRoomInfoCall, createMessageCall } from "../api";
+import { retrieveRoomsCall, addFriendCall, retrieveContactsCall, createGroupCall, retrieveRoomInfoCall, createMessageCall, readRoomCall } from "../api";
 
 // Types
 import {
@@ -38,7 +38,12 @@ import {
     IChatRoomMessageData,
     ICreateMessageError,
     ICreateMessageRequest,
-    ICreateMessageSuccess
+    ICreateMessageSuccess,
+    IReadRoomSuccess,
+    IReadRoomError,
+    IReadRoomRequest,
+    READ_ROOM_STATUS,
+    IChatRoomReadData
 } from "../common/types";
 
 type RetrieveRoomsDispatch = IRetrieveRoomSuccess | IRetrieveRoomError | IRetrieveRoomRequest;
@@ -152,5 +157,23 @@ export const createMessageAction = (formData: ISendMessageFormData) => async (di
         })
         .catch((error) => {
             dispatch({ type: CREATE_MESSAGE_STATUS.ERROR, payload: error?.response?.data?.message });
+        });
+};
+
+type ReadRoomDispatch = IReadRoomSuccess | IReadRoomError | IReadRoomRequest;
+
+/**
+ * Invokes the API call to retrieve a particular rooms info and updates the state of the request.
+ * @param roomId string, uuid of the room
+ */
+export const readRoomAction = (roomId: string) => async (dispatch: Dispatch<ReadRoomDispatch>) => {
+    dispatch({ type: READ_ROOM_STATUS.REQUEST });
+
+    readRoomCall(roomId)
+        .then(({ data }: { data: { data: IChatRoomReadData } }) => {
+            dispatch({ type: READ_ROOM_STATUS.SUCCESS, payload: data.data });
+        })
+        .catch((error) => {
+            dispatch({ type: READ_ROOM_STATUS.ERROR, payload: error?.response?.data?.message });
         });
 };

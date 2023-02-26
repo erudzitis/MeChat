@@ -54,6 +54,12 @@ export const enum CREATE_MESSAGE_STATUS {
     ERROR = "CREATE_MESSAGE_ERROR"
 }
 
+export const enum READ_ROOM_STATUS {
+    REQUEST = "READ_ROOM_REQUEST",
+    SUCCESS = "READ_ROOM_SUCCESS",
+    ERROR = "READ_ROOM_ERROR"
+}
+
 /* Interfaces */
 export interface ILoginFormData {
     username: string;
@@ -110,6 +116,10 @@ export interface IChatRoom {
     description: string | null;
     picture: string | null;
     is_group_chat: boolean;
+    latest_msg_username: string;
+    latest_msg_content: string;
+    latest_msg_date: Date;
+    read_at: Date;
     created_at: Date;
     updated_at: Date;
 }
@@ -143,6 +153,11 @@ export interface IChatRoomMessageData {
     user_id: number;
     room_id: string;
     content: string;
+}
+
+export interface IChatRoomReadData {
+    room_id: string;
+    read_at: Date;
 }
 
 export interface IChatRoomParticipant {
@@ -243,6 +258,20 @@ export interface ICreateMessageError {
 
 export interface ICreateMessageRequest {
     type: CREATE_MESSAGE_STATUS.REQUEST;
+}
+
+export interface IReadRoomSuccess {
+    type: READ_ROOM_STATUS.SUCCESS;
+    payload: IChatRoomReadData;
+}
+
+export interface IReadRoomError {
+    type: READ_ROOM_STATUS.ERROR;
+    payload: string;
+}
+
+export interface IReadRoomRequest {
+    type: READ_ROOM_STATUS.REQUEST;
 }
 
 interface ICustomHooks {

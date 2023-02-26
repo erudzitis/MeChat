@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
-import { Avatar, Card, Flex, Text } from "@mantine/core";
+import { Avatar, Card, Flex, Text, Badge } from "@mantine/core";
 
 // Actions
-import { retrieveRoomInfoAction } from "../../../../actions/chat";
+import { retrieveRoomInfoAction, readRoomAction } from "../../../../actions/chat";
 
 // Hooks
 import { useAppDispatch } from "../../../../common/hooks";
@@ -14,15 +14,19 @@ interface IContactCardProps {
     username: string;
     id: string;
     image?: string;
+    latest_msg_date?: Date;
+    read_at?: Date;
 }
 
 export const ContactCard: React.FC<IContactCardProps> = (props) => {
-    const { username, image, id } = props;
+    const { username, image, id, read_at, latest_msg_date } = props;
     const dispatch = useAppDispatch();
     const initals = useMemo(() => createInitials(username), [username]);
 
-
-    const handleOnClick = () => dispatch(retrieveRoomInfoAction(id));
+    const handleOnClick = () => {
+        dispatch(retrieveRoomInfoAction(id));
+        dispatch(readRoomAction(id));
+    };
 
     return (
         <Card
@@ -43,6 +47,10 @@ export const ContactCard: React.FC<IContactCardProps> = (props) => {
             <Flex align="center" gap="sm">
                 <Avatar color="blue" radius="xl">{initals}</Avatar>
                 <Text fz="md" weight={400}>{username}</Text>
+
+                {latest_msg_date && read_at && new Date(latest_msg_date) > new Date(read_at)
+                    && <Badge size="xs" ml="auto">New</Badge>
+                }
             </Flex>
         </Card>
     )

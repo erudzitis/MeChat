@@ -71,7 +71,12 @@ export const Navbar: React.FC = () => {
                             <ScrollArea style={{ height: roomsHeight }} scrollbarSize={6}>
                                 <Flex direction="column" gap="xs">
                                     {roomData.map(room => (
-                                        <ContactCard username={room.name} key={room.id} id={room.id} />
+                                        <ContactCard 
+                                            username={room.name} 
+                                            key={room.id} 
+                                            id={room.id} 
+                                            read_at={room.read_at} 
+                                            latest_msg_date={room.latest_msg_date} />
                                     ))}
                                 </Flex>
                             </ScrollArea>

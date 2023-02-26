@@ -115,6 +115,10 @@ export const retrieveRoomInfoCall = (roomId: string) => {
     return API.get(`/room/info/${roomId}`);
 }
 
+export const readRoomCall = (roomId: string) => {
+    return API.post(`/room/read/${roomId}`);
+}
+
 export const createMessageCall = (formData: ISendMessageFormData) => {
     return API.post("/message/create", formData);
 }
