@@ -25,7 +25,7 @@ export const Header: React.FC = () => {
 
                 <Box sx={{ flex: 1 }}>
                     <Text fw={500}>{roomData.name}</Text>
-                    <Text>{roomData.description}</Text>
+                    <Text fz="sm" color="dimmed">{roomData.description}</Text>
                 </Box>
             </Group>
         </Box >

@@ -129,7 +129,7 @@ const roomAddUserController = async (req, res) => {
 // [POST] Route for updating last read_at timestamp for each participated room
 const readRoomController = async (req, res) => {
     const { userId } = req;
-    const { roomId } = req.body;
+    const { roomId } = req.params;
 
     // Updating last read timestamp
     const updatedParticipation = await participantsModel.query()

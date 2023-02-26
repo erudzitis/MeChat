@@ -8,7 +8,7 @@ const { roomCreateController, roomAddUserController, getRoomDataController, room
 router.post("/create", roomCreateController);
 router.post("/leave", roomLeaveController);
 router.post("/add_user", roomAddUserController);
-router.post("/read", readRoomController);
+router.post("/read/:roomId", readRoomController);
 
 // [GET]
 router.get("/info/:roomId", getRoomDataController);
