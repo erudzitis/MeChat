@@ -5,7 +5,6 @@ const jwt = require("jsonwebtoken");
 const onlineUsers = {};
 
 module.exports = (socket) => {
-    // TODO: Needs "corner case" implementation when unauthenticated user establishes connection, since the token passed will be undefined
     socket.use((s, next) => {
         const token = s.handshake.auth.token;
 
@@ -30,6 +29,8 @@ module.exports = (socket) => {
         onlineUsers[client.userId] = 1;
 
         // Informing all sockets of the newly connected user
+        // TODO: Ideally you don't want to notice all the sockets, especially those that are not
+        // associated to this user in any way, for instance, not being a friend
         socket.emit("receive_online_users", {
             onlineUsers: Object.values(onlineUsers)
         });
@@ -37,6 +38,8 @@ module.exports = (socket) => {
         // Event that gets called after user enters a room
         client.on("room_connect", data => {
             const { contactRooms = [], groupRooms = [] } = data;
+
+            console.log("room_connect " + client.username);
 
             // Connecting client socket to all rooms
             contactRooms.forEach(room => client.join(room));
@@ -54,15 +57,17 @@ module.exports = (socket) => {
 
         // Event that gets called when a chat message is submitted
         client.on("room_message", data => {
-            const { content, username, roomId } = data;
+            const { content, roomId } = data;
+
+            console.log(data);
 
             // Emitting message data to all other sockets listening in the same room, except the sender
             client.to(roomId).emit("receive_room_message", {
-                content,
-                username,
-                created_at: new Date(),
+                user_id: client.userId,
                 room_id: roomId,
-                user_id: client.userId
+                username: client.username,
+                content,
+                created_at: new Date(),
             })
         });
 

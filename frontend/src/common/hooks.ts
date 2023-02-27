@@ -6,13 +6,16 @@ import type { ReducerState, TypedDispatch } from "../reducers";
 import jwtDecode from "jwt-decode";
 
 // Types
-import { IChatRoomHook, IModalHook, IContactsHook, IUserHook } from "./types";
+import { IChatRoomHook, IModalHook, IContactsHook, IUserHook, IChatRoom, IContact, IChatRoomMessageIncomingWS } from "./types";
 
 // Actions
-import { retrieveContactsAction, retrieveRoomsAction } from "../actions/chat";
+import { retrieveContactsAction, retrieveRoomsAction, incomingMessageAction } from "../actions/chat";
 
 // Services
 import { getAccessToken } from "./services";
+
+// Websocket
+import { ws, WS } from "./websocket";
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<TypedDispatch>();
@@ -82,4 +85,26 @@ export const UseGetUser = (): IUserHook | null => {
     return useMemo(() => {
         return token ? jwtDecode(token) : null;
     }, [token]);
+};
+
+export const UseWS = () => {
+    const dispatch = useAppDispatch();
+    const { rooms, contacts }: { rooms: Array<IChatRoom>, contacts: Array<IContact> } = useAppSelector(state => state.chat);
+
+    useEffect(() => {
+        // Establishing connection
+        ws.connect();
+
+        // Listening for incoming messages
+        ws.getInstance()?.on(WS.ROOM_INCOMING_MESSAGE, (data: IChatRoomMessageIncomingWS) => {
+            dispatch(incomingMessageAction(data));
+        });
+    }, []);
+
+    // Joining all rooms
+    useEffect(() => {
+        if (ws.isConnected()) {
+            ws.joinRooms(rooms, contacts);
+        }
+    }, [ws.isConnected()]);
 }
