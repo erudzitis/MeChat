@@ -43,7 +43,10 @@ import {
     IReadRoomError,
     IReadRoomRequest,
     READ_ROOM_STATUS,
-    IChatRoomReadData
+    IChatRoomReadData,
+    IIncomingMessageSuccess,
+    IChatRoomMessageIncomingWS,
+    INCOMING_ROOM_MESSAGE_STATUS
 } from "../common/types";
 
 type RetrieveRoomsDispatch = IRetrieveRoomSuccess | IRetrieveRoomError | IRetrieveRoomRequest;
@@ -177,3 +180,9 @@ export const readRoomAction = (roomId: string) => async (dispatch: Dispatch<Read
             dispatch({ type: READ_ROOM_STATUS.ERROR, payload: error?.response?.data?.message });
         });
 };
+
+type IncomingMessageDispatch = IIncomingMessageSuccess;
+
+export const incomingMessageAction = (messageData: IChatRoomMessageIncomingWS) => async (dispatch: Dispatch<IncomingMessageDispatch>) => {
+    dispatch({ type: INCOMING_ROOM_MESSAGE_STATUS.SUCCESS, payload: messageData });
+}

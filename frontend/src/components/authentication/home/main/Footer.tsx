@@ -12,6 +12,9 @@ import { ISendMessageFormData, IChatRoomInfo } from "../../../../common/types";
 // Actions
 import { createMessageAction } from "../../../../actions/chat";
 
+// Websocket
+import { ws } from "../../../../common/websocket";
+
 export const Footer: React.FC = () => {
     const dispatch = useAppDispatch();
     const { roomData }: { roomData: IChatRoomInfo } = useAppSelector(state => state.chat);
@@ -28,6 +31,7 @@ export const Footer: React.FC = () => {
 
     const handleSubmit = (formData: ISendMessageFormData) => {
         dispatch(createMessageAction(formData));
+        ws.sendMessage(formData);
         form.setFieldValue("content", "");
     }
 

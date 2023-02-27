@@ -6,7 +6,7 @@ import { StatusCodes } from "http-status-codes";
 import { IRegisterFormData, ILoginFormData, IAddFriendFormData, ICreateGroupFormData, AxiosErrorExtended, ISendMessageFormData } from "../common/types";
 
 // Constants
-import { ACCESS_TOKEN_ERROR_MSG, REFRESH_TOKEN_ERROR_MSG } from "../common/contants";
+import { ACCESS_TOKEN_ERROR_MSG, BASE_API_URL, REFRESH_TOKEN_ERROR_MSG } from "../common/contants";
 
 // Services
 import { setAccessToken, getAccessToken, clearAccessToken } from "../common/services";
@@ -15,7 +15,7 @@ import { setAccessToken, getAccessToken, clearAccessToken } from "../common/serv
  * Initializing an axios API instance that points to the backend API endpoints.
  */
 const API = axios.create({
-    baseURL: "http://localhost:8000/api/v1",
+    baseURL: BASE_API_URL,
     headers: {
         "Content-Type": "application/json",
     },

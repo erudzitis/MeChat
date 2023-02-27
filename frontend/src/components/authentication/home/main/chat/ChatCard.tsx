@@ -33,7 +33,7 @@ export const ChatCard: React.FC<IChatCardProps> = (props) => {
                     <Text fz="xs" color={isOur ? undefined : "dimmed"}>{new Date(created_at).toLocaleString()}</Text>
                 </Group>
 
-                <Text fz="sm">
+                <Text fz="sm" style={{ wordWrap: "break-word" }}>
                     {content}
                 </Text>
             </Paper>

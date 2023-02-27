@@ -60,6 +60,10 @@ export const enum READ_ROOM_STATUS {
     ERROR = "READ_ROOM_ERROR"
 }
 
+export const enum INCOMING_ROOM_MESSAGE_STATUS {
+    SUCCESS = "INCOMING_ROOM_MESSAGE_STATUS"
+}
+
 /* Interfaces */
 export interface ILoginFormData {
     username: string;
@@ -140,6 +144,10 @@ export interface IContact {
     room_id: string;
     picture: string | null;
     description: string;
+    latest_msg_username?: string;
+    latest_msg_content?: string;
+    latest_msg_date?: Date;
+    read_at?: Date;
 }
 
 export interface IChatRoomMessage {
@@ -147,6 +155,10 @@ export interface IChatRoomMessage {
     username: string;
     content: string;
     created_at: Date;
+}
+
+export interface IChatRoomMessageIncomingWS extends IChatRoomMessage {
+    room_id: string;
 }
 
 export interface IChatRoomMessageData {
@@ -272,6 +284,11 @@ export interface IReadRoomError {
 
 export interface IReadRoomRequest {
     type: READ_ROOM_STATUS.REQUEST;
+}
+
+export interface IIncomingMessageSuccess {
+    type: INCOMING_ROOM_MESSAGE_STATUS.SUCCESS;
+    payload: IChatRoomMessageIncomingWS;
 }
 
 interface ICustomHooks {
