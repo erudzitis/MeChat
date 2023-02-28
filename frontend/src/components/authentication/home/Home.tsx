@@ -6,12 +6,15 @@ import Lottie from "lottie-react";
 import chatBotAnimation from "./main/noChatRoomSelectedAnim.json";
 
 // Hooks
-import { useAppSelector } from "../../../common/hooks";
+import { useAppSelector, UseWS } from "../../../common/hooks";
+
+// Types
 import { IChatRoomInfo } from "../../../common/types";
 
 export const Home: React.FC = () => {
     const { roomData }: { roomData: IChatRoomInfo } = useAppSelector(state => state.chat);
-
+    UseWS();
+    
     return (
         <AppShell
             padding={0}

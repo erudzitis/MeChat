@@ -64,6 +64,16 @@ export const enum INCOMING_ROOM_MESSAGE_STATUS {
     SUCCESS = "INCOMING_ROOM_MESSAGE_STATUS"
 }
 
+export const enum INCOMING_USER_STATUS {
+    ONLINE = "INCOMING_USER_STATUS_ONLINE",
+    OFFLINE = "INCOMING_USER_STATUS_OFFLINE",
+}
+
+export const enum INCOMING_TYPING_STATUS {
+    START = "INCOMING_TYPING_STATUS_START",
+    STOP = "INCOMING_TYPING_STATUS_STOP"
+}
+
 /* Interfaces */
 export interface ILoginFormData {
     username: string;
@@ -137,6 +147,14 @@ export interface IAddFriendData {
     room_id: number
 }
 
+export interface IOnline {
+    [id: number]: boolean
+}
+
+export interface IOnlineWS {
+    online: IOnline;
+}
+
 export interface IContact {
     id: number;
     username: string;
@@ -178,10 +196,19 @@ export interface IChatRoomParticipant {
     picture: string | null;
 }
 
+export interface ITyping {
+    [id: number]: boolean;
+}
+
 export interface IChatRoomInfo extends IChatRoom {
     messages: Array<IChatRoomMessage>;
     participants: Array<IChatRoomParticipant>;
+    typing: ITyping
+}
 
+export interface ITypingWS {
+    user_id: number;
+    room_id: string;
 }
 
 export interface IRetrieveRoomSuccess {
@@ -289,6 +316,16 @@ export interface IReadRoomRequest {
 export interface IIncomingMessageSuccess {
     type: INCOMING_ROOM_MESSAGE_STATUS.SUCCESS;
     payload: IChatRoomMessageIncomingWS;
+}
+
+export interface IOnlineUsersSuccess {
+    type: INCOMING_USER_STATUS.ONLINE;
+    payload: IOnline;
+}
+
+export interface ITypingStatusSuccess {
+    type: INCOMING_TYPING_STATUS.START | INCOMING_TYPING_STATUS.STOP;
+    payload: ITypingWS
 }
 
 interface ICustomHooks {

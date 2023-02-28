@@ -20,22 +20,30 @@ import {
     IReadRoomSuccess,
     READ_ROOM_STATUS,
     IIncomingMessageSuccess,
-    INCOMING_ROOM_MESSAGE_STATUS
+    INCOMING_ROOM_MESSAGE_STATUS,
+    INCOMING_USER_STATUS,
+    IOnlineUsersSuccess,
+    IOnline,
+    INCOMING_TYPING_STATUS,
+    ITypingStatusSuccess,
 } from "../common/types"
 
 type ChatReducerAction = IRetrieveRoomSuccess | IRetrieveContactsSuccess | IAddFriendSuccess | ICreateGroupSuccess
-    | IRetreiveRoomInfoSuccess | IClearRoomInfoRequest | ICreateMessageSuccess | IReadRoomSuccess | IIncomingMessageSuccess;
+    | IRetreiveRoomInfoSuccess | IClearRoomInfoRequest | ICreateMessageSuccess | IReadRoomSuccess | IIncomingMessageSuccess
+    | IOnlineUsersSuccess | ITypingStatusSuccess;
 
 interface IChatState {
     rooms: Array<IChatRoom>;
     contacts: Array<IContact>;
     roomData: IChatRoomInfo | null;
+    online: IOnline
 }
 
 const initialState = {
     rooms: [],
     contacts: [],
-    roomData: null
+    roomData: null,
+    online: {}
 } as IChatState;
 
 export const chatReducer = (state = initialState, action: ChatReducerAction) => {
@@ -63,11 +71,11 @@ export const chatReducer = (state = initialState, action: ChatReducerAction) => 
                 return {
                     ...state,
                     roomData: { ...state.roomData, messages: [...state.roomData!.messages, action.payload] }
-                };                
+                };
             } else {
                 // The incoming message was in a different room
                 // We update latest room message of that particular room
-                return { 
+                return {
                     ...state,
                     rooms: state.rooms.map(r => {
                         if (r.id === action.payload.room_id) {
@@ -94,6 +102,16 @@ export const chatReducer = (state = initialState, action: ChatReducerAction) => 
                 ...state,
                 rooms: state.rooms.map(room => room.id === action.payload.room_id ? { ...room, read_at: action.payload.read_at } : room)
             }
+        case INCOMING_USER_STATUS.ONLINE:
+            return { ...state, online: action.payload };
+        case INCOMING_TYPING_STATUS.START:
+            return state.roomData?.id === action.payload.room_id
+                ? { ...state, roomData: { ...state.roomData, typing: { ...state.roomData.typing, [action.payload.user_id]: true } } }
+                : state;
+        case INCOMING_TYPING_STATUS.STOP:
+            return state.roomData?.id === action.payload.room_id
+                ? { ...state, roomData: { ...state.roomData, typing: { ...state.roomData.typing, [action.payload.user_id]: false } } }
+                : state;
         default:
             return state;
     }
