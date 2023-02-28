@@ -46,7 +46,13 @@ import {
     IChatRoomReadData,
     IIncomingMessageSuccess,
     IChatRoomMessageIncomingWS,
-    INCOMING_ROOM_MESSAGE_STATUS
+    INCOMING_ROOM_MESSAGE_STATUS,
+    INCOMING_USER_STATUS,
+    IOnlineUsersSuccess,
+    IOnlineWS,
+    ITypingWS,
+    INCOMING_TYPING_STATUS,
+    ITypingStatusSuccess
 } from "../common/types";
 
 type RetrieveRoomsDispatch = IRetrieveRoomSuccess | IRetrieveRoomError | IRetrieveRoomRequest;
@@ -185,4 +191,12 @@ type IncomingMessageDispatch = IIncomingMessageSuccess;
 
 export const incomingMessageAction = (messageData: IChatRoomMessageIncomingWS) => async (dispatch: Dispatch<IncomingMessageDispatch>) => {
     dispatch({ type: INCOMING_ROOM_MESSAGE_STATUS.SUCCESS, payload: messageData });
+}
+
+export const onlineUsersAction = (data: IOnlineWS) => async (dispatch: Dispatch<IOnlineUsersSuccess>) => {
+    dispatch({ type: INCOMING_USER_STATUS.ONLINE, payload: data.online });
+}
+
+export const startStopTypingAction = (data: ITypingWS, start: boolean) => async (dispatch: Dispatch<ITypingStatusSuccess>) => {
+    dispatch({ type: start ? INCOMING_TYPING_STATUS.START : INCOMING_TYPING_STATUS.STOP, payload: data });
 }

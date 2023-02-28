@@ -11,12 +11,14 @@ import { CreateGroup } from "../modals/CreateGroup";
 
 // Hooks
 import { useGetRooms, useModal, useGetContacts, useAppSelector, UseGetUser } from "../../../../common/hooks";
-import { IChatRoom } from "../../../../common/types";
+
+// Types
+import { IChatRoom, IOnline } from "../../../../common/types";
 
 export const Navbar: React.FC = () => {
     const { data: roomData, loading: roomsLoading, error: roomsError } = useGetRooms();
     const { data: contactData, loading: contactsLoading, error: contactsError } = useGetContacts();
-    const { rooms }: { rooms: IChatRoom[] } = useAppSelector(state => state.chat); // ???
+    const { rooms, online }: { rooms: Array<IChatRoom>, online: IOnline } = useAppSelector(state => state.chat); // ???
     const user = UseGetUser();
 
     const roomsHeight = useMemo(() => Math.min(300, rooms.length * 75), [rooms.length]);
@@ -71,11 +73,11 @@ export const Navbar: React.FC = () => {
                             <ScrollArea style={{ height: roomsHeight }} scrollbarSize={6}>
                                 <Flex direction="column" gap="xs">
                                     {roomData.map(room => (
-                                        <ContactCard 
-                                            username={room.name} 
-                                            key={room.id} 
-                                            id={room.id} 
-                                            read_at={room.read_at} 
+                                        <ContactCard
+                                            username={room.name}
+                                            key={room.id}
+                                            id={room.id}
+                                            read_at={room.read_at}
                                             latest_msg_date={room.latest_msg_date} />
                                     ))}
                                 </Flex>
@@ -91,7 +93,12 @@ export const Navbar: React.FC = () => {
                             <ScrollArea style={{ height: 500 - roomsHeight }} scrollbarSize={6}>
                                 <Flex direction="column" gap="xs">
                                     {contactData.map(contact => (
-                                        <ContactCard username={contact.username} key={contact.room_id} id={contact.room_id} />
+                                        <ContactCard
+                                            username={contact.username}
+                                            key={contact.room_id}
+                                            id={contact.room_id}
+                                            online={online[contact.id]}
+                                        />
                                     ))}
                                 </Flex>
                             </ScrollArea>

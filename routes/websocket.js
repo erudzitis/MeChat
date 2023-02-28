@@ -1,8 +1,23 @@
 // Requirements
 const jwt = require("jsonwebtoken");
 
-// Online users storage 
-const onlineUsers = {};
+// Storage for online users
+const online = {};
+
+// Helper function for updating online users state
+const updateOnlineState = (userId) => {
+    online[userId] = true;
+}
+
+const deleteOnlineState = (userId) => {
+    if (userId in online) {
+        delete online[userId];
+    }
+}
+
+const getOnlineState = () => {
+    return online;
+}
 
 module.exports = (socket) => {
     socket.use((s, next) => {
@@ -12,7 +27,7 @@ module.exports = (socket) => {
         jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
             // An error has occured
             if (error) {
-                next(new Error(error));
+                return next(new Error(error));
             }
 
             // Verification was successful
@@ -25,15 +40,12 @@ module.exports = (socket) => {
 
     socket.on("connection", client => {
         console.log(`client has connected: ${client.id}, ${client.userId}, ${client.username}`);
-        // Initializing user into online users array
-        onlineUsers[client.userId] = 1;
 
-        // Informing all sockets of the newly connected user
-        // TODO: Ideally you don't want to notice all the sockets, especially those that are not
-        // associated to this user in any way, for instance, not being a friend
-        socket.emit("receive_online_users", {
-            onlineUsers: Object.values(onlineUsers)
-        });
+        // Updating state
+        updateOnlineState(client.userId);
+
+        // Informing all sockets of newly joined online user
+        socket.emit("online_users", { online: getOnlineState() });
 
         // Event that gets called after user enters a room
         client.on("room_connect", data => {
@@ -49,6 +61,8 @@ module.exports = (socket) => {
         // Event that gets called after the user leaves a room
         client.on("room_disconnect", data => {
             const { contactRooms = [], groupRooms = [] } = data;
+
+            console.log("room_disconnect " + client.username);
 
             // Disconnecting client socket from all rooms
             contactRooms.forEach(room => client.leave(room));
@@ -72,49 +86,38 @@ module.exports = (socket) => {
         });
 
         // Event that gets called every time user starts typing
-        client.on("user_typing", data => {
+        client.on("start_typing", data => {
             const { roomId } = data;
 
-            client.to(roomId).emit("receive_user_typing", {
-                userId: client.userId,
-                roomId
+            console.log("start_typing " + client.userId);
+            console.log(client.rooms);
+
+            client.to(roomId).emit("receive_start_typing", {
+                user_id: client.userId,
+                room_id: roomId
             })
         });
 
         // Event that gets called every time user stops typing
-        client.on("user_not_typing", data => {
+        client.on("stop_typing", data => {
             const { roomId } = data;
 
-            client.to(roomId).emit("receive_user_not_typing", {
-                userId: client.userId,
-                roomId
+            console.log("stop_typing " + client.userId);
+            console.log(client.rooms);
+
+            client.to(roomId).emit("receive_stop_typing", {
+                user_id: client.userId,
+                room_id: roomId
             })
-        });
-
-        // Event that gets called every time a user initializes room call
-        client.on("initialize_room_call", data => {
-            const { roomId } = data;
-
-            // Going over all other client sockets in the same room and sending them information about this incoming call
-            client.to(roomId).emit("incoming_room_call", { roomId, callerId: client.userId });
-        });
-
-        client.on("abort_room_call", data => {
-            const { roomId } = data;
-
-            // Going over all other client sockets in the same room and sending them information about this incoming call
-            client.to(roomId).emit("ended_room_call", { roomId });
         });
 
         // Keeping track of users disconnecting
-        client.on("disconnect", () => {
-            // Removing user from online users array
-            delete onlineUsers[client.userId];
+        client.on("disconnecting", () => {
+            // Updating the state
+            deleteOnlineState(client.userId);
 
-            // Informing all sockets
-            socket.emit("receive_online_users", {
-                onlineUsers: Object.values(onlineUsers)
-            })
+            // Informing all sockets that user is now 'offline'
+            socket.emit("user_disconnected", { online: getOnlineState() });
         });
 
     })
