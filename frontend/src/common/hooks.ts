@@ -91,8 +91,6 @@ export const UseWS = () => {
     const dispatch = useAppDispatch();
     const { rooms, contacts }: { rooms: Array<IChatRoom>, contacts: Array<IContact> } = useAppSelector(state => state.chat);
 
-    console.log("CALLED: " + ws.isConnected());
-
     useEffect(() => {
         // Establishing connection
         ws.connect();
@@ -147,15 +145,18 @@ export const UseWS = () => {
     }, []);
 
     useEffect(() => {
-        setTimeout(() => {
-            // Joining all rooms
-            if (rooms.length && contacts.length) {
-                console.log("JOINING ROOMS!");
-                console.log(rooms);
-                console.log(contacts);
+        // Joining all rooms
+        if (rooms.length && contacts.length && ws.isConnected()) {
+            console.log("JOINING ROOMS!");
+            console.log(rooms);
+            console.log(contacts);
 
-                ws.joinRooms(rooms, contacts);
-            };
-        });
-    }, [rooms.length, contacts.length])
+            ws.joinRooms(rooms, contacts);
+        };
+    }, [rooms.length, contacts.length, ws.isConnected()]);
+
+    useEffect(() => {
+        console.log("useEffect is connected: " + ws.isConnected());
+        
+    }, [ws.isConnected()])
 }

@@ -103,7 +103,7 @@ const removeContact = async (req, res) => {
 
     res.status(StatusCodes.OK).json({
         success: true,
-        data: { removedContactId: contactId, removedRoomId: roomId }
+        data: { contactId: contactId }
     });
 }
 

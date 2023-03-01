@@ -26,11 +26,15 @@ import {
     IOnline,
     INCOMING_TYPING_STATUS,
     ITypingStatusSuccess,
+    IRemoveContactSuccess,
+    IRemoveRoomSuccess,
+    REMOVE_CONTACT_STATUS,
+    REMOVE_GROUP_STATUS,
 } from "../common/types"
 
 type ChatReducerAction = IRetrieveRoomSuccess | IRetrieveContactsSuccess | IAddFriendSuccess | ICreateGroupSuccess
     | IRetreiveRoomInfoSuccess | IClearRoomInfoRequest | ICreateMessageSuccess | IReadRoomSuccess | IIncomingMessageSuccess
-    | IOnlineUsersSuccess | ITypingStatusSuccess;
+    | IOnlineUsersSuccess | ITypingStatusSuccess | IRemoveContactSuccess | IRemoveRoomSuccess;
 
 interface IChatState {
     rooms: Array<IChatRoom>;
@@ -112,6 +116,10 @@ export const chatReducer = (state = initialState, action: ChatReducerAction) => 
             return state.roomData?.id === action.payload.room_id
                 ? { ...state, roomData: { ...state.roomData, typing: { ...state.roomData.typing, [action.payload.user_id]: false } } }
                 : state;
+        case REMOVE_CONTACT_STATUS.SUCCESS:
+            return { ...state, contacts: state.contacts.filter(c => c.id !== action.payload.contactId), roomData: null };
+        case REMOVE_GROUP_STATUS.SUCCESS:
+            return { ...state, rooms: state.rooms.filter(r => r.id !== action.payload.roomId), roomData: null };
         default:
             return state;
     }

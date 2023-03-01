@@ -1,8 +1,7 @@
-import React, { useMemo } from "react";
+import React, { useRef } from "react";
 import { Box, TextInput, ActionIcon, Group } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconBrandTelegram } from "@tabler/icons-react";
-import { Text } from "@mantine/core";
 
 // Hooks
 import { useAppSelector, useAppDispatch } from "../../../../common/hooks";
@@ -16,14 +15,10 @@ import { createMessageAction } from "../../../../actions/chat";
 // Websocket
 import { ws } from "../../../../common/websocket";
 
-// Services
-import { typingParticipants } from "../../../../common/services";
-
 export const Footer: React.FC = () => {
     const dispatch = useAppDispatch();
     const { roomData }: { roomData: IChatRoomInfo } = useAppSelector(state => state.chat);
-
-    const typing = typingParticipants(roomData?.participants, roomData?.typing);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     const form = useForm({
         initialValues: {
@@ -36,27 +31,22 @@ export const Footer: React.FC = () => {
     });
 
     const handleSubmit = (formData: ISendMessageFormData) => {
+        // Submitting form
         dispatch(createMessageAction(formData));
+        // Informing all appropriate sockets
         ws.sendMessage(formData);
+        // Clearing input field
         form.setFieldValue("content", "");
+        // Removing focus from input field
+        inputRef.current?.blur();
     }
 
-    const onTyping = () => { 
-        ws.startTyping(roomData?.id);
-        console.log("TYPING LOCAL");
-    }
-
-    const onStopTyping = () => { 
-        ws.stopTyping(roomData?.id);
-        console.log("STOPPED TYPING LOCAL");
-    }
+    const onTyping = () => ws.startTyping(roomData?.id);
+    const onStopTyping = () => ws.stopTyping(roomData?.id);
 
     return (
         <Box p="xs">
             <form onSubmit={form.onSubmit(handleSubmit)}>
-                <Text>
-                    {typing}
-                </Text>
                 <Group spacing="sm">
                     <TextInput
                         sx={{ flex: 1 }}
@@ -65,6 +55,7 @@ export const Footer: React.FC = () => {
                         id="content"
                         onFocusCapture={onTyping}
                         onBlurCapture={onStopTyping}
+                        ref={inputRef}
                         {...form.getInputProps("content")}
                     />
 

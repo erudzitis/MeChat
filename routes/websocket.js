@@ -51,8 +51,6 @@ module.exports = (socket) => {
         client.on("room_connect", data => {
             const { contactRooms = [], groupRooms = [] } = data;
 
-            console.log("room_connect " + client.username);
-
             // Connecting client socket to all rooms
             contactRooms.forEach(room => client.join(room));
             groupRooms.forEach(room => client.join(room));
@@ -62,8 +60,6 @@ module.exports = (socket) => {
         client.on("room_disconnect", data => {
             const { contactRooms = [], groupRooms = [] } = data;
 
-            console.log("room_disconnect " + client.username);
-
             // Disconnecting client socket from all rooms
             contactRooms.forEach(room => client.leave(room));
             groupRooms.forEach(room => client.leave(room));
@@ -72,8 +68,6 @@ module.exports = (socket) => {
         // Event that gets called when a chat message is submitted
         client.on("room_message", data => {
             const { content, roomId } = data;
-
-            console.log(data);
 
             // Emitting message data to all other sockets listening in the same room, except the sender
             client.to(roomId).emit("receive_room_message", {
@@ -89,9 +83,6 @@ module.exports = (socket) => {
         client.on("start_typing", data => {
             const { roomId } = data;
 
-            console.log("start_typing " + client.userId);
-            console.log(client.rooms);
-
             client.to(roomId).emit("receive_start_typing", {
                 user_id: client.userId,
                 room_id: roomId
@@ -101,9 +92,6 @@ module.exports = (socket) => {
         // Event that gets called every time user stops typing
         client.on("stop_typing", data => {
             const { roomId } = data;
-
-            console.log("stop_typing " + client.userId);
-            console.log(client.rooms);
 
             client.to(roomId).emit("receive_stop_typing", {
                 user_id: client.userId,
@@ -119,6 +107,5 @@ module.exports = (socket) => {
             // Informing all sockets that user is now 'offline'
             socket.emit("user_disconnected", { online: getOnlineState() });
         });
-
     })
 }

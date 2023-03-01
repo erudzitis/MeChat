@@ -60,6 +60,18 @@ export const enum READ_ROOM_STATUS {
     ERROR = "READ_ROOM_ERROR"
 }
 
+export const enum REMOVE_GROUP_STATUS {
+    REQUEST = "REMOVE_GROUP_REQUEST",
+    SUCCESS = "REMOVE_GROUP_SUCCESS",
+    ERROR = "REMOVE_GROUP_ERROR"
+}
+
+export const enum REMOVE_CONTACT_STATUS {
+    REQUEST = "REMOVE_CONTACT_REQUEST",
+    SUCCESS = "REMOVE_CONTACT_SUCCESS",
+    ERROR = "REMOVE_CONTACT_ERROR"
+}
+
 export const enum INCOMING_ROOM_MESSAGE_STATUS {
     SUCCESS = "INCOMING_ROOM_MESSAGE_STATUS"
 }
@@ -196,6 +208,14 @@ export interface IChatRoomParticipant {
     picture: string | null;
 }
 
+export interface IRemoveRoomFormData {
+    roomId: string;
+}
+
+export interface IRemoveContactFormData {
+    contactId: number;
+}
+
 export interface ITyping {
     [id: number]: boolean;
 }
@@ -326,6 +346,34 @@ export interface IOnlineUsersSuccess {
 export interface ITypingStatusSuccess {
     type: INCOMING_TYPING_STATUS.START | INCOMING_TYPING_STATUS.STOP;
     payload: ITypingWS
+}
+
+export interface IRemoveRoomSuccess {
+    type: REMOVE_GROUP_STATUS.SUCCESS;
+    payload: IRemoveRoomFormData;
+}
+
+export interface IRemoveRoomError {
+    type: REMOVE_GROUP_STATUS.ERROR;
+    payload: string;
+}
+
+export interface IRemoveRoomRequest {
+    type: REMOVE_GROUP_STATUS.REQUEST;
+}
+
+export interface IRemoveContactSuccess {
+    type: REMOVE_CONTACT_STATUS.SUCCESS;
+    payload: IRemoveContactFormData;
+}
+
+export interface IRemoveContactError {
+    type: REMOVE_CONTACT_STATUS.ERROR;
+    payload: string;
+}
+
+export interface IRemoveContactRequest {
+    type: REMOVE_CONTACT_STATUS.REQUEST;
 }
 
 interface ICustomHooks {

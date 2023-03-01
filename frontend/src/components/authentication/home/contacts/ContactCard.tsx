@@ -9,7 +9,7 @@ import { useAppDispatch } from "../../../../common/hooks";
 
 // Services
 import { createInitials } from "../../../../common/services";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface IContactCardProps {
     username: string;
@@ -50,25 +50,31 @@ export const ContactCard: React.FC<IContactCardProps> = (props) => {
                 <Avatar color="blue" radius="xl">{initals}</Avatar>
                 <Text fz="md" weight={400}>{username}</Text>
 
-                {latest_msg_date && read_at && new Date(latest_msg_date) > new Date(read_at)
-                    && (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            style={{ marginLeft: "auto" }}
-                        ><Badge size="xs" ml="auto">Unread</Badge></motion.div>
-                    )
-                }
+                <AnimatePresence>
+                    {latest_msg_date && read_at && new Date(latest_msg_date) > new Date(read_at)
+                        && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                style={{ marginLeft: "auto" }}
+                            ><Badge size="xs" ml="auto">Unread</Badge></motion.div>
+                        )
+                    }
+                </AnimatePresence>
 
-                {online
-                    && (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            style={{ marginLeft: "auto" }}
-                        ><Badge size="xs" color="green">Online</Badge></motion.div>
-                    )
-                }
+                <AnimatePresence>
+                    {online
+                        && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                style={{ marginLeft: "auto" }}
+                            ><Badge size="xs" color="green">Online</Badge></motion.div>
+                        )
+                    }
+                </AnimatePresence>
             </Flex>
         </Card>
     )
