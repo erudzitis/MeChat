@@ -3,7 +3,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { StatusCodes } from "http-status-codes";
 
 // Types
-import { IRegisterFormData, ILoginFormData, IAddFriendFormData, ICreateGroupFormData, AxiosErrorExtended, ISendMessageFormData } from "../common/types";
+import { IRegisterFormData, ILoginFormData, IAddFriendFormData, ICreateGroupFormData, AxiosErrorExtended, ISendMessageFormData, IRemoveRoomFormData, IRemoveContactFormData } from "../common/types";
 
 // Constants
 import { ACCESS_TOKEN_ERROR_MSG, BASE_API_URL, REFRESH_TOKEN_ERROR_MSG } from "../common/contants";
@@ -121,4 +121,12 @@ export const readRoomCall = (roomId: string) => {
 
 export const createMessageCall = (formData: ISendMessageFormData) => {
     return API.post("/message/create", formData);
+}
+
+export const removeRoomCall = (formData: IRemoveRoomFormData) => {
+    return API.post("/room/leave", formData);
+}
+
+export const removeContactCall = (formData: IRemoveContactFormData) => {
+    return API.post("/user/remove_contact", formData);
 }

@@ -75,7 +75,7 @@ const roomLeaveController = async (req, res) => {
 
     res.status(StatusCodes.OK).json({
         success: true,
-        data: { leftRoomId: roomId }
+        data: { roomId: roomId }
     });
 }
 

@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 
 // API endpoint calls
-import { retrieveRoomsCall, addFriendCall, retrieveContactsCall, createGroupCall, retrieveRoomInfoCall, createMessageCall, readRoomCall } from "../api";
+import { retrieveRoomsCall, addFriendCall, retrieveContactsCall, createGroupCall, retrieveRoomInfoCall, createMessageCall, readRoomCall, removeRoomCall, removeContactCall } from "../api";
 
 // Types
 import {
@@ -52,7 +52,17 @@ import {
     IOnlineWS,
     ITypingWS,
     INCOMING_TYPING_STATUS,
-    ITypingStatusSuccess
+    ITypingStatusSuccess,
+    IRemoveRoomFormData,
+    IRemoveRoomSuccess,
+    IRemoveRoomError,
+    IRemoveRoomRequest,
+    REMOVE_GROUP_STATUS,
+    IRemoveContactSuccess,
+    IRemoveContactError,
+    IRemoveContactRequest,
+    IRemoveContactFormData,
+    REMOVE_CONTACT_STATUS
 } from "../common/types";
 
 type RetrieveRoomsDispatch = IRetrieveRoomSuccess | IRetrieveRoomError | IRetrieveRoomRequest;
@@ -200,3 +210,39 @@ export const onlineUsersAction = (data: IOnlineWS) => async (dispatch: Dispatch<
 export const startStopTypingAction = (data: ITypingWS, start: boolean) => async (dispatch: Dispatch<ITypingStatusSuccess>) => {
     dispatch({ type: start ? INCOMING_TYPING_STATUS.START : INCOMING_TYPING_STATUS.STOP, payload: data });
 }
+
+type RemoveRoomDispatch = IRemoveRoomSuccess | IRemoveRoomError | IRemoveRoomRequest;
+
+/**
+ * Invokes the API call to remove a particular room and updates the state of the request.
+ * @param formData IRemoveRoomFormData
+ */
+export const removeRoomAction = (formData: IRemoveRoomFormData) => async (dispatch: Dispatch<RemoveRoomDispatch>) => {
+    dispatch({ type: REMOVE_GROUP_STATUS.REQUEST });
+
+    removeRoomCall(formData)
+        .then(({ data }: { data: { data: IRemoveRoomFormData } }) => {
+            dispatch({ type: REMOVE_GROUP_STATUS.SUCCESS, payload: data.data });
+        })
+        .catch((error) => {
+            dispatch({ type: REMOVE_GROUP_STATUS.ERROR, payload: error?.response?.data?.message });
+        });
+};
+
+type RemoveContactDispatch = IRemoveContactSuccess | IRemoveContactError | IRemoveContactRequest;
+
+/**
+ * Invokes the API call to remove a particular contact and updates the state of the request.
+ * @param formData IRemoveContactFormData
+ */
+export const removeContactAction = (formData: IRemoveContactFormData) => async (dispatch: Dispatch<RemoveContactDispatch>) => {
+    dispatch({ type: REMOVE_CONTACT_STATUS.REQUEST });
+
+    removeContactCall(formData)
+        .then(({ data }: { data: { data: IRemoveContactFormData } }) => {
+            dispatch({ type: REMOVE_CONTACT_STATUS.SUCCESS, payload: data.data });
+        })
+        .catch((error) => {
+            dispatch({ type: REMOVE_CONTACT_STATUS.ERROR, payload: error?.response?.data?.message });
+        });
+};
