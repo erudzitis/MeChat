@@ -1,8 +1,9 @@
-import { ACCESS_TOKEN } from "./contants";
+import { ACCESS_TOKEN, ACCESS_TOKEN_SET } from "./contants";
 import { IChatRoomParticipant, ITyping } from "./types";
 
 export const setAccessToken = (value: string): void => {
     localStorage.setItem(ACCESS_TOKEN, value);
+    window.dispatchEvent(new Event(ACCESS_TOKEN_SET));
 }
 
 export const getAccessToken = (): string | null => {

@@ -21,14 +21,23 @@ export const Header: React.FC = () => {
     const navigate = useNavigate();
     const { roomData, contacts }: { roomData: IChatRoomInfo, contacts: Array<IContact> } = useAppSelector(state => state.chat);
 
-    const roomName = roomData.is_group_chat ? roomData.name : contacts.find(c => c.room_id === roomData.id)?.username;
+    /**
+     * Retrieves the 1-1 chat friend on the other side
+     */
+    const friend: IContact | null = useMemo(() => {
+        if (roomData.is_group_chat) return null;
+        return contacts.find(c => c.room_id === roomData.id) ?? null;
+    }, [roomData.is_group_chat])
+
+    const roomName = roomData.is_group_chat ? roomData.name : friend?.username;
+    const roomDescription = roomData.is_group_chat ? roomData.description : friend?.description;
     const typing = typingParticipants(roomData?.participants, roomData?.typing);
     const initals = useMemo(() => createInitials(roomName), [roomName]);
 
     const leave = () => {
-        dispatch(roomData?.is_group_chat 
+        dispatch(roomData?.is_group_chat
             ? removeRoomAction({ roomId: roomData?.id })
-            : removeContactAction({ contactId: contacts.find(c => c.room_id === roomData.id)!.id }));
+            : removeContactAction({ contactId: friend!.id }));
     }
 
     return (
@@ -44,7 +53,7 @@ export const Header: React.FC = () => {
                     <Text fw={500}>{roomName}</Text>
 
                     <Group spacing="xs">
-                        <Text fz="sm">{roomData.description}</Text>
+                        <Text fz="sm">{roomDescription}</Text>
 
                         <AnimatePresence>
                             {typing.length && (

@@ -1,16 +1,17 @@
 import { io, Socket } from "socket.io-client";
 
 // Constants
-import { BASE_SOCKET_URL } from "./contants";
+import { ACCESS_TOKEN_EXPIRED_WS, ACCESS_TOKEN_SET, BASE_SOCKET_URL } from "./contants";
 
 // Services
 import { getAccessToken } from "./services";
 
-// Hooks
+// Types
 import { IChatRoom, IContact, ISendMessageFormData } from "./types";
 
 export class WS {
     private connection: Socket | null = null;
+    private connectionPending = false;
     static ON_CONNECT = "connect";
     static ROOM_CONNECT = "room_connect";
     static ROOM_DISCONNECT = "room_disconnect";
@@ -24,8 +25,8 @@ export class WS {
     static STOP_TYPING_INCOMING = "receive_stop_typing";
 
     public connect() {
-        // We already have existing connection
-        if (this.getInstance()) return;
+        // We already have existing or pending connection
+        if (this.getInstance() || this.connectionPending) return;
 
         this.connection = io(BASE_SOCKET_URL, {
             auth: (cb) => {
@@ -33,14 +34,30 @@ export class WS {
             }
         });
 
-        this.connection.on("connect_error", (_) => {
-            setTimeout(() => this.connection!.connect(), 1000);
-        });
-    }
+        // Updating state
+        this.connectionPending = true;
 
-    public disconnect() {
-        // We don't have an existing connection
-        if (!this.getInstance()) return;
+        /**
+         * We experienced error when connecting,
+         * this could be that our access token had expired at the moment,
+         * if so, we listen for token changes
+         */
+        this.connection.on("connect_error", (error) => {
+            if (error.message != ACCESS_TOKEN_EXPIRED_WS) return;
+
+            const reconnect = () => {
+                console.log("Access token changed, reconnecting");
+                
+                this.connection!.connect();
+            }
+
+            // Listening for access token changes
+            window.addEventListener(ACCESS_TOKEN_SET, reconnect);
+
+            // Removing listener on successful connection
+            this.connection?.on("connection", () => window.removeEventListener(ACCESS_TOKEN_SET, reconnect));
+
+        });
     }
 
     private joinLeaveRooms(rooms: Array<IChatRoom>, contacts: Array<IContact>, join: boolean) {
