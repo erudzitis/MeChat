@@ -22,3 +22,18 @@ There are no CSRF tokens being used in forms at the moment, therefore the applic
 - Adding friends, creating groups
 - Real-time user state, for example, online / typing
 
+
+## Environment Variables
+
+To run this project, you will need to add the following environment variables to your .env file
+
+`PG_CONNECTION_STRING_DEV`
+
+`JWT_SECRET`
+
+`JWT_EXPIRES_IN` short-lived, for instance, 60000 ms = 1 minute
+
+`JWT_REFRESH_SECRET`
+
+`JWT_REFRESH_EXPIRES_IN` long-lived, for instance, 604800000 ms = 1 week
+
