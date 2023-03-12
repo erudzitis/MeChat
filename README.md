@@ -1,3 +1,4 @@
+![Logo](https://i.imgur.com/cSIjrg4.png)
 
 # MeChat
 
@@ -36,4 +37,3 @@ To run this project, you will need to add the following environment variables to
 `JWT_REFRESH_SECRET`
 
 `JWT_REFRESH_EXPIRES_IN` long-lived, for instance, 604800000 ms = 1 week
-
