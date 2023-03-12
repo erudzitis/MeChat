@@ -1,4 +1,6 @@
-![Logo](https://i.imgur.com/cSIjrg4.png)
+<div align="center">
+  ![Logo](https://i.imgur.com/cSIjrg4.png)
+</div>
 
 # MeChat
 
