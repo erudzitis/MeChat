@@ -1,5 +1,5 @@
 <div align="center">
-  ![Logo](https://i.imgur.com/cSIjrg4.png)
+  <img src="https://i.imgur.com/cSIjrg4.png" alt="mechat" />
 </div>
 
 # MeChat
